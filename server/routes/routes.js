@@ -2,6 +2,7 @@ const app = require("express")();
 const connection = require("../config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 app.post("/register", async (req, res) => {
   const validEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -87,7 +88,7 @@ app.post("/login", (req, res) => {
             if (!response) {
               res.status(400).send("Password non valide");
             } else {
-              const token = jwt.sign({ email }, "secretkey", {
+              const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
                 expiresIn: "1h"
               });
               return res
