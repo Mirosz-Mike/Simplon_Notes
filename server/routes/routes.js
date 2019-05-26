@@ -86,7 +86,7 @@ app.post("/login", (req, res) => {
             response
           ) {
             if (!response) {
-              res.status(400).send("Password non valide");
+              res.status(400).send({ message: "Password incorrect" });
             } else {
               const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
                 expiresIn: "1h"
@@ -102,7 +102,7 @@ app.post("/login", (req, res) => {
             }
           });
         } else {
-          res.status(400).send("Votre email n'existe pas");
+          res.status(400).send({ message: "Votre email n'existe pas" });
         }
       }
     }
