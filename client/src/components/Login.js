@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { getUserToken } from "../redux/actions/user_action";
 
 const styles = {
   form: {
@@ -27,9 +29,10 @@ class Login extends Component {
     axios
       .post("http://localhost:8012/login", user)
       .then(response => {
+        this.props.getUserToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("name", response.data.name);
-        this.props.history.push("/");
+        //this.props.history.push("/");
       })
       .catch(error => {
         this.setState({ userMsg: error.response.data.message });
@@ -44,7 +47,7 @@ class Login extends Component {
 
   render() {
     const { email, password, userMsg } = this.state;
-
+    console.log(this.props.token);
     return (
       <div>
         <form onSubmit={this.handleSubmit} style={styles.form}>
@@ -74,4 +77,18 @@ class Login extends Component {
   }
 }
 
-export default Login;
+function mapStateToProps(state) {
+  console.log("token", state);
+  return {
+    token: state
+  };
+}
+
+const mapDispatchToProps = {
+  getUserToken
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Register from "./components/Register";
+import { connect } from "react-redux";
+
 import "./App.css";
 
 const App = () => {
@@ -21,4 +23,11 @@ const App = () => {
   );
 };
 
-export default App;
+function mapStateToProps(state) {
+  console.log("state", state);
+  return {
+    count: state
+  };
+}
+
+export default connect(mapStateToProps)(App);
