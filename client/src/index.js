@@ -3,21 +3,18 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
+import rootReducer from "./redux/reducers/root_reducer";
+import { loadState, saveState } from "./localStorage";
 import "./index.css";
 
-const initialState = {
-  token: ""
-};
+const persistedState = loadState();
+const devtool =
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+const store = createStore(rootReducer, persistedState, devtool);
 
-function reducer(state = initialState, action) {
-  console.log("reducer", state, action);
-  return state;
-}
-
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+store.subscribe(() => {
+  saveState(store.getState());
+});
 
 ReactDOM.render(
   <Provider store={store}>

@@ -4,13 +4,14 @@ const DEFAULT = {
   token: ""
 };
 
-export default function(state = DEFAULT, action) {
+export default function userReducer(state = DEFAULT, action) {
   switch (action.type) {
     case GET_USER_TOKEN:
       return {
         ...state,
-        token: action.payload
+        token: action.token
       };
+    default:
+      return state;
   }
-  return state;
 }

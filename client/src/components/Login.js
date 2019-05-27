@@ -29,10 +29,8 @@ class Login extends Component {
     axios
       .post("http://localhost:8012/login", user)
       .then(response => {
-        this.props.getUserToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("name", response.data.name);
-        //this.props.history.push("/");
+        this.props.availableToken(response.data.token);
+        this.props.history.push("/");
       })
       .catch(error => {
         this.setState({ userMsg: error.response.data.message });
@@ -47,7 +45,6 @@ class Login extends Component {
 
   render() {
     const { email, password, userMsg } = this.state;
-    console.log(this.props.token);
     return (
       <div>
         <form onSubmit={this.handleSubmit} style={styles.form}>
@@ -78,15 +75,19 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("token", state);
+  console.log("state login.js", state);
   return {
-    token: state
+    token: state.user.token
   };
 }
 
-const mapDispatchToProps = {
-  getUserToken
-};
+function mapDispatchToProps(dispatch) {
+  return {
+    availableToken(token) {
+      dispatch(getUserToken(token));
+    }
+  };
+}
 
 export default connect(
   mapStateToProps,
