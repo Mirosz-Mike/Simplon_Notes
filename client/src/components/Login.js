@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import { getUserToken } from "../redux/actions/user_action";
+import { getUserToken, getUserName } from "../redux/actions/user_action";
 
 const styles = {
   form: {
@@ -30,6 +30,7 @@ class Login extends Component {
       .post("http://localhost:8012/login", user)
       .then(response => {
         this.props.availableToken(response.data.token);
+        this.props.availableName(response.data.name);
         this.props.history.push("/");
       })
       .catch(error => {
@@ -75,9 +76,9 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("state login.js", state);
+  console.log("state login.js", state.token);
   return {
-    token: state.user.token
+    token: state
   };
 }
 
@@ -85,6 +86,9 @@ function mapDispatchToProps(dispatch) {
   return {
     availableToken(token) {
       dispatch(getUserToken(token));
+    },
+    availableName(name) {
+      dispatch(getUserName(name));
     }
   };
 }

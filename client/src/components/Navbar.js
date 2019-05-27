@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 const styles = {
   navbar: {
@@ -26,31 +27,53 @@ const styles = {
   }
 };
 
-const getName = localStorage.getItem("name");
-const getJwt = localStorage.getItem("token");
-
-const Navbar = () => {
-  return (
-    <div style={styles.navbar}>
-      <a href="/" style={styles.link}>
-        Accueil
-      </a>
-      {!!getName ? (
-        <h4 style={styles.white}>{`Bienvenue ${getName}`}</h4>
-      ) : (
-        <a href="/register" style={styles.link}>
-          Inscription
+class Navbar extends Component {
+  render() {
+    return (
+      <div style={styles.navbar}>
+        <a href="/" style={styles.link}>
+          Accueil
         </a>
-      )}
-      {!!getJwt ? (
-        <button style={styles.button}>Deconnexion</button>
-      ) : (
-        <a href="/login" style={styles.link}>
-          Connexion
-        </a>
-      )}
-    </div>
-  );
-};
+        {!!this.props.name ? (
+          <h4 style={styles.white}>{`Bienvenue ${this.props.name}`}</h4>
+        ) : (
+          <a href="/register" style={styles.link}>
+            Inscription
+          </a>
+        )}
+        {!!this.props.token ? (
+          <button
+            style={styles.button}
+            onClick={() => this.props.remove(this.props.token)}
+          >
+            Deconnexion
+          </button>
+        ) : (
+          <a href="/login" style={styles.link}>
+            Connexion
+          </a>
+        )}
+      </div>
+    );
+  }
+}
 
-export default Navbar;
+function mapStateToProps(state) {
+  return {
+    token: state.user.token,
+    name: state.user.userName
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    remove: removeToken => {
+      dispatch({ type: "REMOVE_USER_TOKEN", token: removeToken });
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navbar);

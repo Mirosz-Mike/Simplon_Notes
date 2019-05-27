@@ -4,18 +4,15 @@ import { connect } from "react-redux";
 class Home extends Component {
   state = {};
 
-  componentDidMount() {
-    console.log("props");
-  }
   render() {
     return <div>Home</div>;
   }
 }
 
 function mapStateToProps(state) {
-  console.log("state", state.user.token);
   return {
-    token: state.user.token
+    token: state.user.token,
+    name: state.user.userName
   };
 }
 
