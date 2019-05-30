@@ -1,6 +1,7 @@
 export const GET_USER_TOKEN = "GET_USER_TOKEN";
 export const REMOVE_USER_TOKEN = "REMOVE_USER_TOKEN";
 export const GET_USER_NAME = "GET_USER_NAME";
+export const GET_USER_ID = "GET_USER_ID";
 
 export function getUserToken(token) {
   return {
@@ -13,5 +14,12 @@ export function getUserName(name) {
   return {
     type: GET_USER_NAME,
     payload: name
+  };
+}
+
+export function getUserId(userId) {
+  return {
+    type: GET_USER_ID,
+    payload: userId
   };
 }

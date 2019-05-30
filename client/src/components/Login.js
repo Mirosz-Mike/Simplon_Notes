@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import { getUserToken, getUserName } from "../redux/actions/user_action";
+import {
+  getUserToken,
+  getUserName,
+  getUserId
+} from "../redux/actions/user_action";
 
 const styles = {
   form: {
@@ -31,6 +35,7 @@ class Login extends Component {
       .then(response => {
         this.props.availableToken(response.data.token);
         this.props.availableName(response.data.name);
+        this.props.availableUserId(response.data.userId);
         this.props.history.push("/");
       })
       .catch(error => {
@@ -76,7 +81,7 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("state login.js", state.token);
+  console.log("state login.js", state);
   return {
     token: state
   };
@@ -89,6 +94,9 @@ function mapDispatchToProps(dispatch) {
     },
     availableName(name) {
       dispatch(getUserName(name));
+    },
+    availableUserId(userId) {
+      dispatch(getUserId(userId));
     }
   };
 }

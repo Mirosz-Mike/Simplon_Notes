@@ -31,6 +31,24 @@ connection.connect(err => {
     if (err) throw err;
     console.log("table users created");
   });
+
+  const createTableArticles = `CREATE TABLE IF NOT EXISTS simplon_notes.articles (
+		id int NOT NULL AUTO_INCREMENT,
+		user_id int NOT NULL,
+		title varchar(255) NOT NULL,
+    subtitle varchar(255) NOT NULL,
+    image text NOT NULL,
+    body text NOT NULL,
+		create_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;`;
+
+  connection.query(createTableArticles, (err, results) => {
+    if (err) throw err;
+    console.log("tables articles created");
+  });
 });
 
 module.exports = connection;

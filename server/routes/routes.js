@@ -89,7 +89,7 @@ app.post("/login", (req, res) => {
               res.status(400).send({ message: "Password incorrect" });
             } else {
               const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
-                expiresIn: "1h"
+                expiresIn: "2m"
               });
               return res
                 .status(200)
@@ -107,6 +107,46 @@ app.post("/login", (req, res) => {
       }
     }
   );
+});
+
+app.post("/articles", (req, res) => {
+  const userToken = req.headers["x-auth-token"] || req.query.token;
+  jwt.verify(userToken, process.env.SECRET_TOKEN_JWT, async (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Veuillez vous reconnecter" });
+    } else {
+      const { user_id, title, subtitle, image, body } = req.body;
+      await connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
+        ${user_id}, 
+        "${title}",
+        "${subtitle}",
+        "${image}",
+        "${body}"
+        )`);
+
+      return res
+        .status(200)
+        .send({ message: "Article enregister avec succès" });
+    }
+  });
+});
+
+app.get("/articles", (req, res) => {
+  const userToken = req.headers["x-auth-token"] || req.query.token;
+  jwt.verify(userToken, process.env.SECRET_TOKEN_JWT, async (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Veuillez vous reconnecter" });
+    } else {
+      await connection.query("SELECT * FROM simplon_notes.articles", function(
+        err,
+        result
+      ) {
+        if (err) throw err;
+        console.log(result);
+        return res.status(200).send(result);
+      });
+    }
+  });
 });
 
 module.exports = app;

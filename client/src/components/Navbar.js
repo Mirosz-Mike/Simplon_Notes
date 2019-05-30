@@ -42,6 +42,13 @@ class Navbar extends Component {
           </a>
         )}
         {!!this.props.token ? (
+          <a href="/article" style={styles.button}>
+            Mes Articles
+          </a>
+        ) : (
+          ""
+        )}
+        {!!this.props.token ? (
           <button
             style={styles.button}
             onClick={() => this.props.remove(this.props.token)}
