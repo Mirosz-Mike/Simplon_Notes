@@ -1,48 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
-const styles = {
-  navbar: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "black",
-    height: "40px"
-  },
-  link: {
-    textDecoration: "none",
-    color: "white"
-  },
-  button: {
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-    backgroundColor: "black",
-    fontSize: 15,
-    textDecoration: "none",
-    outline: "none"
-  },
-  white: {
-    color: "white"
-  }
-};
+import "./Navbar.css";
 
 class Navbar extends Component {
   render() {
     return (
-      <div style={styles.navbar}>
-        <a href="/" style={styles.link}>
+      <div className="navbar">
+        <a href="/" className="link">
           Accueil
         </a>
         {!!this.props.name ? (
-          <h4 style={styles.white}>{`Bienvenue ${this.props.name}`}</h4>
+          <h4 className="white">{`Bienvenue ${this.props.name}`}</h4>
         ) : (
-          <a href="/register" style={styles.link}>
+          <a href="/register" className="link">
             Inscription
           </a>
         )}
         {!!this.props.token ? (
-          <a href="/article" style={styles.button}>
+          <a href="/article" className="button">
             Mes Articles
           </a>
         ) : (
@@ -50,13 +25,13 @@ class Navbar extends Component {
         )}
         {!!this.props.token ? (
           <button
-            style={styles.button}
+            className="button"
             onClick={() => this.props.remove(this.props.token)}
           >
             Deconnexion
           </button>
         ) : (
-          <a href="/login" style={styles.link}>
+          <a href="/login" className="link">
             Connexion
           </a>
         )}

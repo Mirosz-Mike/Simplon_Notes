@@ -29,7 +29,7 @@ app.post("/register", async (req, res) => {
             res.status(500).send(error.message);
           }
           if (results.length > 0) {
-            res.status(403).send({ message: "votre email existe deja" });
+            res.status(403).send({ message: "Votre email existe deja" });
           } else {
             if (users.password) {
               users = { ...users, password: hash };
@@ -63,7 +63,7 @@ app.post("/register", async (req, res) => {
         }
       );
     } else {
-      res.status(400).send({ message: "mail non valide" });
+      res.status(400).send({ message: "Mail non valide" });
     }
   } else {
     res.status(400).send({ message: "Veuillez remplir tout les champs" });
@@ -142,7 +142,6 @@ app.get("/articles", (req, res) => {
         result
       ) {
         if (err) throw err;
-        console.log(result);
         return res.status(200).send(result);
       });
     }

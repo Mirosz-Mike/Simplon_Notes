@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-
-const styles = {
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  }
-};
+import "./Article.css";
 
 class Article extends Component {
   state = {
@@ -22,6 +15,7 @@ class Article extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    const { title, body } = this.state;
 
     const article = {
       user_id: this.props.userId,
@@ -31,19 +25,21 @@ class Article extends Component {
       body: this.state.body
     };
 
-    axios
-      .post("http://localhost:8012/articles", article, {
-        headers: { "x-auth-token": this.props.token }
-      })
-      .then(response => {
-        this.setState({ success: response.data.message });
-        setTimeout(() => {
-          this.props.history.push("/");
-        }, 1000);
-      })
-      .catch(error => {
-        this.setState({ messageError: error.response.data.message });
-      });
+    if (title && body) {
+      axios
+        .post("http://localhost:8012/articles", article, {
+          headers: { "x-auth-token": this.props.token }
+        })
+        .then(response => {
+          this.setState({ success: response.data.message });
+          setTimeout(() => {
+            this.props.history.push("/");
+          }, 1000);
+        })
+        .catch(error => {
+          this.setState({ messageError: error.response.data.message });
+        });
+    }
   };
 
   handleChange = event => {
@@ -53,9 +49,8 @@ class Article extends Component {
   };
 
   render() {
-    console.log(this.state.body);
     return (
-      <div style={styles.form}>
+      <div className="form">
         <p>{this.state.messageError}</p>
         <p>{this.state.success}</p>
         <label>Titre</label>

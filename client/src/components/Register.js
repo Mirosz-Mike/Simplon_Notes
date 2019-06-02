@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-
-const styles = {
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  }
-};
+import "./Register.css";
 
 class Register extends Component {
   state = {
@@ -50,7 +43,7 @@ class Register extends Component {
 
     return (
       <div>
-        <form onSubmit={this.handleSubmit} style={styles.form}>
+        <form onSubmit={this.handleSubmit} className="form">
           {userMsg}
           <label>Votre prénom : </label>
           <input

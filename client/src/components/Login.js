@@ -6,14 +6,7 @@ import {
   getUserName,
   getUserId
 } from "../redux/actions/user_action";
-
-const styles = {
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  }
-};
+import "./Login.css";
 
 class Login extends Component {
   state = {
@@ -53,7 +46,7 @@ class Login extends Component {
     const { email, password, userMsg } = this.state;
     return (
       <div>
-        <form onSubmit={this.handleSubmit} style={styles.form}>
+        <form onSubmit={this.handleSubmit} className="form">
           {userMsg}
           <label>Votre email : </label>
           <input
