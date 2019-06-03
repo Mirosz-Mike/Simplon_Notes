@@ -131,6 +131,38 @@ app.post("/articles", (req, res) => {
   });
 });
 
+app.put("/articles", (req, res) => {
+  const userToken = req.headers["x-auth-token"] || req.query.token;
+  jwt.verify(userToken, process.env.SECRET_TOKEN_JWT, async (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Veuillez vous reconnecter" });
+    } else {
+      const today = new Date();
+      const params = [
+        req.body.title,
+        req.body.subtitle,
+        req.body.image,
+        req.body.body,
+        today,
+        req.body.id
+      ];
+      await connection.query(
+        "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, image = ?, body = ?, updated_at = ? WHERE id = ?",
+        params,
+        function(err, result) {
+          if (err) throw err;
+          else {
+            return res.status(200).send({
+              message: "Votre article a bien été modifié",
+              data: result
+            });
+          }
+        }
+      );
+    }
+  });
+});
+
 app.get("/articles", (req, res) => {
   const userToken = req.headers["x-auth-token"] || req.query.token;
   jwt.verify(userToken, process.env.SECRET_TOKEN_JWT, async (err, decoded) => {
@@ -144,6 +176,27 @@ app.get("/articles", (req, res) => {
         if (err) throw err;
         return res.status(200).send(result);
       });
+    }
+  });
+});
+
+app.delete("/articles", (req, res) => {
+  const userToken = req.headers["x-auth-token"] || req.query.token;
+  jwt.verify(userToken, process.env.SECRET_TOKEN_JWT, async (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Veuillez vous reconnecter" });
+    } else {
+      await connection.query(
+        "DELETE FROM simplon_notes.articles WHERE id = ?",
+        req.body.id,
+        function(err, result) {
+          if (err) throw err;
+          return res.status(200).send({
+            message: "Votre article a bien été supprimé",
+            data: result
+          });
+        }
+      );
     }
   });
 });
