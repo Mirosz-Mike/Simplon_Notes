@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import "./Navbar.css";
 
 class Navbar extends Component {
+  disconnect = () => {
+    this.props.remove(this.props.token);
+    this.props.history.push("/");
+  };
+
   render() {
     return (
       <div className="navbar">
@@ -24,10 +30,7 @@ class Navbar extends Component {
           ""
         )}
         {!!this.props.token ? (
-          <button
-            className="button"
-            onClick={() => this.props.remove(this.props.token)}
-          >
+          <button className="button" onClick={this.disconnect}>
             Deconnexion
           </button>
         ) : (
@@ -55,7 +58,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Navbar)
+);

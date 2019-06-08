@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./Register.css";
+import { connect } from "react-redux";
+import {
+  getUserToken,
+  getUserName,
+  getUserId
+} from "../../redux/actions/user_action";
+import "./Login.css";
 
-class Register extends Component {
+class Login extends Component {
   state = {
-    name: "",
     email: "",
     password: "",
     userMsg: ""
@@ -14,18 +19,17 @@ class Register extends Component {
     event.preventDefault();
 
     const user = {
-      name: this.state.name,
       email: this.state.email,
       password: this.state.password
     };
 
     axios
-      .post("http://localhost:8012/register", user)
+      .post("http://localhost:8012/auth/login", user)
       .then(response => {
-        this.setState({ userMsg: response.data.message });
-        setTimeout(() => {
-          this.props.history.push("/login");
-        }, 1000);
+        this.props.availableToken(response.data.token);
+        this.props.availableName(response.data.name);
+        this.props.availableUserId(response.data.userId);
+        this.props.history.push("/");
       })
       .catch(error => {
         this.setState({ userMsg: error.response.data.message });
@@ -39,21 +43,11 @@ class Register extends Component {
   };
 
   render() {
-    const { name, email, password, userMsg } = this.state;
-
+    const { email, password, userMsg } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit} className="form">
           {userMsg}
-          <label>Votre prénom : </label>
-          <input
-            onChange={this.handleChange}
-            value={name}
-            name="name"
-            type="text"
-            placeholder="enter your name"
-            required
-          />
           <label>Votre email : </label>
           <input
             onChange={this.handleChange}
@@ -72,11 +66,34 @@ class Register extends Component {
             placeholder="enter your password"
             required
           />
-          <button onSubmit={this.handleSubmit}>M'inscrire</button>
+          <button onSubmit={this.handleSubmit}>Connexion</button>
         </form>
       </div>
     );
   }
 }
 
-export default Register;
+function mapStateToProps(state) {
+  return {
+    token: state
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    availableToken(token) {
+      dispatch(getUserToken(token));
+    },
+    availableName(name) {
+      dispatch(getUserName(name));
+    },
+    availableUserId(userId) {
+      dispatch(getUserId(userId));
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

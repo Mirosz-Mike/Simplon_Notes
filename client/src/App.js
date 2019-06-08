@@ -1,18 +1,18 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import Register from "./components/Register";
-import Article from "./components/Article";
+import Navbar from "./components/navbar/Navbar";
+import Login from "./components/login/Login";
+import Home from "./components/home/Home";
+import Register from "./components/register/Register";
+import Article from "./components/article/Article";
 
 import "./App.css";
 
 const App = () => {
   return (
     <div>
-      <Navbar />
       <Router>
+        <Navbar />
         <div className="App">
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
