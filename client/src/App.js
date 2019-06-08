@@ -5,6 +5,7 @@ import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import Register from "./components/register/Register";
 import Article from "./components/article/Article";
+import CreateArticle from "./components/addArticle/CreateArticle";
 
 import "./App.css";
 
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/article" component={Article} />
+          <Route path="/addArticle" component={CreateArticle} />
         </div>
       </Router>
     </div>

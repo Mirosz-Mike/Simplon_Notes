@@ -1,45 +1,56 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
+
 import "./Article.css";
 
 class Article extends Component {
   state = {
-    title: "",
-    subTitle: "",
-    image: "",
-    body: "",
-    success: "",
-    messageError: ""
+    dataArticles: [],
+    message: ""
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    const { title, body } = this.state;
+  componentDidMount() {
+    this.fetchArticles();
+  }
 
-    const article = {
-      user_id: this.props.userId,
-      title: this.state.title,
-      subtitle: this.state.subTitle,
-      image: this.state.image,
-      body: this.state.body
-    };
+  fetchArticles() {
+    axios
+      .get("http://localhost:8012/articles", {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        this.setState({ dataArticles: response.data });
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data.message });
+        this.props.remove(this.props.token);
+        this.props.history.push("/");
+      });
+  }
 
-    if (title && body) {
-      axios
-        .post("http://localhost:8012/articles", article, {
-          headers: { "x-auth-token": this.props.token }
-        })
-        .then(response => {
-          this.setState({ success: response.data.message });
-          setTimeout(() => {
-            this.props.history.push("/");
-          }, 1000);
-        })
-        .catch(error => {
-          this.setState({ messageError: error.response.data.message });
+  deleteArticleById = id => {
+    axios
+      .delete(`http://localhost:8012/articles/${id}`, {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        this.setState(prevState => {
+          return {
+            dataArticles: prevState.dataArticles.filter(
+              articleId => articleId.id !== id
+            )
+          };
         });
-    }
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data.message });
+        console.log(error.response);
+      });
+  };
+
+  redirectToAddArticle = () => {
+    return this.props.history.push("/addArticle");
   };
 
   handleChange = event => {
@@ -48,45 +59,50 @@ class Article extends Component {
     });
   };
 
+  // @Todo Ajouter barre de recherche
+  // @Todo Ajouter Multer
+  // @Todo Ajouter authentification via gmail
+
   render() {
+    const { dataArticles } = this.state;
     return (
-      <div className="form">
-        <p>{this.state.messageError}</p>
-        <p>{this.state.success}</p>
-        <label>Titre</label>
-        <input
-          onChange={this.handleChange}
-          name="title"
-          type="text"
-          placeholder="Title"
-          required
-        />
-        <label>Sous-titre</label>
-        <input
-          onChange={this.handleChange}
-          name="subTitle"
-          type="text"
-          placeholder="subTitle"
-          required
-        />
-        <label>Image</label>
-        <input
-          onChange={this.handleChange}
-          name="image"
-          type="text"
-          placeholder="image"
-          required
-        />
-        <label>Corps</label>
-        <textarea
-          name="body"
-          rows="5"
-          cols="33"
-          type="text"
-          required
-          onChange={this.handleChange}
-        />
-        <button onClick={this.handleSubmit}>Valider mon article</button>
+      <div>
+        <h1>{this.state.message}</h1>
+        <div className="rightButton">
+          <button onClick={() => this.redirectToAddArticle()}>
+            Ajouter un article
+          </button>
+        </div>
+        <div className="wrapper">
+          {dataArticles.map(articleObj => {
+            return (
+              <div className="card" key={articleObj.id}>
+                <img
+                  src="https://i.pinimg.com/originals/62/64/21/62642184fd45b733c2c77fa6fa13caf5.jpg"
+                  alt="Avatar"
+                  style={{ width: "100%" }}
+                />
+                <div className="container">
+                  <h4>{articleObj.title}</h4>
+                  <h6>{articleObj.subtitle}</h6>
+                  {this.props.userId === articleObj.user_id ? (
+                    <button
+                      onClick={() => this.deleteArticleById(articleObj.id)}
+                    >
+                      supprimer
+                    </button>
+                  ) : null}
+
+                  {this.props.userId === articleObj.user_id ? (
+                    <button>Modifier</button>
+                  ) : null}
+
+                  <button>Voir plus</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -99,4 +115,15 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Article);
+function mapDispatchToProps(dispatch) {
+  return {
+    remove: removeToken => {
+      dispatch({ type: "REMOVE_USER_TOKEN", token: removeToken });
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Article);

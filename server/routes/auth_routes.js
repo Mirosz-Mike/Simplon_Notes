@@ -8,7 +8,6 @@ route.post("/register", async (req, res) => {
   const validEmail = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
   const { email, password, name } = req.body;
 
-  // hasher les mots de passe
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
@@ -30,7 +29,6 @@ route.post("/register", async (req, res) => {
             res.status(403).send({ message: "Votre email existe deja" });
           } else {
             if (users.password) {
-              // users = { ...users, password: hash };
               connection.query(
                 "INSERT INTO simplon_notes.users SET ?",
                 users,
@@ -50,11 +48,11 @@ route.post("/register", async (req, res) => {
             } else {
               res.status(400).send({
                 password: `Votre mot de passe doit contenir au moins
-                                                      - 1 caractère alphabétique minuscule.
-                                                      - 1 caractère alphabétique majuscule.
-                                                      - 1 caractère numérique.
-                                                      - 1 caractère spécial.
-                                                      - Votre mot de passe doit comporter 8 au minimum caractères`
+                  - 1 caractère alphabétique minuscule.
+                  - 1 caractère alphabétique majuscule.
+                  - 1 caractère numérique.
+                  - 1 caractère spécial.
+                  - Votre mot de passe doit comporter 8 au minimum caractères`
               });
             }
           }
