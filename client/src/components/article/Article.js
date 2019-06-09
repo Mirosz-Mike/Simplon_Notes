@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { removeUserToken, editArticle } from "../../redux/actions/user_action";
 import axios from "axios";
 
 import "./Article.css";
@@ -7,7 +8,8 @@ import "./Article.css";
 class Article extends Component {
   state = {
     dataArticles: [],
-    message: ""
+    message: "",
+    search: ""
   };
 
   componentDidMount() {
@@ -24,7 +26,7 @@ class Article extends Component {
       })
       .catch(error => {
         this.setState({ message: error.response.data.message });
-        this.props.remove(this.props.token);
+        this.props.removeToken(this.props.token);
         this.props.history.push("/");
       });
   }
@@ -50,7 +52,16 @@ class Article extends Component {
   };
 
   redirectToAddArticle = () => {
-    return this.props.history.push("/addArticle");
+    this.props.history.push("/addArticle");
+  };
+
+  redirectToEditArticle = id => {
+    const articleById = this.state.dataArticles.find(articleId => {
+      return articleId.id === id;
+    });
+
+    this.props.editArticle(articleById);
+    this.props.history.push("/editArticle");
   };
 
   handleChange = event => {
@@ -58,13 +69,20 @@ class Article extends Component {
       [event.target.name]: event.target.value
     });
   };
-
-  // @Todo Ajouter barre de recherche
   // @Todo Ajouter Multer
   // @Todo Ajouter authentification via gmail
+  // @Todo installer Sass
+  // @Todo Ajout modal pour tous les messages
+  // @Todo proteger routes front
+  // @Todo au clique de voir l'article afficher le contenu de cette article
+  // @Todo ajout d'un loader
+  // @Todo faire une maquette + charte graphique
 
   render() {
-    const { dataArticles } = this.state;
+    const { dataArticles, search } = this.state;
+    const filteredArticles = dataArticles.filter(article => {
+      return article.title.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+    });
     return (
       <div>
         <h1>{this.state.message}</h1>
@@ -73,8 +91,15 @@ class Article extends Component {
             Ajouter un article
           </button>
         </div>
+        <input
+          type="text"
+          name="search"
+          placeholder="Votre recherche"
+          value={search}
+          onChange={this.handleChange}
+        />
         <div className="wrapper">
-          {dataArticles.map(articleObj => {
+          {filteredArticles.map(articleObj => {
             return (
               <div className="card" key={articleObj.id}>
                 <img
@@ -94,10 +119,14 @@ class Article extends Component {
                   ) : null}
 
                   {this.props.userId === articleObj.user_id ? (
-                    <button>Modifier</button>
+                    <button
+                      onClick={() => this.redirectToEditArticle(articleObj.id)}
+                    >
+                      Modifier
+                    </button>
                   ) : null}
 
-                  <button>Voir plus</button>
+                  <button>Voir l'article</button>
                 </div>
               </div>
             );
@@ -117,8 +146,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    remove: removeToken => {
-      dispatch({ type: "REMOVE_USER_TOKEN", token: removeToken });
+    removeToken(removeToken) {
+      dispatch(removeUserToken(removeToken));
+    },
+    editArticle(article) {
+      dispatch(editArticle(article));
     }
   };
 }

@@ -13,4 +13,4 @@ Projet titre pro de Niveau II (Concepteur développeur d'applications)
 
 - Clone le projet & l'extraire
 - Ouvrir le dossier client avec le terminal npm i && npm start
-- Ouvrir un deuxieme terminal, pour ouvrir le dossier server npm i && npm start
+- Ouvrir un deuxieme terminal, puis ouvrir le dossier server npm i && npm start
