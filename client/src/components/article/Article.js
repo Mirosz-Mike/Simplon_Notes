@@ -69,14 +69,7 @@ class Article extends Component {
       [event.target.name]: event.target.value
     });
   };
-  // @Todo Ajouter Multer
-  // @Todo Ajouter authentification via gmail
-  // @Todo installer Sass
-  // @Todo Ajout modal pour tous les messages
-  // @Todo proteger routes front
-  // @Todo au clique de voir l'article afficher le contenu de cette article
-  // @Todo ajout d'un loader
-  // @Todo faire une maquette + charte graphique
+  // @Todo Voir les issues
 
   render() {
     const { dataArticles, search } = this.state;
