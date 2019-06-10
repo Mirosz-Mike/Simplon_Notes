@@ -43,3 +43,13 @@ input {
   justify-content: flex-end;
   width: 90%;
 }
+
+.centerInput {
+  display: flex;
+  justify-content: center;
+}
+
+.centerButton {
+  display: flex;
+  flex-direction: column;
+}

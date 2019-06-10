@@ -3,13 +3,15 @@ import { connect } from "react-redux";
 import { removeUserToken, editArticle } from "../../redux/actions/user_action";
 import axios from "axios";
 
+import Modal from "../../shared/Modal";
 import "./Article.css";
 
 class Article extends Component {
   state = {
     dataArticles: [],
     message: "",
-    search: ""
+    search: "",
+    show: false
   };
 
   componentDidMount() {
@@ -39,11 +41,17 @@ class Article extends Component {
       .then(response => {
         this.setState(prevState => {
           return {
+            show: true,
+            message: response.data.message,
             dataArticles: prevState.dataArticles.filter(
               articleId => articleId.id !== id
             )
           };
         });
+
+        setTimeout(() => {
+          this.setState({ show: false });
+        }, 1000);
       })
       .catch(error => {
         this.setState({ message: error.response.data.message });
@@ -69,28 +77,28 @@ class Article extends Component {
       [event.target.name]: event.target.value
     });
   };
-  // @Todo Voir les issues
 
   render() {
     const { dataArticles, search } = this.state;
     const filteredArticles = dataArticles.filter(article => {
-      return article.title.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+      return article.title.toLowerCase().includes(search.toLowerCase());
     });
     return (
       <div>
-        <h1>{this.state.message}</h1>
         <div className="rightButton">
           <button onClick={() => this.redirectToAddArticle()}>
             Ajouter un article
           </button>
         </div>
-        <input
-          type="text"
-          name="search"
-          placeholder="Votre recherche"
-          value={search}
-          onChange={this.handleChange}
-        />
+        <div className="centerInput">
+          <input
+            type="text"
+            name="search"
+            placeholder="Votre recherche"
+            value={search}
+            onChange={this.handleChange}
+          />
+        </div>
         <div className="wrapper">
           {filteredArticles.map(articleObj => {
             return (
@@ -104,27 +112,32 @@ class Article extends Component {
                   <h4>{articleObj.title}</h4>
                   <h6>{articleObj.subtitle}</h6>
                   {this.props.userId === articleObj.user_id ? (
-                    <button
-                      onClick={() => this.deleteArticleById(articleObj.id)}
-                    >
-                      supprimer
-                    </button>
+                    <div className="centerButton">
+                      <button
+                        onClick={() => this.deleteArticleById(articleObj.id)}
+                      >
+                        supprimer
+                      </button>
+                      <button
+                        onClick={() =>
+                          this.redirectToEditArticle(articleObj.id)
+                        }
+                      >
+                        Modifier
+                      </button>
+                    </div>
                   ) : null}
-
-                  {this.props.userId === articleObj.user_id ? (
-                    <button
-                      onClick={() => this.redirectToEditArticle(articleObj.id)}
-                    >
-                      Modifier
-                    </button>
-                  ) : null}
-
                   <button>Voir l'article</button>
                 </div>
               </div>
             );
           })}
         </div>
+        {this.state.show && (
+          <Modal show={this.state.show} handleClose={this.hideModal}>
+            {this.state.message}
+          </Modal>
+        )}
       </div>
     );
   }
