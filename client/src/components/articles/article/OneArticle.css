@@ -1,0 +1,13 @@
+.centerArticle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 88vh;
+}
+
+.centerArticle div {
+  background-color: white;
+  padding: 50px;
+  border-radius: 5%;
+  width: 13%;
+}

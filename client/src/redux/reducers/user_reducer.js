@@ -3,7 +3,8 @@ import {
   REMOVE_USER_TOKEN,
   GET_USER_NAME,
   GET_USER_ID,
-  EDIT_ARTICLE
+  EDIT_ARTICLE,
+  GET_ONE_ARTICLE
 } from "../actions/user_action";
 
 const DEFAULT = {
@@ -38,6 +39,12 @@ export default function userReducer(state = DEFAULT, action) {
       return {
         ...state,
         editArticle: action.payload
+      };
+    }
+    case GET_ONE_ARTICLE: {
+      return {
+        ...state,
+        oneArticle: action.payload
       };
     }
     default:

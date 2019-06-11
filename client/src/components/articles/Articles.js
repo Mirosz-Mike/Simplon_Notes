@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { removeUserToken, editArticle } from "../../redux/actions/user_action";
+import {
+  removeUserToken,
+  editArticle,
+  oneArticle
+} from "../../redux/actions/user_action";
 import axios from "axios";
 
 import Modal from "../../shared/Modal";
-import "./Article.css";
+import "./Articles.css";
 
 class Article extends Component {
   state = {
@@ -72,6 +76,29 @@ class Article extends Component {
     this.props.history.push("/editArticle");
   };
 
+  redirectToSeeArticle = id => {
+    const articleById = this.state.dataArticles.find(articleId => {
+      return articleId.id === id;
+    });
+
+    this.props.oneArticle(articleById);
+    this.props.history.push("/oneArticle");
+  };
+
+  showButtonEditAndDelete = (userId, id) => {
+    if (this.props.userId === userId) {
+      return (
+        <div className="centerButton">
+          <button onClick={() => this.deleteArticleById(id)}>supprimer</button>
+          <button onClick={() => this.redirectToEditArticle(id)}>
+            Modifier
+          </button>
+        </div>
+      );
+    }
+    return null;
+  };
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -80,7 +107,7 @@ class Article extends Component {
 
   render() {
     const { dataArticles, search } = this.state;
-    const filteredArticles = dataArticles.filter(article => {
+    const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
     return (
@@ -100,7 +127,7 @@ class Article extends Component {
           />
         </div>
         <div className="wrapper">
-          {filteredArticles.map(articleObj => {
+          {filteredArticlesByTitle.map(articleObj => {
             return (
               <div className="card" key={articleObj.id}>
                 <img
@@ -111,23 +138,15 @@ class Article extends Component {
                 <div className="container">
                   <h4>{articleObj.title}</h4>
                   <h6>{articleObj.subtitle}</h6>
-                  {this.props.userId === articleObj.user_id ? (
-                    <div className="centerButton">
-                      <button
-                        onClick={() => this.deleteArticleById(articleObj.id)}
-                      >
-                        supprimer
-                      </button>
-                      <button
-                        onClick={() =>
-                          this.redirectToEditArticle(articleObj.id)
-                        }
-                      >
-                        Modifier
-                      </button>
-                    </div>
-                  ) : null}
-                  <button>Voir l'article</button>
+                  {this.showButtonEditAndDelete(
+                    articleObj.user_id,
+                    articleObj.id
+                  )}
+                  <button
+                    onClick={() => this.redirectToSeeArticle(articleObj.id)}
+                  >
+                    Voir l'article
+                  </button>
                 </div>
               </div>
             );
@@ -157,6 +176,9 @@ function mapDispatchToProps(dispatch) {
     },
     editArticle(article) {
       dispatch(editArticle(article));
+    },
+    oneArticle(getOneArticle) {
+      dispatch(oneArticle(getOneArticle));
     }
   };
 }

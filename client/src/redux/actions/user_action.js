@@ -3,6 +3,7 @@ export const REMOVE_USER_TOKEN = "REMOVE_USER_TOKEN";
 export const GET_USER_NAME = "GET_USER_NAME";
 export const GET_USER_ID = "GET_USER_ID";
 export const EDIT_ARTICLE = "EDIT_ARTICLE";
+export const GET_ONE_ARTICLE = "GET_ONE_ARTICLE";
 
 export function getUserToken(token) {
   return {
@@ -36,5 +37,12 @@ export function editArticle(article) {
   return {
     type: EDIT_ARTICLE,
     payload: article
+  };
+}
+
+export function oneArticle(oneArticle) {
+  return {
+    type: GET_ONE_ARTICLE,
+    payload: oneArticle
   };
 }
