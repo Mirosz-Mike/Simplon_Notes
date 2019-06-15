@@ -6,7 +6,6 @@ import {
   getUserName,
   getUserId
 } from "../../redux/actions/user_action";
-import "./Login.css";
 
 class Login extends Component {
   state = {
@@ -45,29 +44,35 @@ class Login extends Component {
   render() {
     const { email, password, userMsg } = this.state;
     return (
-      <div>
-        <form onSubmit={this.handleSubmit} className="form">
+      <div className="field container">
+        <div className="Login_form">
           {userMsg}
-          <label>Votre email : </label>
-          <input
-            onChange={this.handleChange}
-            value={email}
-            type="text"
-            name="email"
-            placeholder="enter your email"
-            required
-          />
-          <label>Votre mot de passe : </label>
-          <input
-            onChange={this.handleChange}
-            value={password}
-            name="password"
-            type="password"
-            placeholder="enter your password"
-            required
-          />
-          <button onSubmit={this.handleSubmit}>Connexion</button>
-        </form>
+          <form onSubmit={this.handleSubmit} className="">
+            <label className="label has-text-black">Votre email : </label>
+            <input
+              className="input is-info"
+              onChange={this.handleChange}
+              value={email}
+              type="text"
+              name="email"
+              placeholder="Votre email"
+              required
+            />
+            <label className="label has-text-black">Votre mot de passe :</label>
+            <input
+              className="input is-info"
+              onChange={this.handleChange}
+              value={password}
+              name="password"
+              type="password"
+              placeholder="Votre mot de passe"
+              required
+            />
+            <button className="button is-link" onSubmit={this.handleSubmit}>
+              Connexion
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

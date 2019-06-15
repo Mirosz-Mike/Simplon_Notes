@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-import Modal from "../../shared/Modal";
+
 import "./EditArticle.css";
 
 class EditArticle extends Component {
@@ -101,11 +101,6 @@ class EditArticle extends Component {
           onChange={this.handleChange}
         />
         <button onClick={this.handleSubmit}>Modifier mon article</button>
-        {this.state.show && (
-          <Modal show={this.state.show} handleClose={this.hideModal}>
-            {this.state.success}
-          </Modal>
-        )}
       </div>
     );
   }

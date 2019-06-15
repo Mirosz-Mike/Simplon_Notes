@@ -7,7 +7,6 @@ import {
 } from "../../redux/actions/user_action";
 import axios from "axios";
 
-import Modal from "../../shared/Modal";
 import "./Articles.css";
 
 class Article extends Component {
@@ -152,11 +151,6 @@ class Article extends Component {
             );
           })}
         </div>
-        {this.state.show && (
-          <Modal show={this.state.show} handleClose={this.hideModal}>
-            {this.state.message}
-          </Modal>
-        )}
       </div>
     );
   }

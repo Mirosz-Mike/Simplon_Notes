@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import "./Navbar.css";
 
 class Navbar extends Component {
   disconnect = () => {
@@ -9,36 +8,59 @@ class Navbar extends Component {
     this.props.history.push("/");
   };
 
+  showNavIsLoggin = () => {
+    if (!!this.props.token) {
+      return (
+        <a href="/article" className="button is-light">
+          Mes Articles
+        </a>
+      );
+    }
+    return "";
+  };
+
+  showButtonDisconnect = () => {
+    if (!!this.props.token) {
+      return (
+        <button className="button is-light" onClick={this.disconnect}>
+          Deconnexion
+        </button>
+      );
+    }
+    return (
+      <a href="/login" className="button is-danger is-inverted is-outlined">
+        Connexion
+      </a>
+    );
+  };
+
   render() {
     return (
-      <div className="navbar">
-        <a href="/" className="link">
-          Accueil
-        </a>
-        {!!this.props.name ? (
-          <h4 className="white">{`Bienvenue ${this.props.name}`}</h4>
-        ) : (
-          <a href="/register" className="link">
-            Inscription
+      <nav className="navbar Navbar_background_color">
+        <div className="navbar-start navbar-item">
+          <a href="/" className="button is-danger is-inverted is-outlined">
+            Accueil
           </a>
-        )}
-        {!!this.props.token ? (
-          <a href="/article" className="button">
-            Mes Articles
-          </a>
-        ) : (
-          ""
-        )}
-        {!!this.props.token ? (
-          <button className="button" onClick={this.disconnect}>
-            Deconnexion
-          </button>
-        ) : (
-          <a href="/login" className="link">
-            Connexion
-          </a>
-        )}
-      </div>
+        </div>
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <div className="buttons">
+              {!!this.props.name ? (
+                <h4 className="titre-h1">{`Bienvenue ${this.props.name}`}</h4>
+              ) : (
+                <a
+                  href="/register"
+                  className="button is-danger is-inverted is-outlined"
+                >
+                  Inscription
+                </a>
+              )}
+              {this.showNavIsLoggin()}
+              {this.showButtonDisconnect()}
+            </div>
+          </div>
+        </div>
+      </nav>
     );
   }
 }

@@ -9,12 +9,14 @@ import CreateArticle from "./components/addArticle/CreateArticle";
 import EditArticle from "./components/editArticle/EditArticle";
 import OneArticle from "./components/articles/article/OneArticle";
 
+import "./sass/index.scss";
+
 const App = () => {
   return (
-    <div>
+    <div className="App">
       <Router>
         <Navbar />
-        <div className="App">
+        <div>
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./Register.css";
 
 class Register extends Component {
   state = {
@@ -42,38 +41,47 @@ class Register extends Component {
     const { name, email, password, userMsg } = this.state;
 
     return (
-      <div>
-        <form onSubmit={this.handleSubmit} className="form">
-          {userMsg}
-          <label>Votre prénom : </label>
-          <input
-            onChange={this.handleChange}
-            value={name}
-            name="name"
-            type="text"
-            placeholder="enter your name"
-            required
-          />
-          <label>Votre email : </label>
-          <input
-            onChange={this.handleChange}
-            value={email}
-            type="text"
-            name="email"
-            placeholder="enter your email"
-            required
-          />
-          <label>Votre mot de passe : </label>
-          <input
-            onChange={this.handleChange}
-            value={password}
-            name="password"
-            type="password"
-            placeholder="enter your password"
-            required
-          />
-          <button onSubmit={this.handleSubmit}>M'inscrire</button>
-        </form>
+      <div className="field container">
+        <div className="Register_form">
+          <form onSubmit={this.handleSubmit} className="">
+            {userMsg}
+            <label className="label has-text-black">Votre prénom : </label>
+            <div className="control">
+              <input
+                className="input is-info"
+                onChange={this.handleChange}
+                value={name}
+                name="name"
+                type="text"
+                placeholder="Votre prénom"
+                required
+              />
+            </div>
+            <label className="label has-text-black">Votre email : </label>
+            <input
+              className="input is-info"
+              onChange={this.handleChange}
+              value={email}
+              type="text"
+              name="email"
+              placeholder="Votre email"
+              required
+            />
+            <label className="label has-text-black">Votre mot de passe :</label>
+            <input
+              className="input is-info"
+              onChange={this.handleChange}
+              value={password}
+              name="password"
+              type="password"
+              placeholder="Votre mot de passe"
+              required
+            />
+            <button className="button is-link" onSubmit={this.handleSubmit}>
+              M'inscrire
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

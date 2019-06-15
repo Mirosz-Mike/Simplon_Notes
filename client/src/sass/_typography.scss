@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Roboto:300,400&display=swap");
+
+//variables
+$playfair: "Playfair Display", serif;
+$playfair-bold: "Playfair Display", serif;
+$roboto: "Roboto", sans-serif;
+$roboto-bold: "Roboto", sans-serif;
+
+.title-h1 {
+  font-family: $playfair-bold;
+  font-size: 68pt;
+  font-weight: bold;
+  color: $white;
+}
+
+.title-h2 {
+  font-family: $playfair-bold;
+  font-size: 36pt;
+  font-weight: bold;
+}
+
+.title-h3 {
+  font-family: $playfair-bold;
+  font-size: 30pt;
+  font-weight: bold;
+}
+
+.title-h4 {
+  font-family: $playfair-bold;
+  font-size: 24pt;
+  font-weight: bold;
+}
+
+.text {
+  font-family: $roboto;
+  font-size: 14pt;
+  color: $white;
+}
+
+.text-bold {
+  font-family: $roboto-bold;
+  font-size: 14pt;
+  font-weight: 400;
+  color: $white;
+}
