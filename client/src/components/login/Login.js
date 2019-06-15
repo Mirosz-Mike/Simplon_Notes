@@ -37,39 +37,46 @@ class Login extends Component {
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      userMsg: ""
     });
   };
 
   render() {
     const { email, password, userMsg } = this.state;
     return (
-      <div className="field container">
-        <div className="Login_form">
-          {userMsg}
-          <form onSubmit={this.handleSubmit} className="">
-            <label className="label has-text-black">Votre email : </label>
+      <div className="Login__container field columns">
+        <div className="Login__container__content__left column is-6">
+          <h1 className="title-h2">Connexion</h1>
+          <p className="text">Avant de pourvoir, créer, éditer et partagez</p>
+        </div>
+        <div className="Login__container__form column is-6">
+          <form onSubmit={this.handleSubmit}>
+            <p>{userMsg}</p>
             <input
-              className="input is-info"
+              className={
+                userMsg.length > 0
+                  ? "input is-danger"
+                  : "Login__container__input"
+              }
               onChange={this.handleChange}
               value={email}
               type="text"
               name="email"
-              placeholder="Votre email"
+              placeholder="Email"
               required
             />
-            <label className="label has-text-black">Votre mot de passe :</label>
             <input
-              className="input is-info"
+              className="Login__container__input"
               onChange={this.handleChange}
               value={password}
               name="password"
               type="password"
-              placeholder="Votre mot de passe"
+              placeholder="Mot de passe"
               required
             />
             <button className="button is-link" onSubmit={this.handleSubmit}>
-              Connexion
+              Se connecter
             </button>
           </form>
         </div>

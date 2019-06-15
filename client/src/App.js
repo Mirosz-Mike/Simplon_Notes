@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Login from "./components/login/Login";
@@ -11,11 +12,11 @@ import OneArticle from "./components/articles/article/OneArticle";
 
 import "./sass/index.scss";
 
-const App = () => {
+const App = props => {
   return (
     <div className="App">
       <Router>
-        <Navbar />
+        {!!props.token ? <Navbar /> : null}
         <div>
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
@@ -30,4 +31,10 @@ const App = () => {
   );
 };
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    token: state.user.token
+  };
+}
+
+export default connect(mapStateToProps)(App);

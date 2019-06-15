@@ -1,6 +1,25 @@
 .Home__container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding-top: 150px;
+  align-items: center;
+  height: 100vh;
+  background-color: $redSimplon;
+
+  .Home__container__logo {
+    height: 500px;
+    width: 500px;
+    background: linear-gradient(0deg, #4481eb 50%, #04befe 100%);
+    border-radius: 50%;
+  }
+
+  .Home__container__button {
+    display: flex;
+    justify-content: space-between;
+    width: 49%;
+    margin-top: 20px;
+  }
+
+  .title-h1 {
+    line-height: 160px;
+  }
 }

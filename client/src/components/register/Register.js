@@ -33,7 +33,8 @@ class Register extends Component {
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      userMsg: ""
     });
   };
 
@@ -41,40 +42,47 @@ class Register extends Component {
     const { name, email, password, userMsg } = this.state;
 
     return (
-      <div className="field container">
-        <div className="Register_form">
-          <form onSubmit={this.handleSubmit} className="">
-            {userMsg}
-            <label className="label has-text-black">Votre prénom : </label>
+      <div className="Register__container field columns">
+        <div className="Register__container__content__left column is-6">
+          <h1 className="title-h2">Inscription</h1>
+          <p className="text">Faut bien s'inscrire</p>
+        </div>
+        <div className="Register__container__form column is-6">
+          <form onSubmit={this.handleSubmit}>
             <div className="control">
               <input
-                className="input is-info"
+                className="Register__container__input"
                 onChange={this.handleChange}
                 value={name}
                 name="name"
                 type="text"
-                placeholder="Votre prénom"
+                placeholder="Prénom"
                 required
               />
             </div>
-            <label className="label has-text-black">Votre email : </label>
+
+            <p>{userMsg}</p>
             <input
-              className="input is-info"
+              className={
+                userMsg.length > 0
+                  ? "input is-danger"
+                  : "Register__container__input"
+              }
               onChange={this.handleChange}
               value={email}
               type="text"
               name="email"
-              placeholder="Votre email"
+              placeholder="Email"
               required
             />
-            <label className="label has-text-black">Votre mot de passe :</label>
+
             <input
-              className="input is-info"
+              className="Register__container__input"
               onChange={this.handleChange}
               value={password}
               name="password"
               type="password"
-              placeholder="Votre mot de passe"
+              placeholder="Mot de passe"
               required
             />
             <button className="button is-link" onSubmit={this.handleSubmit}>

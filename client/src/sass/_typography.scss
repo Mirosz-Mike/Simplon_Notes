@@ -8,21 +8,23 @@ $roboto-bold: "Roboto", sans-serif;
 
 .title-h1 {
   font-family: $playfair-bold;
-  font-size: 68pt;
+  font-size: 100pt;
   font-weight: bold;
   color: $white;
 }
 
 .title-h2 {
   font-family: $playfair-bold;
-  font-size: 36pt;
+  font-size: 80pt;
   font-weight: bold;
+  color: $white;
 }
 
 .title-h3 {
   font-family: $playfair-bold;
   font-size: 30pt;
   font-weight: bold;
+  color: $white;
 }
 
 .title-h4 {
@@ -33,7 +35,7 @@ $roboto-bold: "Roboto", sans-serif;
 
 .text {
   font-family: $roboto;
-  font-size: 14pt;
+  font-size: 13pt;
   color: $white;
 }
 

@@ -8,32 +8,6 @@ class Navbar extends Component {
     this.props.history.push("/");
   };
 
-  showNavIsLoggin = () => {
-    if (!!this.props.token) {
-      return (
-        <a href="/article" className="button is-light">
-          Mes Articles
-        </a>
-      );
-    }
-    return "";
-  };
-
-  showButtonDisconnect = () => {
-    if (!!this.props.token) {
-      return (
-        <button className="button is-light" onClick={this.disconnect}>
-          Deconnexion
-        </button>
-      );
-    }
-    return (
-      <a href="/login" className="button is-danger is-inverted is-outlined">
-        Connexion
-      </a>
-    );
-  };
-
   render() {
     return (
       <nav className="navbar Navbar_background_color">
@@ -45,18 +19,13 @@ class Navbar extends Component {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              {!!this.props.name ? (
-                <h4 className="titre-h1">{`Bienvenue ${this.props.name}`}</h4>
-              ) : (
-                <a
-                  href="/register"
-                  className="button is-danger is-inverted is-outlined"
-                >
-                  Inscription
-                </a>
-              )}
-              {this.showNavIsLoggin()}
-              {this.showButtonDisconnect()}
+              <h4 className="titre-h1">{`Bienvenue ${this.props.name} `}</h4>
+              <a href="/article" className="button is-light">
+                Mes Articles
+              </a>
+              <button className="button is-light" onClick={this.disconnect}>
+                Deconnexion
+              </button>
             </div>
           </div>
         </div>
