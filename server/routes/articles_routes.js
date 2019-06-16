@@ -1,7 +1,21 @@
 const route = require("express").Router();
 const connection = require("../config");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 require("dotenv").config();
+
+const storage = multer.diskStorage({
+  destination: "./public/uploads/",
+  filename: function(req, file, cb) {
+    cb(null, "file-" + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 }
+}).single("myImage");
 
 route.post("/", (req, res) => {
   const userToken = req.headers["x-auth-token"] || req.query.token;
@@ -9,19 +23,36 @@ route.post("/", (req, res) => {
     if (err) {
       return res.status(403).send({ message: "Veuillez vous reconnecter" });
     } else {
-      const { user_id, title, subtitle, image, body } = req.body;
-      await connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
-        ${user_id}, 
-        "${title}",
-        "${subtitle}",
-        "${image}",
-        "${body}"
-        )`);
+      const { user_id, title, subtitle, body, image } = req.body;
 
-      return res
-        .status(200)
-        .send({ message: "Article enregister avec succès" });
+      upload(req, res, err => {
+        console.log("Request body ---", req.body);
+        console.log("Request file ---", req.file); //Here you get file.
+        /*Now do where ever you want to do*/
+        if (!err) return res.send(200).end();
+      });
+
+      // await connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
+      //       ${user_id},
+      //       "${title}",
+      //       "${subtitle}",
+      //       "${image}",
+      //       "${body}"
+      //       )`);
+
+      // return res
+      //   .status(200)
+      //   .send({ message: "Article enregister avec succès" });
     }
+  });
+});
+
+route.post("/upload", (req, res) => {
+  upload(req, res, err => {
+    console.log("Request body ---", req.body);
+    console.log("Request file ---", req.file); //Here you get file.
+    /*Now do where ever you want to do*/
+    if (!err) return res.send(200).end();
   });
 });
 

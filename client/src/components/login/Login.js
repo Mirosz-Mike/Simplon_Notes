@@ -45,40 +45,53 @@ class Login extends Component {
   render() {
     const { email, password, userMsg } = this.state;
     return (
-      <div className="Login__container field columns">
-        <div className="Login__container__content__left column is-6">
-          <h1 className="title-h2">Connexion</h1>
-          <p className="text">Avant de pourvoir, créer, éditer et partagez</p>
+      <div>
+        <div className="navbar-start navbar-item">
+          <a href="/" className="button is-danger is-inverted is-outlined">
+            Accueil
+          </a>
         </div>
-        <div className="Login__container__form column is-6">
-          <form onSubmit={this.handleSubmit}>
-            <p>{userMsg}</p>
-            <input
-              className={
-                userMsg.length > 0
-                  ? "input is-danger"
-                  : "Login__container__input"
-              }
-              onChange={this.handleChange}
-              value={email}
-              type="text"
-              name="email"
-              placeholder="Email"
-              required
-            />
-            <input
-              className="Login__container__input"
-              onChange={this.handleChange}
-              value={password}
-              name="password"
-              type="password"
-              placeholder="Mot de passe"
-              required
-            />
-            <button className="button is-link" onSubmit={this.handleSubmit}>
-              Se connecter
-            </button>
-          </form>
+        <div className="Login__container field columns">
+          <div className="Login__container__content__left column is-6">
+            <h1 className="title-h2">Connexion</h1>
+            <p className="text">Avant de pourvoir, créer, éditer et partagez</p>
+          </div>
+          <div className="Login__container__form column is-6">
+            <form onSubmit={this.handleSubmit}>
+              <p>{userMsg}</p>
+              <input
+                className={
+                  userMsg.length > 0
+                    ? "input is-danger"
+                    : "Login__container__input"
+                }
+                onChange={this.handleChange}
+                value={email}
+                type="text"
+                name="email"
+                placeholder="Email"
+                required
+              />
+              <input
+                className="Login__container__input"
+                onChange={this.handleChange}
+                value={password}
+                name="password"
+                type="password"
+                placeholder="Mot de passe"
+                required
+              />
+              <div className="Login__container__buttons">
+                <button className="button is-link">Via gmail</button>
+                <button
+                  className="button is-danger"
+                  onSubmit={this.handleSubmit}
+                >
+                  Se connecter
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     );

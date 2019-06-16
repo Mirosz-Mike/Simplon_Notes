@@ -42,6 +42,7 @@ input {
   display: flex;
   justify-content: flex-end;
   width: 90%;
+  padding-top: 80px;
 }
 
 .centerInput {

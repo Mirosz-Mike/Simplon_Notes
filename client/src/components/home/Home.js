@@ -4,9 +4,25 @@ import { connect } from "react-redux";
 class Home extends Component {
   state = {};
 
+  hiddenButtonsIsLogin = () => {
+    if (!this.props.token) {
+      return (
+        <div className="Home__container__button">
+          <a href="/register" className="button is-link">
+            Inscription
+          </a>
+          <a href="/login" className="button is-link">
+            Connexion
+          </a>
+        </div>
+      );
+    }
+    return null;
+  };
+
   render() {
     return (
-      <div className="Home__container columns">
+      <div className="Home__container columns is-desktop">
         <div className="column is-6">
           <h1 className="title-h1">
             Simplon
@@ -14,17 +30,7 @@ class Home extends Component {
             Notes
           </h1>
           <p className="text">Stokez vos notes sur votre plateforme interne</p>
-
-          {!this.props.token ? (
-            <div className="Home__container__button">
-              <a href="/register" className="button is-link">
-                Inscription
-              </a>
-              <a href="/login" className="button is-link">
-                Connexion
-              </a>
-            </div>
-          ) : null}
+          {this.hiddenButtonsIsLogin()}
         </div>
         <div className="Home__container__logo column is-6" />
       </div>

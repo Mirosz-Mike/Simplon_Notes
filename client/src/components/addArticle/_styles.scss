@@ -1,0 +1,22 @@
+.CreateArticle__container__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 40px;
+  font-size: 15px;
+  height: 49px;
+}
+
+.CreateArticle__container__form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: $white;
+}
+
+.CreateArticle__container__buttons {
+  display: flex;
+  justify-content: space-between;
+}

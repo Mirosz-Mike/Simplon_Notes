@@ -19,7 +19,7 @@ class Navbar extends Component {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <h4 className="titre-h1">{`Bienvenue ${this.props.name} `}</h4>
+              <h4 className="titre-h1">{`Bienvenue ${this.props.name}`}</h4>
               <a href="/article" className="button is-light">
                 Mes Articles
               </a>
