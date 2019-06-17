@@ -6,7 +6,7 @@ const path = require("path");
 require("dotenv").config();
 
 const storage = multer.diskStorage({
-  destination: "./public/uploads/",
+  destination: "./public/uploads",
   filename: function(req, file, cb) {
     cb(null, "file-" + Date.now() + path.extname(file.originalname));
   }
@@ -23,26 +23,30 @@ route.post("/", (req, res) => {
     if (err) {
       return res.status(403).send({ message: "Veuillez vous reconnecter" });
     } else {
-      const { user_id, title, subtitle, body, image } = req.body;
 
       upload(req, res, err => {
-        console.log("Request body ---", req.body);
-        console.log("Request file ---", req.file); //Here you get file.
-        /*Now do where ever you want to do*/
-        if (!err) return res.send(200).end();
+        const article = JSON.parse(req.body.myArticle)
+        const { user_id, title, subtitle, body } = article;
+        const imageName = req.file.filename
+        console.log("Request body ---", title, subtitle);
+        console.log("Request file ---", ); //Here you get file.
+
+        if (err) {
+          console.log(err)
+        } else {
+          connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
+            ${user_id},
+            "${title}",
+            "${subtitle}",
+            "http://localhost:8012/uploads/${imageName}",
+            "${body}"
+            )`);
+
+          return res
+            .status(200)
+            .send({ message: "Article enregister avec succès" });
+        }
       });
-
-      // await connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
-      //       ${user_id},
-      //       "${title}",
-      //       "${subtitle}",
-      //       "${image}",
-      //       "${body}"
-      //       )`);
-
-      // return res
-      //   .status(200)
-      //   .send({ message: "Article enregister avec succès" });
     }
   });
 });

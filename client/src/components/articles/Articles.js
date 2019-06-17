@@ -27,6 +27,7 @@ class Article extends Component {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
+        console.log(response)
         this.setState({ dataArticles: response.data });
       })
       .catch(error => {
@@ -106,6 +107,7 @@ class Article extends Component {
 
   render() {
     const { dataArticles, search } = this.state;
+    console.log(dataArticles)
     const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
@@ -130,7 +132,7 @@ class Article extends Component {
             return (
               <div className="card" key={articleObj.id}>
                 <img
-                  src="https://i.pinimg.com/originals/62/64/21/62642184fd45b733c2c77fa6fa13caf5.jpg"
+                  src={articleObj.image}
                   alt="Avatar"
                   style={{ width: "100%" }}
                 />

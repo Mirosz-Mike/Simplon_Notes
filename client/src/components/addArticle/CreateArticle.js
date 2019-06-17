@@ -15,17 +15,21 @@ class CreateArticle extends Component {
   handleSubmit = event => {
     event.preventDefault();
     const { title, body } = this.state;
+    const formData = new FormData();
+    formData.append("myImage", this.state.file);
 
     const article = {
       user_id: this.props.userId,
       title: this.state.title,
       subtitle: this.state.subTitle,
-      body: this.state.body
+      body: this.state.body,
     };
+
+    formData.append("myArticle", JSON.stringify(article));
 
     if (title && body) {
       axios
-        .post("http://localhost:8012/articles/", article, {
+        .post("http://localhost:8012/articles/", formData, {
           headers: {
             "content-type": "multipart/form-data",
             "x-auth-token": this.props.token
@@ -75,6 +79,7 @@ class CreateArticle extends Component {
   };
 
   render() {
+    console.log(this.state.file)
     return (
       <div>
         <div className="CreateArticle__container__form">

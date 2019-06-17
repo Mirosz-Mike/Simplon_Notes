@@ -22,15 +22,17 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="Home__container columns is-desktop">
+      <div className="Home__container columns">
         <div className="column is-6">
           <h1 className="title-h1">
             Simplon
             <br />
             Notes
           </h1>
-          <p className="text">Stokez vos notes sur votre plateforme interne</p>
-          {this.hiddenButtonsIsLogin()}
+          <div className="column is-two-thirds">
+            <p className="text">Stokez vos notes sur votre plateforme interne</p>
+            {this.hiddenButtonsIsLogin()}
+          </div>
         </div>
         <div className="Home__container__logo column is-6" />
       </div>
