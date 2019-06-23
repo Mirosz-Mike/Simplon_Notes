@@ -46,54 +46,53 @@ class Login extends Component {
     const { email, password, userMsg } = this.state;
     return (
       <div>
-        <div className="navbar-start navbar-item">
-          <a href="/" className="button is-danger is-inverted is-outlined">
-            Accueil
-          </a>
-        </div>
-        <div className="Login__container field columns">
-          <div className="Login__container__content__left column is-6">
+      <nav className="Login__navbar">
+        <a className="btn btn-outline-dark" href="/">Accueil</a>
+      </nav>
+      <div className="Login__container">
+        <div className="row">
+          <div className="col-md-6 Login__background__color">
+            <div className="Login__content__left">
             <h1 className="title-h2">Connexion</h1>
             <p className="text">Avant de pourvoir, créer, éditer et partagez</p>
           </div>
-          <div className="Login__container__form column is-6">
-            <form onSubmit={this.handleSubmit}>
-              <p>{userMsg}</p>
-              <input
-                className={
-                  userMsg.length > 0
-                    ? "input is-danger"
-                    : "Login__container__input"
-                }
-                onChange={this.handleChange}
-                value={email}
-                type="text"
-                name="email"
-                placeholder="Email"
-                required
-              />
-              <input
-                className="Login__container__input"
-                onChange={this.handleChange}
-                value={password}
-                name="password"
-                type="password"
-                placeholder="Mot de passe"
-                required
-              />
-              <div className="Login__container__buttons">
-                <button className="button is-link">Via gmail</button>
-                <button
-                  className="button is-danger"
-                  onSubmit={this.handleSubmit}
-                >
-                  Se connecter
-                </button>
+        </div>
+        <div className="col-md-6">
+        <div className="Login__content__right">
+          {userMsg}
+          <form onSubmit={this.handleSubmit}>
+              <div className="form-group">
+                <label>Email</label>
+                <input 
+                  className="form-control"
+                  onChange={this.handleChange}
+                  value={email}
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  required/>
+              </div>
+              <div className="form-group">
+                <label>Mot de passe</label>
+                <input  
+                  className="form-control"
+                  onChange={this.handleChange}
+                  value={password}
+                  name="password"
+                  type="password"
+                  placeholder="Mot de passe"
+                  required/>
+              </div>
+              <div className="Login__content__buttons">
+                <button  type="submit" className="btn btn-primary">Via gmail</button>
+                <button onSubmit={this.handleSubmit} type="submit" className="btn btn-danger">Connexion</button>
               </div>
             </form>
+           </div>
           </div>
         </div>
       </div>
+    </div>
     );
   }
 }

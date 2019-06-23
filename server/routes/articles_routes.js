@@ -23,13 +23,12 @@ route.post("/", (req, res) => {
     if (err) {
       return res.status(403).send({ message: "Veuillez vous reconnecter" });
     } else {
-
       upload(req, res, err => {
         const article = JSON.parse(req.body.myArticle)
         const { user_id, title, subtitle, body } = article;
-        const imageName = req.file.filename
-        console.log("Request body ---", title, subtitle);
-        console.log("Request file ---", ); //Here you get file.
+        const imageName = !!req.file ? `http://localhost:8012/uploads/${req.file.filename}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png' 
+        console.log("Request body ---", req.body.myArticle);
+        console.log("Request file ---", req.file ); //Here you get file.
 
         if (err) {
           console.log(err)
@@ -38,7 +37,7 @@ route.post("/", (req, res) => {
             ${user_id},
             "${title}",
             "${subtitle}",
-            "http://localhost:8012/uploads/${imageName}",
+            "${imageName}",
             "${body}"
             )`);
 

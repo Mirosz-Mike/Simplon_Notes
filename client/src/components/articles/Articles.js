@@ -37,6 +37,11 @@ class Article extends Component {
       });
   }
 
+  formatDate = (date) => {
+    const formatDate = new Date(date);
+    return formatDate.toLocaleString("fr-FR", {timeZone: "Europe/Paris"});
+  }
+
   deleteArticleById = id => {
     axios
       .delete(`http://localhost:8012/articles/${id}`, {
@@ -85,20 +90,6 @@ class Article extends Component {
     this.props.history.push("/oneArticle");
   };
 
-  showButtonEditAndDelete = (userId, id) => {
-    if (this.props.userId === userId) {
-      return (
-        <div className="centerButton">
-          <button onClick={() => this.deleteArticleById(id)}>supprimer</button>
-          <button onClick={() => this.redirectToEditArticle(id)}>
-            Modifier
-          </button>
-        </div>
-      );
-    }
-    return null;
-  };
-
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -107,14 +98,13 @@ class Article extends Component {
 
   render() {
     const { dataArticles, search } = this.state;
-    console.log(dataArticles)
     const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
     return (
-      <div>
+      <div className="container">
         <div className="rightButton">
-          <button onClick={() => this.redirectToAddArticle()}>
+          <button className="btn btn-success" onClick={() => this.redirectToAddArticle()}>
             Ajouter un article
           </button>
         </div>
@@ -122,34 +112,40 @@ class Article extends Component {
           <input
             type="text"
             name="search"
+            className="form-control mt-3 mb-3"
             placeholder="Votre recherche"
             value={search}
             onChange={this.handleChange}
           />
         </div>
-        <div className="wrapper">
+        <div className="row">
           {filteredArticlesByTitle.map(articleObj => {
             return (
-              <div className="card" key={articleObj.id}>
-                <img
-                  src={articleObj.image}
-                  alt="Avatar"
-                  style={{ width: "100%" }}
-                />
-                <div className="container">
-                  <h4>{articleObj.title}</h4>
-                  <h6>{articleObj.subtitle}</h6>
-                  {this.showButtonEditAndDelete(
-                    articleObj.user_id,
-                    articleObj.id
-                  )}
-                  <button
-                    onClick={() => this.redirectToSeeArticle(articleObj.id)}
-                  >
-                    Voir l'article
-                  </button>
+              <div className="card col-sm-4" key={articleObj.id}>
+                <div className="">
+                  <img
+                    className="card-img-top"
+                    src={articleObj.image}
+                    alt="Avatar"
+                    style={{ width: "100%" }}
+                  />
+                <div className="card-body">
+                  <p className="card-title">{this.props.name}</p>
+                  <p className="subtitle is-6">@{this.props.name}</p>
+                  <div className="card-text">
+                    {articleObj.body.length < 100 ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..." : articleObj.body }
+                    <br/>
+                    <br/>
+                    <p>{this.formatDate(articleObj.updated_at)}</p>
+                  </div>
+                  <div className="containerButton">
+                    <button className="btn btn-success" onClick={() => this.redirectToSeeArticle(articleObj.id)}>Voir l'article</button>
+                    <button className="btn btn-danger" onClick={() => this.deleteArticleById(articleObj.id)}>supprimer</button>
+                    <button className="btn btn-primary" onClick={() => this.redirectToEditArticle(articleObj.id)}>Modifier</button>
+                  </div>
                 </div>
               </div>
+                </div>
             );
           })}
         </div>
@@ -161,7 +157,8 @@ class Article extends Component {
 function mapStateToProps(state) {
   return {
     userId: state.user.userId,
-    token: state.user.token
+    token: state.user.token,
+    name: state.user.userName
   };
 }
 

@@ -1,10 +1,6 @@
 .Register__container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  background-color: $redSimplon;
-
+  
   .Register__container__input {
     width: 100%;
     border: none;
@@ -14,22 +10,33 @@
     font-size: 15px;
     height: 49px;
   }
-
-  .Register__container__content__left {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  
+  .Register__background__color {
+    background-color: $redSimplon;
   }
 
-  .Register__container__form {
+  .Register__content__left {
     display: flex;
     justify-content: center;
-    align-items: center;
     height: 100vh;
-    background-color: $white;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+  .Register__content__right {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
   }
 }
 
-.input {
-  margin-bottom: 100px;
+.Register__navbar {
+  position: absolute;
+  margin: 20px;
+  z-index: 1;
 }

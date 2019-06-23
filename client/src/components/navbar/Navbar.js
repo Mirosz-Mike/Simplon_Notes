@@ -11,25 +11,20 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar Navbar_background_color">
-        <div className="navbar-start navbar-item">
-          <a href="/" className="button is-danger is-inverted is-outlined">
-            Accueil
+        <a href="/" className="btn btn-outline-primary">
+          Accueil
+        </a>
+        <div className="Navbar__buttons">
+          <h3 className="">{`Bienvenue ${this.props.name}`}</h3>
+          <a href="/article" className="btn btn-success ml-3">
+            Mes Articles
           </a>
-        </div>
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <div className="buttons">
-              <h4 className="titre-h1">{`Bienvenue ${this.props.name}`}</h4>
-              <a href="/article" className="button is-light">
-                Mes Articles
-              </a>
-              <button className="button is-light" onClick={this.disconnect}>
-                Deconnexion
-              </button>
-            </div>
-          </div>
+          <button className="btn btn-primary ml-3" onClick={this.disconnect}>
+            Deconnexion
+          </button>
         </div>
       </nav>
+
     );
   }
 }

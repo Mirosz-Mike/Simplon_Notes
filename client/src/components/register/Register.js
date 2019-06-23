@@ -8,7 +8,7 @@ class Register extends Component {
     password: "",
     userMsg: ""
   };
-
+ 
   handleSubmit = event => {
     event.preventDefault();
 
@@ -43,58 +43,59 @@ class Register extends Component {
 
     return (
       <div>
-        <div className="navbar-start navbar-item">
-          <a href="/" className="button is-danger is-inverted is-outlined">
-            Accueil
-          </a>
-        </div>
-        <div className="Register__container field columns">
-          <div className="Register__container__content__left column is-6">
-            <h1 className="title-h2">Inscription</h1>
-            <p className="text">Faut bien s'inscrire</p>
+        <nav className="Register__navbar">
+          <a className="btn btn-outline-dark" href="/">Accueil</a>
+        </nav>
+        <div className="Register__container">
+          <div className="row">
+            <div className="col-md-6 Register__background__color">
+              <div className="Register__content__left">
+              <h1 className="title-h2">Inscription</h1>
+              <p className="text">Faut bien s'inscrire</p>
+            </div>
           </div>
-          <div className="Register__container__form column is-6">
+          <div className="col-md-6">
+          <div className="Register__content__right">
+            {userMsg}
             <form onSubmit={this.handleSubmit}>
-              <div className="control">
+              <div className="form-group">
+                <label>Pseudo</label>
                 <input
-                  className="Register__container__input"
+                  className="form-control"
                   onChange={this.handleChange}
                   value={name}
                   name="name"
                   type="text"
-                  placeholder="Prénom"
+                  placeholder="Pseudo"
                   required
                 />
-              </div>
-
-              <p>{userMsg}</p>
-              <input
-                className={
-                  userMsg.length > 0
-                    ? "input is-danger"
-                    : "Register__container__input"
-                }
-                onChange={this.handleChange}
-                value={email}
-                type="text"
-                name="email"
-                placeholder="Email"
-                required
-              />
-
-              <input
-                className="Register__container__input"
-                onChange={this.handleChange}
-                value={password}
-                name="password"
-                type="password"
-                placeholder="Mot de passe"
-                required
-              />
-              <button className="button is-link" onSubmit={this.handleSubmit}>
-                M'inscrire
-              </button>
-            </form>
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input 
+                    className="form-control"
+                    onChange={this.handleChange}
+                    value={email}
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                    required/>
+                </div>
+                <div className="form-group">
+                  <label>Mot de passe</label>
+                  <input  
+                    className="form-control"
+                    onChange={this.handleChange}
+                    value={password}
+                    name="password"
+                    type="password"
+                    placeholder="Mot de passe"
+                    required/>
+                </div>
+                <button onSubmit={this.handleSubmit} type="submit" className="btn btn-primary">M'inscrire</button>
+              </form>
+             </div>
+            </div>
           </div>
         </div>
       </div>

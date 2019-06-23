@@ -1,10 +1,6 @@
 .Login__container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  background-color: $redSimplon;
-
+  
   .Login__container__input {
     width: 100%;
     border: none;
@@ -14,31 +10,38 @@
     font-size: 15px;
     height: 49px;
   }
-
-  .Login__container__content__left {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  
+  .Login__background__color {
+    background-color: $redSimplon;
   }
 
-  .Login__container__form {
+  .Login__content__left {
     display: flex;
     justify-content: center;
-    align-items: center;
     height: 100vh;
-    background-color: $white;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .Login__container__buttons {
+
+  .Login__content__right {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+  }
+
+  .Login__content__buttons {
     display: flex;
     justify-content: space-between;
   }
 }
 
-.navbar-start {
+.Login__navbar {
   position: absolute;
-}
-
-.input {
-  margin-bottom: 100px;
+  margin: 20px;
+  z-index: 1;
 }

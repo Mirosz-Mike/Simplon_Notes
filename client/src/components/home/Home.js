@@ -8,10 +8,10 @@ class Home extends Component {
     if (!this.props.token) {
       return (
         <div className="Home__container__button">
-          <a href="/register" className="button is-link">
+          <a href="/register" className="btn btn-primary">
             Inscription
           </a>
-          <a href="/login" className="button is-link">
+          <a href="/login" className="btn btn-primary">
             Connexion
           </a>
         </div>
@@ -22,20 +22,30 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="Home__container columns">
-        <div className="column is-6">
-          <h1 className="title-h1">
-            Simplon
-            <br />
-            Notes
-          </h1>
-          <div className="column is-two-thirds">
-            <p className="text">Stokez vos notes sur votre plateforme interne</p>
-            {this.hiddenButtonsIsLogin()}
+      <div className="Home__container">
+        <div className="row">
+          <div className="col-md-6  col-sm">
+            <div className="Home__center__content">
+              <div className="Home__vertical__content">
+                <h1 className="title-h1">
+                  Simplon
+                  <br />
+                  Notes
+                </h1>
+                  <p className="text">Stokez vos notes sur votre plateforme interne</p>
+                  {this.hiddenButtonsIsLogin()}
+              </div>
+            </div>
+            </div>
+            <div className="col-md-6 col-sm">
+              <div className="Home__center__content">
+                <div className="Home__vertical__content">
+                 <div className="Home__container__logo " />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="Home__container__logo column is-6" />
-      </div>
     );
   }
 }

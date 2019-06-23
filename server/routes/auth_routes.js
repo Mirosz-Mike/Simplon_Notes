@@ -8,7 +8,7 @@ route.post("/register", async (req, res) => {
   const validEmail = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
   const { email, password, name } = req.body;
 
-  const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(password, salt);
 
   if (name && email && password) {

@@ -1,7 +1,4 @@
 .Home__container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
   background-color: $redSimplon;
 
@@ -12,10 +9,22 @@
     border-radius: 50%;
   }
 
+  .Home__vertical__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .Home__center__content {
+    display: flex;
+    justify-content: center;
+    height: 100vh
+  }
+
   .Home__container__button {
     display: flex;
     justify-content: space-between;
-    width: 49%;
+    width: 55%;
     margin-top: 20px;
   }
 
