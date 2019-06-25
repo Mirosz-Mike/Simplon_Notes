@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 
-import "./EditArticle.css";
-
 class EditArticle extends Component {
   state = {
     title: this.props.editArticle.title,
@@ -62,45 +60,54 @@ class EditArticle extends Component {
 
   render() {
     return (
-      <div className="form">
-        <label>Titre</label>
-        <input
-          onChange={this.handleChange}
-          name="title"
-          type="text"
-          value={this.state.title}
-          placeholder="Title"
-          required
-        />
-        <label>Sous-titre</label>
-        <input
-          onChange={this.handleChange}
-          name="subTitle"
-          type="text"
-          value={this.state.subTitle}
-          placeholder="subTitle"
-          required
-        />
-        <label>Image</label>
-        <input
-          onChange={this.handleChange}
-          name="image"
-          type="text"
-          value={this.state.image}
-          placeholder="image"
-          required
-        />
-        <label>Corps</label>
-        <textarea
-          name="body"
-          rows="5"
-          cols="33"
-          type="text"
-          value={this.state.body}
-          required
-          onChange={this.handleChange}
-        />
-        <button onClick={this.handleSubmit}>Modifier mon article</button>
+      <div className="EditArticle__container">
+        <form
+          className="EditArticle__container__form mt-5"
+          onSubmit={this.handleSubmit}
+        >
+          <label>Titre</label>
+          <input
+            onChange={this.handleChange}
+            name="title"
+            type="text"
+            value={this.state.title}
+            placeholder="Title"
+            className="EditArticle__container__input"
+            required
+          />
+          <label>Sous-titre</label>
+          <input
+            onChange={this.handleChange}
+            name="subTitle"
+            type="text"
+            value={this.state.subTitle}
+            placeholder="subTitle"
+            className="EditArticle__container__input"
+            required
+          />
+          <label>Image</label>
+          <input
+            type="file"
+            name="image"
+            placeholder="image"
+            className="form-control-file"
+            required
+          />
+          <label>Corps</label>
+          <textarea
+            className="form-control"
+            name="body"
+            rows="5"
+            cols="33"
+            type="text"
+            value={this.state.body}
+            required
+            onChange={this.handleChange}
+          />
+          <button className="btn btn-primary mt-2" onClick={this.handleSubmit}>
+            Modifier mon article
+          </button>
+        </form>
       </div>
     );
   }

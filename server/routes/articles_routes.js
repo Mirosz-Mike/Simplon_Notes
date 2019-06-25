@@ -13,9 +13,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1000000 }
-}).single("myImage");
+  storage: storage
+}).array("myImage", 4);
 
 route.post("/", (req, res) => {
   const userToken = req.headers["x-auth-token"] || req.query.token;
@@ -24,38 +23,46 @@ route.post("/", (req, res) => {
       return res.status(403).send({ message: "Veuillez vous reconnecter" });
     } else {
       upload(req, res, err => {
-        const article = JSON.parse(req.body.myArticle)
-        const { user_id, title, subtitle, body } = article;
-        const imageName = !!req.file ? `http://localhost:8012/uploads/${req.file.filename}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png' 
+        const article = JSON.parse(req.body.myArticle);
+        const { user_id, author, title, subtitle, body } = article;
+        const imageName = req.files
+          ? req.files.filename
+          : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
         console.log("Request body ---", req.body.myArticle);
-        console.log("Request file ---", req.file ); //Here you get file.
+        console.log("Request file ---", req.files);
 
         if (err) {
-          console.log(err)
-        } else {
-          connection.query(`INSERT INTO simplon_notes.articles (user_id, title, subtitle, image, body) VALUES (
+          console.log(err);
+        }
+        if (req.files) {
+          const arrImage = [];
+          for (let i = 0; i < req.files.length; i++) {
+            arrImage.push(
+              `http://localhost:8012/uploads/${req.files[i].filename}`
+            );
+          }
+          connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, image, body) VALUES (
             ${user_id},
+            "${author}",
             "${title}",
             "${subtitle}",
-            "${imageName}",
+            "${arrImage}",
             "${body}"
             )`);
-
-          return res
-            .status(200)
-            .send({ message: "Article enregister avec succès" });
+        } else {
+          connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, body) VALUES (
+            ${user_id},
+            "${author}",
+            "${title}",
+            "${subtitle}",
+            "${body}"
+            )`);
         }
+        return res
+          .status(200)
+          .send({ message: "Article enregister avec succès" });
       });
     }
-  });
-});
-
-route.post("/upload", (req, res) => {
-  upload(req, res, err => {
-    console.log("Request body ---", req.body);
-    console.log("Request file ---", req.file); //Here you get file.
-    /*Now do where ever you want to do*/
-    if (!err) return res.send(200).end();
   });
 });
 

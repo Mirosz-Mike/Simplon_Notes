@@ -46,53 +46,67 @@ class Login extends Component {
     const { email, password, userMsg } = this.state;
     return (
       <div>
-      <nav className="Login__navbar">
-        <a className="btn btn-outline-dark" href="/">Accueil</a>
-      </nav>
-      <div className="Login__container">
-        <div className="row">
-          <div className="col-md-6 Login__background__color">
-            <div className="Login__content__left">
-            <h1 className="title-h2">Connexion</h1>
-            <p className="text">Avant de pourvoir, créer, éditer et partagez</p>
-          </div>
-        </div>
-        <div className="col-md-6">
-        <div className="Login__content__right">
-          {userMsg}
-          <form onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <label>Email</label>
-                <input 
-                  className="form-control"
-                  onChange={this.handleChange}
-                  value={email}
-                  type="text"
-                  name="email"
-                  placeholder="Email"
-                  required/>
+        <nav className="Login__navbar">
+          <a className="btn btn-outline-dark" href="/">
+            Accueil
+          </a>
+        </nav>
+        <div className="Login__container">
+          <div className="row">
+            <div className="col-md-6 Login__background__color">
+              <div className="Login__content__left">
+                <h1 className="title-h2">Connexion</h1>
+                <p className="text">
+                  Avant de pourvoir créer, éditer et partagez
+                </p>
               </div>
-              <div className="form-group">
-                <label>Mot de passe</label>
-                <input  
-                  className="form-control"
-                  onChange={this.handleChange}
-                  value={password}
-                  name="password"
-                  type="password"
-                  placeholder="Mot de passe"
-                  required/>
+            </div>
+            <div className="col-md-6">
+              <div className="Login__content__right">
+                {userMsg}
+                <form onSubmit={this.handleSubmit}>
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={email}
+                      type="text"
+                      name="email"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mot de passe</label>
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={password}
+                      name="password"
+                      type="password"
+                      placeholder="Mot de passe"
+                      required
+                    />
+                  </div>
+                  <div className="Login__content__buttons">
+                    <button type="submit" className="btn btn-primary">
+                      Via gmail
+                    </button>
+                    <button
+                      onSubmit={this.handleSubmit}
+                      type="submit"
+                      className="btn btn-danger"
+                    >
+                      Connexion
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div className="Login__content__buttons">
-                <button  type="submit" className="btn btn-primary">Via gmail</button>
-                <button onSubmit={this.handleSubmit} type="submit" className="btn btn-danger">Connexion</button>
-              </div>
-            </form>
-           </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     );
   }
 }

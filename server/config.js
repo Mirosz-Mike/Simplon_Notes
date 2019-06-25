@@ -35,9 +35,10 @@ connection.connect(err => {
   const createTableArticles = `CREATE TABLE IF NOT EXISTS simplon_notes.articles (
 		id int NOT NULL AUTO_INCREMENT,
 		user_id int NOT NULL,
-		title varchar(255) NOT NULL,
+    title varchar(255) NOT NULL,
+    author varchar(255) NOT NULL,
     subtitle varchar(255) NOT NULL,
-    image text NOT NULL,
+    image text NULL,
     body text NOT NULL,
 		create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

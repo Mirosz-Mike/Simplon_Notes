@@ -5,7 +5,7 @@ Projet titre pro de Niveau II (Concepteur développeur d'applications)
 ### Techno
 
 - Sass
-- Bulma
+- Bootstrap
 - React
 - MySQL
 - NodeJS

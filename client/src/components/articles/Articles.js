@@ -27,20 +27,19 @@ class Article extends Component {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
-        console.log(response)
+        console.log(response);
         this.setState({ dataArticles: response.data });
       })
       .catch(error => {
-        this.setState({ message: error.response.data.message });
         this.props.removeToken(this.props.token);
         this.props.history.push("/");
       });
   }
 
-  formatDate = (date) => {
+  formatDate = date => {
     const formatDate = new Date(date);
-    return formatDate.toLocaleString("fr-FR", {timeZone: "Europe/Paris"});
-  }
+    return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+  };
 
   deleteArticleById = id => {
     axios
@@ -64,7 +63,6 @@ class Article extends Component {
       })
       .catch(error => {
         this.setState({ message: error.response.data.message });
-        console.log(error.response);
       });
   };
 
@@ -104,11 +102,14 @@ class Article extends Component {
     return (
       <div className="container">
         <div className="rightButton">
-          <button className="btn btn-success" onClick={() => this.redirectToAddArticle()}>
+          <button
+            className="btn btn-success"
+            onClick={() => this.redirectToAddArticle()}
+          >
             Ajouter un article
           </button>
         </div>
-        <div className="centerInput">
+        <div>
           <input
             type="text"
             name="search"
@@ -120,32 +121,63 @@ class Article extends Component {
         </div>
         <div className="row">
           {filteredArticlesByTitle.map(articleObj => {
+            console.log(articleObj);
             return (
               <div className="card col-sm-4" key={articleObj.id}>
                 <div className="">
                   <img
                     className="card-img-top"
-                    src={articleObj.image}
+                    src={
+                      !!articleObj.image
+                        ? articleObj.image.split(",")[0]
+                        : process.env.PUBLIC_URL + "/simplon.png"
+                    }
                     alt="Avatar"
                     style={{ width: "100%" }}
                   />
-                <div className="card-body">
-                  <p className="card-title">{this.props.name}</p>
-                  <p className="subtitle is-6">@{this.props.name}</p>
-                  <div className="card-text">
-                    {articleObj.body.length < 100 ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..." : articleObj.body }
-                    <br/>
-                    <br/>
-                    <p>{this.formatDate(articleObj.updated_at)}</p>
-                  </div>
-                  <div className="containerButton">
-                    <button className="btn btn-success" onClick={() => this.redirectToSeeArticle(articleObj.id)}>Voir l'article</button>
-                    <button className="btn btn-danger" onClick={() => this.deleteArticleById(articleObj.id)}>supprimer</button>
-                    <button className="btn btn-primary" onClick={() => this.redirectToEditArticle(articleObj.id)}>Modifier</button>
+                  <div className="card-body">
+                    <p className="card-title">De {articleObj.author}</p>
+                    <p className="subtitle is-6">@{articleObj.author}</p>
+                    <h4 className="title-h4">{articleObj.title}</h4>
+                    <div className="card-text">
+                      {articleObj.body.length < 100
+                        ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..."
+                        : articleObj.body}
+                      <br />
+                      <br />
+                      <p>{this.formatDate(articleObj.updated_at)}</p>
+                    </div>
+                    <div className="containerButton">
+                      <button
+                        className="btn btn-success"
+                        onClick={() => this.redirectToSeeArticle(articleObj.id)}
+                      >
+                        Voir l'article
+                      </button>
+                      {this.props.userId === articleObj.user_id ? (
+                        <div>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() =>
+                              this.deleteArticleById(articleObj.id)
+                            }
+                          >
+                            supprimer
+                          </button>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() =>
+                              this.redirectToEditArticle(articleObj.id)
+                            }
+                          >
+                            Modifier
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>
-                </div>
             );
           })}
         </div>

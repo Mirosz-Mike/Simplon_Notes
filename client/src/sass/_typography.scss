@@ -20,11 +20,16 @@ $roboto-bold: "Roboto", sans-serif;
   color: $white;
 }
 
+.title-h2-black {
+  font-family: $playfair-bold;
+  font-size: 80pt;
+  font-weight: bold;
+}
+
 .title-h3 {
   font-family: $playfair-bold;
   font-size: 30pt;
   font-weight: bold;
-  color: $white;
 }
 
 .title-h4 {

@@ -8,7 +8,7 @@ class CreateArticle extends Component {
     subTitle: "",
     body: "",
     success: "",
-    file: null,
+    file: [],
     messageError: ""
   };
 
@@ -16,13 +16,18 @@ class CreateArticle extends Component {
     event.preventDefault();
     const { title, body } = this.state;
     const formData = new FormData();
-    formData.append("myImage", this.state.file);
+
+    const imageArr = Array.from(this.state.file);
+    imageArr.forEach(image => {
+      formData.append("myImage", image);
+    });
 
     const article = {
       user_id: this.props.userId,
+      author: this.props.name,
       title: this.state.title,
       subtitle: this.state.subTitle,
-      body: this.state.body,
+      body: this.state.body
     };
 
     formData.append("myArticle", JSON.stringify(article));
@@ -43,14 +48,14 @@ class CreateArticle extends Component {
           }, 1000);
         })
         .catch(error => {
-          console.log(error.response.data.message)
+          console.log(error.response.data.message);
           this.setState({ messageError: error.response.data.message });
         });
     }
   };
 
   onChange = event => {
-    this.setState({ file: event.target.files[0] });
+    this.setState({ file: event.target.files });
   };
 
   handleChange = event => {
@@ -62,8 +67,11 @@ class CreateArticle extends Component {
   render() {
     return (
       <div>
-        <div className="CreateArticle__container__form">
-          <form className="form" onSubmit={this.handleSubmit}>
+        <div className="CreateArticle__container">
+          <form
+            className="CreateArticle__container__form mt-5"
+            onSubmit={this.handleSubmit}
+          >
             <p>{this.state.messageError}</p>
             <p>{this.state.success}</p>
             <label>Titre</label>
@@ -88,6 +96,7 @@ class CreateArticle extends Component {
             <input
               name="myImage"
               type="file"
+              multiple
               onChange={this.onChange}
               className="CreateArticle__container__input "
             />
@@ -102,7 +111,7 @@ class CreateArticle extends Component {
               required
               onChange={this.handleChange}
             />
-            <button className="button is-link" type="submit">
+            <button className="btn btn-success mt-2" type="submit">
               Valider mon article
             </button>
           </form>
@@ -115,7 +124,8 @@ class CreateArticle extends Component {
 function mapStateToProps(state) {
   return {
     userId: state.user.userId,
-    token: state.user.token
+    token: state.user.token,
+    name: state.user.userName
   };
 }
 
