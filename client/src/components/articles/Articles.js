@@ -120,6 +120,7 @@ class Article extends Component {
           />
         </div>
         <div className="row">
+          {/* Todo: faire en sorte 3 articles par rangé  */}
           {filteredArticlesByTitle.map(articleObj => {
             console.log(articleObj);
             return (
