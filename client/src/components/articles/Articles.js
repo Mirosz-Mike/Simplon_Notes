@@ -70,22 +70,19 @@ class Article extends Component {
     this.props.history.push("/addArticle");
   };
 
-  redirectToEditArticle = id => {
+  redirectArticle = (editOrseeArticle, id) => {
     const articleById = this.state.dataArticles.find(articleId => {
       return articleId.id === id;
     });
 
-    this.props.editArticle(articleById);
-    this.props.history.push("/editArticle");
-  };
-
-  redirectToSeeArticle = id => {
-    const articleById = this.state.dataArticles.find(articleId => {
-      return articleId.id === id;
-    });
-
-    this.props.oneArticle(articleById);
-    this.props.history.push("/oneArticle");
+    if (editOrseeArticle === "editArticle") {
+      this.props.editArticle(articleById);
+      this.props.history.push("/editArticle");
+    }
+    if (editOrseeArticle === "seeArticle") {
+      this.props.oneArticle(articleById);
+      this.props.history.push("/oneArticle");
+    }
   };
 
   handleChange = event => {
@@ -120,11 +117,9 @@ class Article extends Component {
           />
         </div>
         <div className="row">
-          {/* Todo: faire en sorte 3 articles par rangé  */}
           {filteredArticlesByTitle.map(articleObj => {
-            console.log(articleObj);
             return (
-              <div className="card col-sm-4" key={articleObj.id}>
+              <div className="card col-sm-6 col-md-4" key={articleObj.id}>
                 <div className="">
                   <img
                     className="card-img-top"
@@ -151,7 +146,9 @@ class Article extends Component {
                     <div className="containerButton">
                       <button
                         className="btn btn-success"
-                        onClick={() => this.redirectToSeeArticle(articleObj.id)}
+                        onClick={() =>
+                          this.redirectArticle("seeArticle", articleObj.id)
+                        }
                       >
                         Voir l'article
                       </button>
@@ -168,7 +165,7 @@ class Article extends Component {
                           <button
                             className="btn btn-primary"
                             onClick={() =>
-                              this.redirectToEditArticle(articleObj.id)
+                              this.redirectArticle("editArticle", articleObj.id)
                             }
                           >
                             Modifier
