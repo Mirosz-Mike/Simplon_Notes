@@ -24,7 +24,6 @@ class Article extends Component {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
-        console.log(response);
         this.setState({ dataArticles: response.data });
       })
       .catch(error => {
