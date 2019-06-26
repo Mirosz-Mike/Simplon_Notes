@@ -7,14 +7,11 @@ import {
 } from "../../redux/actions/user_action";
 import axios from "axios";
 
-import "./Articles.css";
-
 class Article extends Component {
   state = {
     dataArticles: [],
-    message: "",
-    search: "",
-    show: false
+    success: "",
+    search: ""
   };
 
   componentDidMount() {
@@ -49,20 +46,16 @@ class Article extends Component {
       .then(response => {
         this.setState(prevState => {
           return {
-            show: true,
-            message: response.data.message,
+            success: response.data.message,
             dataArticles: prevState.dataArticles.filter(
               articleId => articleId.id !== id
             )
           };
         });
-
-        setTimeout(() => {
-          this.setState({ show: false });
-        }, 1000);
       })
       .catch(error => {
-        this.setState({ message: error.response.data.message });
+        this.props.removeToken(this.props.token);
+        this.props.history.push("/");
       });
   };
 

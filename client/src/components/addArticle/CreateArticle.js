@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
+import Modal from "../../shared/Modal/Modal";
 
 class CreateArticle extends Component {
   state = {
@@ -9,7 +10,8 @@ class CreateArticle extends Component {
     body: "",
     success: "",
     file: [],
-    messageError: ""
+    messageError: "",
+    show: false
   };
 
   handleSubmit = event => {
@@ -41,15 +43,15 @@ class CreateArticle extends Component {
           }
         })
         .then(response => {
-          console.log("message", response);
-          this.setState({ success: response.data.message });
+          this.setState({ show: true, success: response.data.message });
           setTimeout(() => {
+            this.setState({ show: false });
             this.props.history.push("/article");
-          }, 1000);
+          }, 1300);
         })
         .catch(error => {
-          console.log(error.response.data.message);
-          this.setState({ messageError: error.response.data.message });
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
         });
     }
   };
@@ -68,12 +70,12 @@ class CreateArticle extends Component {
     return (
       <div>
         <div className="CreateArticle__container">
+          <Modal show={this.state.show}>{this.state.success}</Modal>
           <form
             className="CreateArticle__container__form mt-5"
             onSubmit={this.handleSubmit}
           >
             <p>{this.state.messageError}</p>
-            <p>{this.state.success}</p>
             <label>Titre</label>
             <input
               onChange={this.handleChange}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
+import Modal from "../../shared/Modal/Modal";
 
 class EditArticle extends Component {
   state = {
@@ -11,10 +12,6 @@ class EditArticle extends Component {
     success: "",
     messageError: "",
     show: false
-  };
-
-  hideModal = () => {
-    this.setState({ show: false });
   };
 
   handleSubmit = event => {
@@ -44,10 +41,11 @@ class EditArticle extends Component {
           setTimeout(() => {
             this.setState({ show: false });
             this.props.history.push("/article");
-          }, 1000);
+          }, 1300);
         })
         .catch(error => {
-          this.setState({ messageError: error.response.data.message });
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
         });
     }
   };
@@ -61,6 +59,7 @@ class EditArticle extends Component {
   render() {
     return (
       <div className="EditArticle__container">
+        <Modal show={this.state.show}>{this.state.success}</Modal>
         <form
           className="EditArticle__container__form mt-5"
           onSubmit={this.handleSubmit}

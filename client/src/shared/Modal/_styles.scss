@@ -1,0 +1,21 @@
+.Modal__container {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .Modal__content {
+    background-color: #57a746;
+    color: white;
+    padding: 67px;
+    border-radius: 10px;
+  }
+}
+
+h3 {
+  text-align: center;
+}
