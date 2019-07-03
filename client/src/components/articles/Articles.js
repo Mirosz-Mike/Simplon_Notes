@@ -37,6 +37,8 @@ class Article extends Component {
     return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
   };
 
+  //Todo: confirmation modal quand on supprime un article
+
   deleteArticleById = id => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/articles/${id}`, {
