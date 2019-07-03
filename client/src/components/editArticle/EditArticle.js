@@ -29,7 +29,9 @@ class EditArticle extends Component {
     if (title && body) {
       axios
         .put(
-          `http://localhost:8012/articles/${this.props.editArticle.id}`,
+          `${process.env.REACT_APP_API_URL}/articles/${
+            this.props.editArticle.id
+          }`,
           article,
           {
             headers: { "x-auth-token": this.props.token }

@@ -23,7 +23,7 @@ const App = props => {
           <Route path="/register" component={Register} />
           <Route path="/article" component={Articles} />
           <Route path="/addArticle" component={CreateArticle} />
-          <Route path="/editArticle" component={EditArticle} />
+          <Route path="/editArticle/" component={EditArticle} />
           <Route path="/oneArticle" component={OneArticle} />
         </div>
       </Router>

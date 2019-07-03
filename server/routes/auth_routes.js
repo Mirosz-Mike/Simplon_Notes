@@ -23,10 +23,10 @@ route.post("/register", async (req, res) => {
         users.email,
         function(error, results, fields) {
           if (error) {
-            res.status(500).send(error.message);
+            return res.status(500).send(error.message);
           }
           if (results.length > 0) {
-            res.status(403).send({ message: "Votre email existe deja" });
+            return res.status(403).send({ message: "Votre email existe deja" });
           } else {
             if (users.password) {
               connection.query(
@@ -34,11 +34,11 @@ route.post("/register", async (req, res) => {
                 users,
                 function(error, results, fields) {
                   if (error) {
-                    res
+                    return res
                       .status(500)
                       .send("probleme avec la query " + error.message);
                   } else {
-                    res.status(200).send({
+                    return res.status(200).send({
                       message: "user enregister avec succès ",
                       user: users
                     });
@@ -46,23 +46,25 @@ route.post("/register", async (req, res) => {
                 }
               );
             } else {
-              res.status(400).send({
+              return res.status(400).send({
                 password: `Votre mot de passe doit contenir au moins
                   - 1 caractère alphabétique minuscule.
                   - 1 caractère alphabétique majuscule.
                   - 1 caractère numérique.
                   - 1 caractère spécial.
-                  - Votre mot de passe doit comporter 8 au minimum caractères`
+                  - Votre mot de passe doit comporter au minimum 8 caractères`
               });
             }
           }
         }
       );
     } else {
-      res.status(400).send({ message: "Mail non valide" });
+      return res.status(400).send({ message: "Email non valide" });
     }
   } else {
-    res.status(400).send({ message: "Veuillez remplir tout les champs" });
+    return res
+      .status(400)
+      .send({ message: "Veuillez remplir tout les champs" });
   }
 });
 
@@ -74,7 +76,7 @@ route.post("/login", (req, res) => {
     email,
     function(error, results) {
       if (error) {
-        res.status(500).send("probleme avec la query");
+        return res.status(500).send("probleme avec la requete");
       } else {
         if (results.length > 0) {
           bcrypt.compare(password, results[0].password, function(
@@ -82,7 +84,9 @@ route.post("/login", (req, res) => {
             response
           ) {
             if (!response) {
-              res.status(400).send({ message: "Password incorrect" });
+              return res
+                .status(400)
+                .send({ message: "Mot de passe incorrect" });
             } else {
               const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
                 expiresIn: "1h"
@@ -98,7 +102,7 @@ route.post("/login", (req, res) => {
             }
           });
         } else {
-          res.status(400).send({ message: "Votre email n'existe pas" });
+          return res.status(400).send({ message: "Votre email n'existe pas" });
         }
       }
     }

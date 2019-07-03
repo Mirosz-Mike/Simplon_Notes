@@ -4,7 +4,7 @@ import {
   removeUserToken,
   editArticle,
   oneArticle
-} from "../../redux/actions/user_action";
+} from "../../redux/actions/action";
 import axios from "axios";
 
 class Article extends Component {
@@ -20,7 +20,7 @@ class Article extends Component {
 
   fetchArticles() {
     axios
-      .get("http://localhost:8012/articles", {
+      .get(`${process.env.REACT_APP_API_URL}/articles`, {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
@@ -39,7 +39,7 @@ class Article extends Component {
 
   deleteArticleById = id => {
     axios
-      .delete(`http://localhost:8012/articles/${id}`, {
+      .delete(`${process.env.REACT_APP_API_URL}/articles/${id}`, {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
@@ -91,6 +91,9 @@ class Article extends Component {
     return (
       <div className="container">
         <div className="rightButton">
+          <button className="btn btn-primary mr-3">
+            Ajouter une ressource
+          </button>
           <button
             className="btn btn-success"
             onClick={() => this.redirectToAddArticle()}
@@ -111,13 +114,15 @@ class Article extends Component {
         <div className="row">
           {filteredArticlesByTitle.map(articleObj => {
             return (
-              <div className="card col-sm-6 col-md-4" key={articleObj.id}>
+              <div className="card col-sm-6 col-md-4 mb-4" key={articleObj.id}>
                 <div className="">
                   <img
                     className="card-img-top"
                     src={
                       !!articleObj.image
-                        ? articleObj.image.split(",")[0]
+                        ? `${process.env.REACT_APP_API_URL}/${
+                            articleObj.image.split(",")[0]
+                          }`
                         : process.env.PUBLIC_URL + "/simplon.png"
                     }
                     alt="Avatar"
@@ -135,36 +140,32 @@ class Article extends Component {
                       <br />
                       <p>{this.formatDate(articleObj.updated_at)}</p>
                     </div>
-                    <div className="containerButton">
-                      <button
-                        className="btn btn-success"
-                        onClick={() =>
-                          this.redirectArticle("seeArticle", articleObj.id)
-                        }
-                      >
-                        Voir l'article
-                      </button>
-                      {this.props.userId === articleObj.user_id ? (
-                        <div>
-                          <button
-                            className="btn btn-danger"
-                            onClick={() =>
-                              this.deleteArticleById(articleObj.id)
-                            }
-                          >
-                            supprimer
-                          </button>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() =>
-                              this.redirectArticle("editArticle", articleObj.id)
-                            }
-                          >
-                            Modifier
-                          </button>
-                        </div>
-                      ) : null}
-                    </div>
+                    {this.props.userId === articleObj.user_id ? (
+                      <div className="containerButton">
+                        <button
+                          className="btn btn-success"
+                          onClick={() =>
+                            this.redirectArticle("seeArticle", articleObj.id)
+                          }
+                        >
+                          Voir l'article
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => this.deleteArticleById(articleObj.id)}
+                        >
+                          supprimer
+                        </button>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() =>
+                            this.redirectArticle("editArticle", articleObj.id)
+                          }
+                        >
+                          Modifier
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>

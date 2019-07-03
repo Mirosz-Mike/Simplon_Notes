@@ -5,7 +5,7 @@ import {
   getUserToken,
   getUserName,
   getUserId
-} from "../../redux/actions/user_action";
+} from "../../redux/actions/action";
 
 class Login extends Component {
   state = {
@@ -23,7 +23,7 @@ class Login extends Component {
     };
 
     axios
-      .post("http://localhost:8012/auth/login", user)
+      .post(`${process.env.REACT_APP_API_URL}/auth/login`, user)
       .then(response => {
         this.props.availableToken(response.data.token);
         this.props.availableName(response.data.name);

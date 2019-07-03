@@ -6,9 +6,10 @@ class Register extends Component {
     name: "",
     email: "",
     password: "",
-    userMsg: ""
+    userMsg: "",
+    validPass: false
   };
- 
+
   handleSubmit = event => {
     event.preventDefault();
 
@@ -19,7 +20,7 @@ class Register extends Component {
     };
 
     axios
-      .post("http://localhost:8012/auth/register", user)
+      .post(`${process.env.REACT_APP_API_URL}/auth/register`, user)
       .then(response => {
         this.setState({ userMsg: response.data.message });
         setTimeout(() => {
@@ -32,6 +33,20 @@ class Register extends Component {
   };
 
   handleChange = event => {
+    if (event.target.name.includes("password")) {
+      const password = event.target.value;
+      const passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      const checkPassword = passwordReg.test(password);
+      if (checkPassword) {
+        return this.setState({
+          validPass: true,
+          userMsg: ""
+        });
+      }
+      this.setState({
+        validPass: false
+      });
+    }
     this.setState({
       [event.target.name]: event.target.value,
       userMsg: ""
@@ -39,62 +54,86 @@ class Register extends Component {
   };
 
   render() {
-    const { name, email, password, userMsg } = this.state;
+    const { name, email, password, userMsg, validPass } = this.state;
 
     return (
       <div>
         <nav className="Register__navbar">
-          <a className="btn btn-outline-dark" href="/">Accueil</a>
+          <a className="btn btn-outline-dark" href="/">
+            Accueil
+          </a>
         </nav>
         <div className="Register__container">
           <div className="row">
             <div className="col-md-6 Register__background__color">
               <div className="Register__content__left">
-              <h1 className="title-h2">Inscription</h1>
-              <p className="text">Faut bien s'inscrire</p>
+                <h1 className="title-h2">Inscription</h1>
+                <p className="text">Faut bien s'inscrire</p>
+              </div>
             </div>
-          </div>
-          <div className="col-md-6">
-          <div className="Register__content__right">
-            {userMsg}
-            <form onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <label>Pseudo</label>
-                <input
-                  className="form-control"
-                  onChange={this.handleChange}
-                  value={name}
-                  name="name"
-                  type="text"
-                  placeholder="Pseudo"
-                  required
-                />
-                </div>
-                <div className="form-group">
-                  <label>Email</label>
-                  <input 
-                    className="form-control"
-                    onChange={this.handleChange}
-                    value={email}
-                    type="text"
-                    name="email"
-                    placeholder="Email"
-                    required/>
-                </div>
-                <div className="form-group">
-                  <label>Mot de passe</label>
-                  <input  
-                    className="form-control"
-                    onChange={this.handleChange}
-                    value={password}
-                    name="password"
-                    type="password"
-                    placeholder="Mot de passe"
-                    required/>
-                </div>
-                <button onSubmit={this.handleSubmit} type="submit" className="btn btn-primary">M'inscrire</button>
-              </form>
-             </div>
+            <div className="col-md-6">
+              <div className="Register__content__right">
+                {userMsg}
+                <form onSubmit={this.handleSubmit}>
+                  <div className="form-group">
+                    <label>Pseudo</label>
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={name}
+                      name="name"
+                      type="text"
+                      placeholder="Pseudo"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={email}
+                      type="text"
+                      name="email"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mot de passe</label>
+                    <input
+                      className={
+                        validPass
+                          ? "form-control is-valid"
+                          : "form-control is-invalid"
+                      }
+                      onChange={this.handleChange}
+                      value={password}
+                      name="password"
+                      type="password"
+                      placeholder="Mot de passe"
+                      required
+                    />
+                    <p className="mt-2">
+                      {validPass
+                        ? ""
+                        : `Votre mot de passe doit contenir au moins
+                          - 1 caractère alphabétique minuscule.
+                          - 1 caractère alphabétique majuscule.
+                          - 1 caractère numérique.
+                          - 1 caractère spécial.
+                          - Votre mot de passe doit comporter au minimum 8 caractères`}
+                    </p>
+                  </div>
+                  <button
+                    onSubmit={this.handleSubmit}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
+                    M'inscrire
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>

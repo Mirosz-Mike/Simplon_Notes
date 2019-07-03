@@ -14,10 +14,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage: storage
+  storage: storage,
+  limits: {
+    fieldSize: 8 * 1024 * 1024 // 8MB
+  }
 }).array("myImage", 4);
 
-route.get("/", checkAuth, (req, res) => {
+route.use(checkAuth);
+
+route.get("/", (req, res) => {
   connection.query("SELECT * FROM simplon_notes.articles", function(
     err,
     result
@@ -27,43 +32,45 @@ route.get("/", checkAuth, (req, res) => {
   });
 });
 
-route.post("/", checkAuth, (req, res) => {
+route.post("/", (req, res) => {
   upload(req, res, err => {
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
+    const arrImage = [];
 
     if (err) {
       console.log(err);
     }
 
-    if (req.files) {
-      const arrImage = [];
-      for (let i = 0; i < req.files.length; i++) {
-        arrImage.push(`http://localhost:8012/uploads/${req.files[i].filename}`);
-      }
-      connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, image, body) VALUES (
-        ${user_id},
-        "${author}",
-        "${title}",
-        "${subtitle}",
-        "${arrImage}",
-        "${body}"
-        )`);
+    for (let i = 0; i < req.files.length; i++) {
+      arrImage.push(`uploads/${req.files[i].filename}`);
     }
+    connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, image, body) VALUES (
+      ${user_id},
+      "${author}",
+      "${title}",
+      "${subtitle}",
+      "${arrImage}",
+      "${body}"
+      )`);
+
     return res.status(200).send({ message: "Article enregister avec succès" });
   });
 });
 
-route.put("/:id", checkAuth, (req, res) => {
+route.put("/:id", (req, res) => {
   const { title, subtitle, image, body } = req.body;
   const articleId = req.params.id;
   connection.query(
-    `SELECT * FROM simplon_notes.articles WHERE id = ${articleId}`,
+    "SELECT * FROM simplon_notes.articles WHERE id = ?",
+    articleId,
     function(err, result) {
       if (err) throw err;
       if (result.length > 0) {
+        const params = [title, subtitle, image, body, articleId];
         connection.query(
-          `UPDATE simplon_notes.articles SET title = "${title}", subtitle = "${subtitle}", image = "${image}", body = "${body}" WHERE id = ${articleId}`,
+          "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, image = ?, body = ? WHERE id = ?",
+          params,
           function(err, result) {
             if (err) throw err;
             else {
@@ -83,14 +90,16 @@ route.put("/:id", checkAuth, (req, res) => {
   );
 });
 
-route.delete("/:id", checkAuth, (req, res) => {
+route.delete("/:id", (req, res) => {
   const articleId = req.params.id;
   connection.query(
-    `SELECT * FROM simplon_notes.articles WHERE id = ${articleId}`,
+    "SELECT * FROM simplon_notes.articles WHERE id = ?",
+    articleId,
     function(err, result) {
       if (result.length > 0) {
         connection.query(
-          `DELETE FROM simplon_notes.articles WHERE id = ${articleId}`,
+          "DELETE FROM simplon_notes.articles WHERE id = ?",
+          articleId,
           function(err, result) {
             if (err) throw err;
             return res.status(200).send({
@@ -100,7 +109,7 @@ route.delete("/:id", checkAuth, (req, res) => {
           }
         );
       } else {
-        return res.status(404).send({
+        return res.status(400).send({
           message: "Votre article n'existe pas ou a été supprimé"
         });
       }

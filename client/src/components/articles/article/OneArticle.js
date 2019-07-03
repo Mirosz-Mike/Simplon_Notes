@@ -26,7 +26,7 @@ class OneArticle extends Component {
             className="mb-3"
             src={
               !!image
-                ? image.split(",")[0]
+                ? `${process.env.REACT_APP_API_URL}/${image.split(",")[0]}`
                 : process.env.PUBLIC_URL + "/simplon.png"
             }
             alt="Avatar"
@@ -43,7 +43,7 @@ class OneArticle extends Component {
               className="col-md-6"
               src={
                 !!image
-                  ? image.split(",")[1]
+                  ? `${process.env.REACT_APP_API_URL}/${image.split(",")[1]}`
                   : process.env.PUBLIC_URL + "/simplon.png"
               }
               alt="Avatar"

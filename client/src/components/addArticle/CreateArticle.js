@@ -36,7 +36,7 @@ class CreateArticle extends Component {
 
     if (title && body) {
       axios
-        .post("http://localhost:8012/articles/", formData, {
+        .post(`${process.env.REACT_APP_API_URL}/articles/`, formData, {
           headers: {
             "content-type": "multipart/form-data",
             "x-auth-token": this.props.token

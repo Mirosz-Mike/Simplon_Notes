@@ -5,7 +5,7 @@ import {
   GET_USER_ID,
   EDIT_ARTICLE,
   GET_ONE_ARTICLE
-} from "../actions/user_action";
+} from "../actions/action";
 
 const DEFAULT = {
   userName: "",
