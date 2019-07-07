@@ -2,6 +2,7 @@ const route = require("express").Router();
 const connection = require("../config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const uuidv1 = require("uuid/v1");
 require("dotenv").config();
 
 route.post("/register", async (req, res) => {
@@ -12,7 +13,7 @@ route.post("/register", async (req, res) => {
   const hash = await bcrypt.hash(password, salt);
 
   if (name && email && password) {
-    let users = {
+    const user = {
       name: name,
       email: email,
       password: hash
@@ -20,7 +21,7 @@ route.post("/register", async (req, res) => {
     if (validEmail.test(email)) {
       connection.query(
         "SELECT email FROM simplon_notes.users WHERE email = ?",
-        users.email,
+        user.email,
         function(error, results, fields) {
           if (error) {
             return res.status(500).send(error.message);
@@ -28,19 +29,19 @@ route.post("/register", async (req, res) => {
           if (results.length > 0) {
             return res.status(403).send({ message: "Votre email existe deja" });
           } else {
-            if (users.password) {
+            if (user.password) {
               connection.query(
-                "INSERT INTO simplon_notes.users SET ?",
-                users,
+                "INSERT INTO simplon_notes.users SET id = ?, name = ?, email = ?, password = ?",
+                [uuidv1(), user.name, user.email, user.password],
                 function(error, results, fields) {
                   if (error) {
                     return res
                       .status(500)
-                      .send("probleme avec la query " + error.message);
+                      .send("probleme avec la requete " + error);
                   } else {
                     return res.status(200).send({
                       message: "user enregister avec succès ",
-                      user: users
+                      user: user
                     });
                   }
                 }

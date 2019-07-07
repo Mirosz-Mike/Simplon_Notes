@@ -18,7 +18,7 @@ const upload = multer({
   limits: {
     fieldSize: 8 * 1024 * 1024 // 8MB
   }
-}).array("myImage", 4);
+}).array("myImage", 4); // 4 est la limite que je fixe
 
 route.use(checkAuth);
 
@@ -46,13 +46,13 @@ route.post("/", (req, res) => {
       arrImage.push(`uploads/${req.files[i].filename}`);
     }
     connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, image, body) VALUES (
-      ${user_id},
-      "${author}",
-      "${title}",
-      "${subtitle}",
-      "${arrImage}",
-      "${body}"
-      )`);
+        "${user_id}",
+        "${author}",
+        "${title}",
+        "${subtitle}",
+        "${arrImage}",
+        "${body}"
+        )`);
 
     return res.status(200).send({ message: "Article enregister avec succès" });
   });

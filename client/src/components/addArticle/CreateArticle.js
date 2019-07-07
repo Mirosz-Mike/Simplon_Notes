@@ -50,8 +50,12 @@ class CreateArticle extends Component {
           }, 1300);
         })
         .catch(error => {
-          this.props.removeToken(this.props.token);
-          this.props.history.push("/");
+          const userDeconnect = error.response.status === 401;
+          if (userDeconnect) {
+            alert(error.response.data.message);
+            this.props.removeToken(this.props.token);
+            this.props.history.push("/");
+          }
         });
     }
   };

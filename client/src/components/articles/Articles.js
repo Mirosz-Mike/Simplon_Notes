@@ -11,12 +11,19 @@ class Article extends Component {
   state = {
     dataArticles: [],
     success: "",
-    search: ""
+    search: "",
+    show: false,
+    articleById: "",
+    file: []
   };
 
   componentDidMount() {
     this.fetchArticles();
   }
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
 
   fetchArticles() {
     axios
@@ -27,8 +34,12 @@ class Article extends Component {
         this.setState({ dataArticles: response.data });
       })
       .catch(error => {
-        this.props.removeToken(this.props.token);
-        this.props.history.push("/");
+        const userDeconnect = error.response.status === 401;
+        if (userDeconnect) {
+          alert(error.response.data.message);
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
+        }
       });
   }
 
@@ -37,7 +48,7 @@ class Article extends Component {
     return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
   };
 
-  //Todo: confirmation modal quand on supprime un article
+  //Todo : gerer les error dans le catch si 404 user deconnecter etc
 
   deleteArticleById = id => {
     axios
@@ -47,6 +58,7 @@ class Article extends Component {
       .then(response => {
         this.setState(prevState => {
           return {
+            show: false,
             success: response.data.message,
             dataArticles: prevState.dataArticles.filter(
               articleId => articleId.id !== id
@@ -79,6 +91,10 @@ class Article extends Component {
     }
   };
 
+  onChange = event => {
+    this.setState({ file: event.target.files });
+  };
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -87,11 +103,31 @@ class Article extends Component {
 
   render() {
     const { dataArticles, search } = this.state;
+    console.log(this.state.file);
+
     const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
     return (
       <div className="container">
+        {this.state.show ? (
+          <div className="Modal__container">
+            <div className="Modal__main">
+              <h4>Êtes-vous sûr de vouloir supprimer ?</h4>
+              <div className="Modal__confirmModal">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => this.deleteArticleById(this.state.articleById)}
+                >
+                  Oui
+                </button>
+                <button className="btn btn-danger" onClick={this.hideModal}>
+                  Non
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
         <div className="rightButton">
           <button className="btn btn-primary mr-3">
             Ajouter une ressource
@@ -154,7 +190,12 @@ class Article extends Component {
                         </button>
                         <button
                           className="btn btn-danger"
-                          onClick={() => this.deleteArticleById(articleObj.id)}
+                          onClick={() =>
+                            this.setState({
+                              show: true,
+                              articleById: articleObj.id
+                            })
+                          }
                         >
                           supprimer
                         </button>

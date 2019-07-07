@@ -7,7 +7,7 @@ class Register extends Component {
     email: "",
     password: "",
     userMsg: "",
-    validPass: false
+    validPass: null
   };
 
   handleSubmit = event => {
@@ -19,34 +19,31 @@ class Register extends Component {
       password: this.state.password
     };
 
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/auth/register`, user)
-      .then(response => {
-        this.setState({ userMsg: response.data.message });
-        setTimeout(() => {
-          this.props.history.push("/login");
-        }, 1000);
-      })
-      .catch(error => {
-        this.setState({ userMsg: error.response.data.message });
+    const passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+    const checkPassword = passwordReg.test(user.password);
+
+    if (checkPassword) {
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/auth/register`, user)
+        .then(response => {
+          this.setState({ userMsg: response.data.message, validPass: true });
+          setTimeout(() => {
+            this.props.history.push("/login");
+          }, 1000);
+        })
+        .catch(error => {
+          console.log(error.response);
+          this.setState({ userMsg: error.response });
+        });
+    } else {
+      this.setState({
+        validPass: false,
+        userMsg: ""
       });
+    }
   };
 
   handleChange = event => {
-    if (event.target.name.includes("password")) {
-      const password = event.target.value;
-      const passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      const checkPassword = passwordReg.test(password);
-      if (checkPassword) {
-        return this.setState({
-          validPass: true,
-          userMsg: ""
-        });
-      }
-      this.setState({
-        validPass: false
-      });
-    }
     this.setState({
       [event.target.name]: event.target.value,
       userMsg: ""

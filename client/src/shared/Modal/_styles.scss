@@ -1,19 +1,39 @@
 .Modal__container {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .Modal__content {
+  .Modal__confirmModal {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .Modal__main {
+    position: fixed;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #57a746;
     color: white;
     padding: 67px;
     border-radius: 10px;
   }
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
 }
 
 h3 {

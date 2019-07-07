@@ -31,7 +31,8 @@ class Login extends Component {
         this.props.history.push("/");
       })
       .catch(error => {
-        this.setState({ userMsg: error.response.data.message });
+        console.log(error.response);
+        this.setState({ userMsg: error.response });
       });
   };
 
@@ -44,6 +45,7 @@ class Login extends Component {
 
   render() {
     const { email, password, userMsg } = this.state;
+
     return (
       <div>
         <nav className="Login__navbar">

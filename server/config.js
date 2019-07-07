@@ -18,14 +18,14 @@ connection.connect(err => {
   });
 
   const createTableUsers = `CREATE TABLE IF NOT EXISTS simplon_notes.users (
-		id int NOT NULL AUTO_INCREMENT,
+		id varchar(36) NOT NULL,
 		name varchar(255) NOT NULL,
 		email varchar(255) NOT NULL,
 		password varchar(255) NOT NULL,
 		create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
-	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;`;
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;`;
 
   connection.query(createTableUsers, err => {
     if (err) throw err;
@@ -34,7 +34,7 @@ connection.connect(err => {
 
   const createTableArticles = `CREATE TABLE IF NOT EXISTS simplon_notes.articles (
 		id int NOT NULL AUTO_INCREMENT,
-		user_id int NOT NULL,
+		user_id varchar(36) NOT NULL,
     title varchar(255) NOT NULL,
     author varchar(255) NOT NULL,
     subtitle varchar(255) NOT NULL,
@@ -49,6 +49,23 @@ connection.connect(err => {
   connection.query(createTableArticles, err => {
     if (err) throw err;
     console.log("tables articles created");
+  });
+
+  const createTableResources = `CREATE TABLE IF NOT EXISTS simplon_notes.resources (
+		id int NOT NULL AUTO_INCREMENT,
+    user_id varchar(36) NOT NULL,
+    name varchar(255) NOT NULL,
+    type varchar(255) NOT NULL,
+    size int NOT NULL,
+		create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;`;
+
+  connection.query(createTableResources, err => {
+    if (err) throw err;
+    console.log("tables resources created");
   });
 });
 
