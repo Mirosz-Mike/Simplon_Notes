@@ -10,6 +10,7 @@ import axios from "axios";
 class Article extends Component {
   state = {
     dataArticles: [],
+    dataResources: [],
     success: "",
     search: "",
     show: false,
@@ -19,6 +20,7 @@ class Article extends Component {
 
   componentDidMount() {
     this.fetchArticles();
+    this.fetchResources();
   }
 
   hideModal = () => {
@@ -43,12 +45,29 @@ class Article extends Component {
       });
   }
 
+  fetchResources() {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/resources`, {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        console.log(response);
+        this.setState({ dataResources: response.data });
+      })
+      .catch(error => {
+        const userDeconnect = error.response.status === 401;
+        if (userDeconnect) {
+          alert(error.response.data.message);
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
+        }
+      });
+  }
+
   formatDate = date => {
     const formatDate = new Date(date);
     return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
   };
-
-  //Todo : gerer les error dans le catch si 404 user deconnecter etc
 
   deleteArticleById = id => {
     axios
@@ -67,13 +86,22 @@ class Article extends Component {
         });
       })
       .catch(error => {
-        this.props.removeToken(this.props.token);
-        this.props.history.push("/");
+        console.log(error.response);
+        const userDeconnect = error.response.status === 401;
+        if (userDeconnect) {
+          alert(error.response.data.message);
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
+        }
       });
   };
 
   redirectToAddArticle = () => {
     this.props.history.push("/addArticle");
+  };
+
+  redirectToAddResource = () => {
+    this.props.history.push("/addResource");
   };
 
   redirectArticle = (editOrseeArticle, id) => {
@@ -102,8 +130,8 @@ class Article extends Component {
   };
 
   render() {
-    const { dataArticles, search } = this.state;
-    console.log(this.state.file);
+    const { dataArticles, search, dataResource } = this.state;
+    console.log(dataResource);
 
     const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
@@ -129,7 +157,10 @@ class Article extends Component {
           </div>
         ) : null}
         <div className="rightButton">
-          <button className="btn btn-primary mr-3">
+          <button
+            className="btn btn-primary mr-3"
+            onClick={() => this.redirectToAddResource()}
+          >
             Ajouter une ressource
           </button>
           <button
@@ -211,6 +242,22 @@ class Article extends Component {
                     ) : null}
                   </div>
                 </div>
+              </div>
+            );
+          })}
+
+          {/*TODO mettre les PDF sous forme de carte avec le logo PDF*/}
+          {this.state.dataResources.map(resource => {
+            return (
+              <div>
+                <h1>PDF</h1>
+                <a
+                  className="text-dark"
+                  href={`${process.env.REACT_APP_API_URL}/${resource.name}`}
+                  target="_blank"
+                >
+                  voir ressource
+                </a>
               </div>
             );
           })}

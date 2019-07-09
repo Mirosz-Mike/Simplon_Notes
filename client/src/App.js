@@ -7,6 +7,7 @@ import Home from "./components/home/Home";
 import Register from "./components/register/Register";
 import Articles from "./components/articles/Articles";
 import CreateArticle from "./components/addArticle/CreateArticle";
+import CreateResource from "./components/addResource/CreateResource";
 import EditArticle from "./components/editArticle/EditArticle";
 import OneArticle from "./components/articles/article/OneArticle";
 
@@ -22,6 +23,7 @@ const App = props => {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/article" component={Articles} />
+          <Route path="/addResource" component={CreateResource} />
           <Route path="/addArticle" component={CreateArticle} />
           <Route path="/editArticle/" component={EditArticle} />
           <Route path="/oneArticle" component={OneArticle} />
