@@ -7,57 +7,46 @@ import {
 } from "../../redux/actions/action";
 import axios from "axios";
 
-class Article extends Component {
+class HomeData extends Component {
   state = {
-    dataArticles: [],
     dataResources: [],
     success: "",
     search: "",
     show: false,
-    articleById: "",
-    resourceById: "",
+    data_id: "",
+    type_resource: "",
     file: []
   };
 
   componentDidMount() {
-    this.fetchArticles();
-    this.fetchResources();
+    this.fetchData();
   }
 
   hideModal = () => {
     this.setState({ show: false });
   };
 
-  fetchArticles() {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/articles`, {
+  fetchData() {
+    const urlArticle = axios.get(`${process.env.REACT_APP_API_URL}/articles`, {
+      headers: { "x-auth-token": this.props.token }
+    });
+    const urlResource = axios.get(
+      `${process.env.REACT_APP_API_URL}/resources`,
+      {
         headers: { "x-auth-token": this.props.token }
-      })
-      .then(response => {
-        console.log(response)
-        this.setState({ dataArticles: response.data });
-      })
-      .catch(error => {
-        const userDeconnect = error.response.status === 401;
-        if (userDeconnect) {
-          alert(error.response.data.message);
-          this.props.removeToken(this.props.token);
-          this.props.history.push("/");
-        }
-      });
-  }
+      }
+    );
 
-  fetchResources() {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/resources`, {
-        headers: { "x-auth-token": this.props.token }
-      })
+    Promise.all([urlArticle, urlResource])
       .then(response => {
-        console.log(response);
-        this.setState({ dataResources: response.data });
+        const tab = [];
+        response.forEach(data => tab.push(data.data));
+        const allData = tab[0].concat(tab[1]);
+
+        this.setState({ dataResources: allData });
       })
       .catch(error => {
-        const userDeconnect = error.response.status === 401;
+        const userDeconnect = error.response.data;
         if (userDeconnect) {
           alert(error.response.data.message);
           this.props.removeToken(this.props.token);
@@ -71,36 +60,12 @@ class Article extends Component {
     return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
   };
 
-  deleteArticleById = id => {
+  deleteDataById = id => {
+    const articleOrResource = this.state.type_resource.includes("article")
+      ? `${process.env.REACT_APP_API_URL}/articles/${id}`
+      : `${process.env.REACT_APP_API_URL}/resources/${id}`;
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/articles/${id}`, {
-        headers: { "x-auth-token": this.props.token }
-      })
-      .then(response => {
-        this.setState(prevState => {
-          return {
-            show: false,
-            success: response.data.message,
-            dataArticles: prevState.dataArticles.filter(
-              articleId => articleId.id !== id
-            )
-          };
-        });
-      })
-      .catch(error => {
-        console.log(error.response);
-        const userDeconnect = error.response.status === 401;
-        if (userDeconnect) {
-          alert(error.response.data.message);
-          this.props.removeToken(this.props.token);
-          this.props.history.push("/");
-        }
-      });
-  };
-
-  deleteResourceById = id => {
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}/resources/${id}`, {
+      .delete(articleOrResource, {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
@@ -109,13 +74,12 @@ class Article extends Component {
             show: false,
             success: response.data.message,
             dataResources: prevState.dataResources.filter(
-              resourceId => resourceId.id !== id
+              articleId => articleId.id !== id
             )
           };
         });
       })
       .catch(error => {
-        console.log(error.response);
         const userDeconnect = error.response.status === 401;
         if (userDeconnect) {
           alert(error.response.data.message);
@@ -134,7 +98,7 @@ class Article extends Component {
   };
 
   redirectArticle = (editOrseeArticle, id) => {
-    const articleById = this.state.dataArticles.find(articleId => {
+    const articleById = this.state.dataResources.find(articleId => {
       return articleId.id === id;
     });
 
@@ -159,11 +123,12 @@ class Article extends Component {
   };
 
   render() {
-    const { dataArticles, search, dataResource } = this.state;
+    const { dataResources, search, data_id } = this.state;
 
-    const filteredArticlesByTitle = dataArticles.filter(article => {
+    const filteredDataByTitle = dataResources.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
+
     return (
       <div className="container">
         {this.state.show ? (
@@ -173,7 +138,7 @@ class Article extends Component {
               <div className="Modal__confirmModal">
                 <button
                   className="btn btn-primary"
-                  onClick={() => this.deleteArticleById(this.state.articleById)}
+                  onClick={() => this.deleteDataById(data_id)}
                 >
                   Oui
                 </button>
@@ -209,16 +174,16 @@ class Article extends Component {
           />
         </div>
         <div className="row">
-          {filteredArticlesByTitle.map(articleObj => {
-            return (
-              <div className="card col-sm-6 col-md-4 mb-4" key={articleObj.id}>
+          {filteredDataByTitle.map(data => {
+            return data.type_resource.includes("article") ? (
+              <div className="card col-sm-6 col-md-4 mb-4" key={data.id}>
                 <div className="">
                   <img
                     className="card-img-top"
                     src={
-                      !!articleObj.image
+                      !!data.image
                         ? `${process.env.REACT_APP_API_URL}/${
-                            articleObj.image.split(",")[0]
+                            data.image.split(",")[0]
                           }`
                         : process.env.PUBLIC_URL + "/simplon.png"
                     }
@@ -226,35 +191,36 @@ class Article extends Component {
                     style={{ width: "100%" }}
                   />
                   <div className="card-body">
-                    <p className="card-title">De {articleObj.author}</p>
-                    <p className="subtitle is-6">@{articleObj.author}</p>
-                    <h4 className="title-h4">{articleObj.title}</h4>
+                    <p className="card-title">De {data.author}</p>
+                    <p className="subtitle is-6">@{data.author}</p>
+                    <h4 className="title-h4">{data.title}</h4>
                     <div className="card-text">
-                      {articleObj.body.length < 100
+                      {data.body.length < 100
                         ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..."
-                        : articleObj.body}
+                        : data.body}
                       <br />
                       <br />
-                      <p>{this.formatDate(articleObj.updated_at)}</p>
+                      <p>{this.formatDate(data.updated_at)}</p>
                       <div className="containerButton">
                         <button
                           className="btn btn-success"
                           onClick={() =>
-                            this.redirectArticle("seeArticle", articleObj.id)
+                            this.redirectArticle("seeArticle", data.id)
                           }
                         >
                           Voir l'article
                         </button>
                       </div>
                     </div>
-                    {this.props.userId === articleObj.user_id ? (
+                    {this.props.userId === data.user_id ? (
                       <div>
                         <button
                           className="btn btn-danger"
                           onClick={() =>
                             this.setState({
                               show: true,
-                              articleById: articleObj.id
+                              data_id: data.id,
+                              type_resource: data.type_resource
                             })
                           }
                         >
@@ -263,7 +229,7 @@ class Article extends Component {
                         <button
                           className="btn btn-primary"
                           onClick={() =>
-                            this.redirectArticle("editArticle", articleObj.id)
+                            this.redirectArticle("editArticle", data.id)
                           }
                         >
                           Modifier
@@ -273,76 +239,56 @@ class Article extends Component {
                   </div>
                 </div>
               </div>
-            );
-          })}
-          {/* contrer faille upload avec includes si .js ou .php .rb a mettre dans article*/}
-          {this.state.show ? (
-          <div className="Modal__container">
-            <div className="Modal__main">
-              <h4>Êtes-vous sûr de vouloir supprimer ?</h4>
-              <div className="Modal__confirmModal">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => this.deleteResourceById(this.state.resourceById)}
-                >
-                  Oui
-                </button>
-                <button className="btn btn-danger" onClick={this.hideModal}>
-                  Non
-                </button>
-              </div>
-            </div>
-          </div>
-          ) : null}
-          {this.state.dataResources.map(resource => {
-            console.log(resource)
-            return (
-              <div className="card col-sm-6 col-md-4 mb-4" key={resource.id}>
+            ) : data.type_resource.includes("ressource") ? (
+              <div className="card col-sm-6 col-md-4 mb-4" key={data.id}>
                 <img
-                    className="card-img-top"
-                    src="https://www.sterkmiddendrenthe.nl/wp-content/uploads/2017/06/pdf-icon-png-17.png"
-                    alt="Avatar"
-                    style={{ width: "100%" }}
-                  />
+                  className="card-img-top"
+                  src="https://www.sterkmiddendrenthe.nl/wp-content/uploads/2017/06/pdf-icon-png-17.png"
+                  alt="Avatar"
+                  style={{ width: "100%" }}
+                />
                 <div className="card-body">
-                  <p className="card-title">De {resource.author}</p>
-                  <p className="subtitle is-6">@{resource.author}</p>
-                  <h4 className="title-h4">{resource.title}</h4>
-                  <p>{this.formatDate(resource.updated_at)}</p>
+                  <p className="card-title">De {data.author}</p>
+                  <p className="subtitle is-6">@{data.author}</p>
+                  <h4 className="title-h4">{data.title}</h4>
+                  <p>{this.formatDate(data.updated_at)}</p>
                   <div className="card-text">
                     <a
                       className="btn btn-success"
-                      href={`${process.env.REACT_APP_API_URL}/${resource.nameResource}`}
+                      href={`${process.env.REACT_APP_API_URL}/${
+                        data.nameResource
+                      }`}
                       target="_blank"
-                      >
+                      rel="noopener noreferrer"
+                    >
                       voir ressource
                     </a>
-                    {this.props.userId === resource.user_id ? (
-                    <div>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() =>
-                          this.setState({
-                            show: true,
-                            resourceById: resource.id
-                          })
-                        }
-                      >
-                        supprimer
-                      </button>
-                    </div>
-                  ) : null}
+                    {this.props.userId === data.user_id ? (
+                      <div>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() =>
+                            this.setState({
+                              show: true,
+                              data_id: data.id,
+                              type_resource: data.type_resource
+                            })
+                          }
+                        >
+                          supprimer
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
-              );
-            })}
+            ) : null;
+          })}
         </div>
       </div>
     );
   }
 }
-
 
 function mapStateToProps(state) {
   return {
@@ -369,4 +315,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Article);
+)(HomeData);

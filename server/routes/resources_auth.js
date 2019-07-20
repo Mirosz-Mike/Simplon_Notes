@@ -43,26 +43,33 @@ route.post("/", (req, res) => {
     }
 
     // check la faille upload
-    const fileExtension = ['.js' , '.php' , '.rb']
-    const fileNameExtension = req.file.originalname
+    const extensionFormat = [".js", ".php", ".rb"];
+    const fileNameExtension = req.file.originalname;
 
-    const test = fileExtension.map(ex => {
-      return fileNameExtension.includes(ex)
-    }).includes(true)
+    const checkBadFormat = extensionFormat
+      .map(extension => {
+        return fileNameExtension.includes(extension);
+      })
+      .includes(true);
 
-    if (!test) {  
-      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, nameResource, type, size) VALUES (
+    if (!checkBadFormat) {
+      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, nameResource, type, size, type_resource) VALUES (
           "${uuidv1()}",
           "${user_id}",
           "${title}",
           "${author}",
           "uploads/${req.file.filename}",
           "${req.file.mimetype}",
-          ${req.file.size}
+          ${req.file.size},
+          "ressource"
       )`);
-      return res.status(200).send({ message: "Ressource enregister avec succès" });
-    } 
-    return res.status(404).send({ message : "Ressource non valide à cause du format" })
+      return res
+        .status(200)
+        .send({ message: "Ressource enregister avec succès" });
+    }
+    return res
+      .status(404)
+      .send({ message: "Ressource non valide à cause du format" });
   });
 });
 

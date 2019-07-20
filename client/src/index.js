@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import rootReducer from "./redux/reducers/root_reducer";
 import { loadState, saveState } from "./localStorage";
-import "./index.css";
 
 const persistedState = loadState();
 const devtool =

@@ -37,26 +37,41 @@ route.post("/", (req, res) => {
   upload(req, res, err => {
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
-    const arrImage = [];
+
+    const extensionFormat = [".js", ".php", ".rb"];
+    const fileNameExtension = req.files.map(image => image.originalname);
+
+    const checkBadFormat = extensionFormat.map(extension => {
+      return fileNameExtension
+        .map(fileExtension => fileExtension.includes(extension))
+        .includes(true);
+    });
 
     if (err) {
       console.log(err);
     }
 
-    for (let i = 0; i < req.files.length; i++) {
-      arrImage.push(`uploads/${req.files[i].filename}`);
+    if (!checkBadFormat.includes(true)) {
+      for (let i = 0; i < req.files.length; i++) {
+        connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, image_name, body, type_resource) VALUES (
+            "${uuidv1()}",
+            "${user_id}",
+            "${author}",
+            "${title}",
+            "${subtitle}",
+            "uploads/${req.files[i].filename}",
+            "${req.files[i].originalname}",
+            "${body}",
+            "article"
+            )`);
+      }
+      return res
+        .status(200)
+        .send({ message: "Article enregister avec succès" });
     }
-    connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, body) VALUES (
-        "${uuidv1()}",
-        "${user_id}",
-        "${author}",
-        "${title}",
-        "${subtitle}",
-        "${arrImage}",
-        "${body}"
-        )`);
-
-    return res.status(200).send({ message: "Article enregister avec succès" });
+    return res
+      .status(404)
+      .send({ message: "Image non valide à cause du format" });
   });
 });
 

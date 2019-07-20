@@ -7,12 +7,17 @@ class EditArticle extends Component {
   state = {
     title: this.props.editArticle.title,
     subTitle: this.props.editArticle.subtitle,
-    image: this.props.editArticle.image,
+    image: [this.props.editArticle.image],
+    image_name: [],
     body: this.props.editArticle.body,
     success: "",
     messageError: "",
     show: false
   };
+
+  componentDidMount() {
+    this.setState({ image_name: [this.props.editArticle.image_name] });
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -56,6 +61,10 @@ class EditArticle extends Component {
     }
   };
 
+  removeImage = image_name => {
+    console.log("dans la fonction");
+  };
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -63,13 +72,11 @@ class EditArticle extends Component {
   };
 
   render() {
+    console.log(this.state.image_name);
     return (
       <div className="EditArticle__container">
         <Modal show={this.state.show}>{this.state.success}</Modal>
-        <form
-          className="EditArticle__container__form mt-5"
-          onSubmit={this.handleSubmit}
-        >
+        <form className="EditArticle__container__form mt-5">
           <label>Titre</label>
           <input
             onChange={this.handleChange}
@@ -90,13 +97,30 @@ class EditArticle extends Component {
             className="EditArticle__container__input"
             required
           />
+          <div className="EditArticle__container__align__image">
+            {this.state.image_name.map(image => {
+              return (
+                <div
+                  className="EditArticle__container__align__image"
+                  key={image.id}
+                >
+                  <p>{image}</p>
+                  <button
+                    onClick={() => this.removeImage(image)}
+                    className="btn btn-danger"
+                  >
+                    Supprimer cette photo
+                  </button>
+                </div>
+              );
+            })}
+          </div>
           <label>Image</label>
           <input
             type="file"
             name="image"
             placeholder="image"
             className="form-control-file"
-            required
           />
           <label>Corps</label>
           <textarea

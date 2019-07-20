@@ -51,6 +51,10 @@ class CreateArticle extends Component {
         })
         .catch(error => {
           const userDeconnect = error.response.status === 401;
+          const fileExtension = error.response.status === 404;
+          if (fileExtension) {
+            this.setState({ messageError: error.response.data.message });
+          }
           if (userDeconnect) {
             alert(error.response.data.message);
             this.props.removeToken(this.props.token);

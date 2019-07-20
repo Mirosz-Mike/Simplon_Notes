@@ -20,6 +20,13 @@
     height: 30px;
   }
 
+  .EditArticle__container__align__image {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+  }
+
   .EditArticle__container__buttons {
     display: flex;
     justify-content: space-between;
