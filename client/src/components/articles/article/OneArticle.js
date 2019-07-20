@@ -40,14 +40,13 @@ class OneArticle extends Component {
               src={
                 !!image
                   ? typeof image.split(",")[1] === "undefined"
-                    ? process.env.PUBLIC_URL + "/simplon.png"
+                    ? null
                     : `${process.env.REACT_APP_API_URL}/${image.split(",")[1]}`
-                  : process.env.PUBLIC_URL + "/simplon.png"
+                  : null
               }
-              alt="Avatar"
+              alt="No available"
               style={{ width: "100%", paddingRight: "15px" }}
             />
-            <p className="text-justify">{body}</p>
           </div>
           <p className="OneArticle__grey">De {author}</p>
           <p className="OneArticle__grey">{this.formatDate(updated_at)}</p>

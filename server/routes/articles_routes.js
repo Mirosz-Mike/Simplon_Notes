@@ -2,6 +2,7 @@ const route = require("express").Router();
 const connection = require("../config");
 const multer = require("multer");
 const path = require("path");
+const uuidv1 = require("uuid/v1");
 
 const checkAuth = require("../middleware/check_auth");
 require("dotenv").config();
@@ -45,7 +46,8 @@ route.post("/", (req, res) => {
     for (let i = 0; i < req.files.length; i++) {
       arrImage.push(`uploads/${req.files[i].filename}`);
     }
-    connection.query(`INSERT INTO simplon_notes.articles (user_id, author, title, subtitle, image, body) VALUES (
+    connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, body) VALUES (
+        "${uuidv1()}",
         "${user_id}",
         "${author}",
         "${title}",

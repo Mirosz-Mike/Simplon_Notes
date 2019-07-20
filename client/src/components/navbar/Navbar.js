@@ -17,7 +17,7 @@ class Navbar extends Component {
         <div className="Navbar__buttons">
           <h3 className="">{`Bienvenue ${this.props.name}`}</h3>
           <a href="/article" className="btn btn-success ml-3">
-            Mes Articles
+            Mes Ressources
           </a>
           <button className="btn btn-primary ml-3" onClick={this.disconnect}>
             Deconnexion

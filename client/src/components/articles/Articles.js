@@ -15,6 +15,7 @@ class Article extends Component {
     search: "",
     show: false,
     articleById: "",
+    resourceById: "",
     file: []
   };
 
@@ -33,6 +34,7 @@ class Article extends Component {
         headers: { "x-auth-token": this.props.token }
       })
       .then(response => {
+        console.log(response)
         this.setState({ dataArticles: response.data });
       })
       .catch(error => {
@@ -96,6 +98,33 @@ class Article extends Component {
       });
   };
 
+  deleteResourceById = id => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/resources/${id}`, {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        this.setState(prevState => {
+          return {
+            show: false,
+            success: response.data.message,
+            dataResources: prevState.dataResources.filter(
+              resourceId => resourceId.id !== id
+            )
+          };
+        });
+      })
+      .catch(error => {
+        console.log(error.response);
+        const userDeconnect = error.response.status === 401;
+        if (userDeconnect) {
+          alert(error.response.data.message);
+          this.props.removeToken(this.props.token);
+          this.props.history.push("/");
+        }
+      });
+  };
+
   redirectToAddArticle = () => {
     this.props.history.push("/addArticle");
   };
@@ -131,7 +160,6 @@ class Article extends Component {
 
   render() {
     const { dataArticles, search, dataResource } = this.state;
-    console.log(dataResource);
 
     const filteredArticlesByTitle = dataArticles.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
@@ -208,8 +236,6 @@ class Article extends Component {
                       <br />
                       <br />
                       <p>{this.formatDate(articleObj.updated_at)}</p>
-                    </div>
-                    {this.props.userId === articleObj.user_id ? (
                       <div className="containerButton">
                         <button
                           className="btn btn-success"
@@ -219,6 +245,10 @@ class Article extends Component {
                         >
                           Voir l'article
                         </button>
+                      </div>
+                    </div>
+                    {this.props.userId === articleObj.user_id ? (
+                      <div>
                         <button
                           className="btn btn-danger"
                           onClick={() =>
@@ -245,27 +275,74 @@ class Article extends Component {
               </div>
             );
           })}
-
-          {/*TODO mettre les PDF sous forme de carte avec le logo PDF*/}
-          {this.state.dataResources.map(resource => {
-            return (
-              <div>
-                <h1>PDF</h1>
-                <a
-                  className="text-dark"
-                  href={`${process.env.REACT_APP_API_URL}/${resource.name}`}
-                  target="_blank"
+          {/* contrer faille upload avec includes si .js ou .php .rb a mettre dans article*/}
+          {this.state.show ? (
+          <div className="Modal__container">
+            <div className="Modal__main">
+              <h4>Êtes-vous sûr de vouloir supprimer ?</h4>
+              <div className="Modal__confirmModal">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => this.deleteResourceById(this.state.resourceById)}
                 >
-                  voir ressource
-                </a>
+                  Oui
+                </button>
+                <button className="btn btn-danger" onClick={this.hideModal}>
+                  Non
+                </button>
               </div>
-            );
-          })}
+            </div>
+          </div>
+          ) : null}
+          {this.state.dataResources.map(resource => {
+            console.log(resource)
+            return (
+              <div className="card col-sm-6 col-md-4 mb-4" key={resource.id}>
+                <img
+                    className="card-img-top"
+                    src="https://www.sterkmiddendrenthe.nl/wp-content/uploads/2017/06/pdf-icon-png-17.png"
+                    alt="Avatar"
+                    style={{ width: "100%" }}
+                  />
+                <div className="card-body">
+                  <p className="card-title">De {resource.author}</p>
+                  <p className="subtitle is-6">@{resource.author}</p>
+                  <h4 className="title-h4">{resource.title}</h4>
+                  <p>{this.formatDate(resource.updated_at)}</p>
+                  <div className="card-text">
+                    <a
+                      className="btn btn-success"
+                      href={`${process.env.REACT_APP_API_URL}/${resource.nameResource}`}
+                      target="_blank"
+                      >
+                      voir ressource
+                    </a>
+                    {this.props.userId === resource.user_id ? (
+                    <div>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() =>
+                          this.setState({
+                            show: true,
+                            resourceById: resource.id
+                          })
+                        }
+                      >
+                        supprimer
+                      </button>
+                    </div>
+                  ) : null}
+                  </div>
+                </div>
+              </div>
+              );
+            })}
         </div>
       </div>
     );
   }
 }
+
 
 function mapStateToProps(state) {
   return {

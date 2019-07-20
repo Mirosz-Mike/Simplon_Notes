@@ -6,6 +6,7 @@ import Modal from "../../shared/Modal/Modal";
 class CreateResource extends Component {
   state = {
     success: "",
+    title: "",
     file: [],
     messageError: "",
     show: false
@@ -21,7 +22,9 @@ class CreateResource extends Component {
     });
 
     const resource = {
-      user_id: this.props.userId
+      title: this.state.title,
+      user_id: this.props.userId,
+      author: this.props.name,
     };
 
     formData.append("myResource", JSON.stringify(resource));
@@ -42,7 +45,11 @@ class CreateResource extends Component {
           }, 1300);
         })
         .catch(error => {
+          const fileExtension = error.response.status === 404
           const userDeconnect = error.response.status === 401;
+          if (fileExtension) {
+            this.setState({ messageError: error.response.data.message })
+          }
           if (userDeconnect) {
             alert(error.response.data.message);
             this.props.removeToken(this.props.token);
@@ -52,6 +59,10 @@ class CreateResource extends Component {
     } else {
       this.setState({ messageError: "Veuillez ajouter une ressource" });
     }
+  };
+
+  handleChange = event => {
+    this.setState({ title : event.target.value });
   };
 
   onChange = event => {
@@ -68,13 +79,22 @@ class CreateResource extends Component {
             onSubmit={this.handleSubmit}
           >
             <p>{this.state.messageError}</p>
+            <label>Titre</label>
+            <input
+              onChange={this.handleChange}
+              name="title"
+              type="text"
+              placeholder="Title"
+              className="CreateResource__container__input"
+              required
+            />
             <label>Ressource</label>
             <input
               name="myResource"
               type="file"
               multiple
               onChange={this.onChange}
-              className="CreateResource__container__input "
+              className="CreateResource__container__input"
             />
             <button className="btn btn-success mt-2" type="submit">
               Valider ma resource

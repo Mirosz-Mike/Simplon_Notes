@@ -2,6 +2,7 @@ const route = require("express").Router();
 const connection = require("../config");
 const multer = require("multer");
 const path = require("path");
+const uuidv1 = require("uuid/v1");
 
 const checkAuth = require("../middleware/check_auth");
 require("dotenv").config();
@@ -18,7 +19,7 @@ const upload = multer({
   limits: {
     fieldSize: 8 * 1024 * 1024 // 8MB
   }
-}).array("myResource", 4); // 4 est la limite que je fixe
+}).single("myResource");
 
 route.use(checkAuth);
 
@@ -36,22 +37,60 @@ route.post("/", (req, res) => {
   upload(req, res, err => {
     const resource = JSON.parse(req.body.myResource);
 
-    const { user_id } = resource;
+    const { user_id, author, title } = resource;
     if (err) {
       console.log(err);
     }
 
-    for (let i = 0; i < req.files.length; i++) {
-      connection.query(`INSERT INTO simplon_notes.resources (user_id, name, type, size) VALUES (
-          "${user_id}",
-          "uploads/${req.files[i].filename}",
-          "${req.files[i].mimetype}",
-          ${req.files[i].size}
-      )`);
-    }
+    // check la faille upload
+    const fileExtension = ['.js' , '.php' , '.rb']
+    const fileNameExtension = req.file.originalname
 
-    return res.status(200).send({ message: "Resource enregister avec succès" });
+    const test = fileExtension.map(ex => {
+      return fileNameExtension.includes(ex)
+    }).includes(true)
+
+    if (!test) {  
+      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, nameResource, type, size) VALUES (
+          "${uuidv1()}",
+          "${user_id}",
+          "${title}",
+          "${author}",
+          "uploads/${req.file.filename}",
+          "${req.file.mimetype}",
+          ${req.file.size}
+      )`);
+      return res.status(200).send({ message: "Ressource enregister avec succès" });
+    } 
+    return res.status(404).send({ message : "Ressource non valide à cause du format" })
   });
+});
+
+route.delete("/:id", (req, res) => {
+  const resourceId = req.params.id;
+  connection.query(
+    "SELECT * FROM simplon_notes.resources WHERE id = ?",
+    resourceId,
+    function(err, result) {
+      if (result.length > 0) {
+        connection.query(
+          "DELETE FROM simplon_notes.resources WHERE id = ?",
+          resourceId,
+          function(err, result) {
+            if (err) throw err;
+            return res.status(200).send({
+              message: "Votre resource a bien été supprimé",
+              data: result
+            });
+          }
+        );
+      } else {
+        return res.status(400).send({
+          message: "Votre resource n'existe pas ou a été supprimé"
+        });
+      }
+    }
+  );
 });
 
 module.exports = route;

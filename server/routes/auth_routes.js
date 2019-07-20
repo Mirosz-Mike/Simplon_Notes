@@ -40,7 +40,7 @@ route.post("/register", async (req, res) => {
                       .send("probleme avec la requete " + error);
                   } else {
                     return res.status(200).send({
-                      message: "user enregister avec succès ",
+                      message: "Vous êtes enregistrer avec succès",
                       user: user
                     });
                   }
