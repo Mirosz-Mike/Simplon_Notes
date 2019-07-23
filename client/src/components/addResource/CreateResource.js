@@ -24,7 +24,7 @@ class CreateResource extends Component {
     const resource = {
       title: this.state.title,
       user_id: this.props.userId,
-      author: this.props.name,
+      author: this.props.name
     };
 
     formData.append("myResource", JSON.stringify(resource));
@@ -45,10 +45,10 @@ class CreateResource extends Component {
           }, 1300);
         })
         .catch(error => {
-          const fileExtension = error.response.status === 404
+          const fileExtension = error.response.status === 404;
           const userDeconnect = error.response.status === 401;
           if (fileExtension) {
-            this.setState({ messageError: error.response.data.message })
+            this.setState({ messageError: error.response.data.message });
           }
           if (userDeconnect) {
             alert(error.response.data.message);
@@ -62,7 +62,7 @@ class CreateResource extends Component {
   };
 
   handleChange = event => {
-    this.setState({ title : event.target.value });
+    this.setState({ title: event.target.value });
   };
 
   onChange = event => {

@@ -1,47 +1,75 @@
-.Login__container {
-  height: 100vh;
-  
-  .Login__container__input {
-    width: 100%;
-    border: none;
-    outline: none;
-    border-bottom: 2px solid #e5e5e5;
-    margin-bottom: 100px;
-    font-size: 15px;
-    height: 49px;
-  }
-  
-  .Login__background__color {
-    background-color: $redSimplon;
-  }
-
-  .Login__content__left {
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    flex-direction: column;
-    align-items: center;
-  }
-
-
-  .Login__content__right {
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    flex-direction: column;
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
-  }
-
-  .Login__content__buttons {
-    display: flex;
-    justify-content: space-between;
-  }
+.Login__content__text__welcome {
+  text-align: center;
+  color: $grey2;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
 }
 
-.Login__navbar {
+.Login__content__custom__button__signup {
+  color: $white;
+  border: none;
+  padding: 6px 21px;
+  background: linear-gradient(89.56deg, #de342f 0.07%, #f8635f 102.76%);
+  box-shadow: 0px 15px 40px rgba(222, 52, 47, 0.25);
+  border-radius: 78px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+}
+
+.Login__content__custom__button__home {
+  color: #de342f;
+  border: none;
+  padding: 6px 21px;
+  background: #ffffff;
+  border: 1px solid #de342f;
+  box-sizing: border-box;
+  box-shadow: 0px 15px 40px rgba(222, 52, 47, 0.25);
+  border-radius: 78px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+}
+
+.Login__content__text__notes {
+  text-align: center;
+  color: $text;
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+}
+
+.Login__content__text__simplon {
+  text-align: center;
+  color: $redSimplon;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  margin-top: 50px;
+}
+
+.Login__content__align__buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 50px;
+}
+
+.Login__content__right__font {
+  background-color: #efefef;
+  height: 100vh;
+  width: 50%;
+  border-radius: 207px 0px 207px;
+}
+
+.Login__content__move__element {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.Login__content__form {
   position: absolute;
-  margin: 20px;
-  z-index: 1;
+  width: 500px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
+  border-radius: 11px;
 }

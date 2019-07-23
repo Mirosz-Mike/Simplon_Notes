@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
-import Register from "./components/register/Register";
 import HomeData from "./components/articles/HomeData";
 import CreateArticle from "./components/addArticle/CreateArticle";
 import CreateResource from "./components/addResource/CreateResource";
@@ -20,9 +19,8 @@ const App = props => {
       <Router>
         {!!props.token ? <Navbar /> : null}
         <div>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={!!props.token ? HomeData : Home} />
           <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
           <Route path="/addResource" component={CreateResource} />
           <Route path="/addArticle" component={CreateArticle} />
           <Route path="/editArticle/" component={EditArticle} />

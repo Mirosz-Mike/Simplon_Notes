@@ -28,11 +28,15 @@ class Login extends Component {
         this.props.availableToken(response.data.token);
         this.props.availableName(response.data.name);
         this.props.availableUserId(response.data.userId);
-        this.props.history.push("/");
+        this.props.history.push("/article");
       })
       .catch(error => {
         this.setState({ userMsg: error.response.data.message });
       });
+  };
+
+  redirectToHome = () => {
+    this.props.history.push("/");
   };
 
   handleChange = event => {
@@ -47,65 +51,57 @@ class Login extends Component {
 
     return (
       <div>
-        <nav className="Login__navbar">
-          <a className="btn btn-outline-dark" href="/">
-            Accueil
-          </a>
-        </nav>
-        <div className="Login__container">
-          <div className="row">
-            <div className="col-md-6 Login__background__color">
-              <div className="Login__content__left">
-                <h1 className="title-h2">Connexion</h1>
-                <p className="text">
-                  Avant de pourvoir créer, éditer et partagez
-                </p>
-              </div>
+        <div className="Login__content__form container">
+          <h1 className="Login__content__text__simplon">
+            SIMPLON
+            <span className="Login__content__text__notes">notes</span>
+          </h1>
+          <h1 className="Login__content__text__welcome">CONNEXION</h1>
+          {userMsg}
+          <form onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                value={email}
+                type="text"
+                name="email"
+                placeholder="Email"
+                required
+              />
             </div>
-            <div className="col-md-6">
-              <div className="Login__content__right">
-                {userMsg}
-                <form onSubmit={this.handleSubmit}>
-                  <div className="form-group">
-                    <label>Email</label>
-                    <input
-                      className="form-control"
-                      onChange={this.handleChange}
-                      value={email}
-                      type="text"
-                      name="email"
-                      placeholder="Email"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Mot de passe</label>
-                    <input
-                      className="form-control"
-                      onChange={this.handleChange}
-                      value={password}
-                      name="password"
-                      type="password"
-                      placeholder="Mot de passe"
-                      required
-                    />
-                  </div>
-                  <div className="Login__content__buttons">
-                    <button type="submit" className="btn btn-primary">
-                      Via gmail
-                    </button>
-                    <button
-                      onSubmit={this.handleSubmit}
-                      type="submit"
-                      className="btn btn-danger"
-                    >
-                      Connexion
-                    </button>
-                  </div>
-                </form>
-              </div>
+            <div className="form-group">
+              <input
+                className={"form-control"}
+                onChange={this.handleChange}
+                value={password}
+                name="password"
+                type="password"
+                placeholder="Mot de passe"
+                required
+              />
+              <p className="mt-2">{userMsg}</p>
             </div>
-          </div>
+            <div className="Login__content__align__buttons">
+              <button
+                onSubmit={this.handleSubmit}
+                type="submit"
+                className="Login__content__custom__button__signup"
+              >
+                Se connecter
+              </button>
+              <button
+                onClick={() => this.redirectToHome()}
+                className="Login__content__custom__button__home"
+              >
+                Accueil
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="Login__content__move__element">
+          <div className="Login__content__right__font" />
         </div>
       </div>
     );

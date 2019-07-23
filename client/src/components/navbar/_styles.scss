@@ -1,8 +1,71 @@
-.Navbar_background_color {
+.Navbar_container {
   width: 100%;
   position: absolute;
-  background-color: $redSimplon;
   z-index: 1;
+  margin-top: 60px;
+
+  .Navbar__content__text__simplon {
+    margin-left: 141px;
+    text-align: center;
+    color: $redSimplon;
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  .Navbar__content__text__resources {
+    font-family: "Roboto", sans-serif;
+    color: $grey3;
+    text-decoration: none;
+    background: linear-gradient(
+        to top,
+        $redSimplon 10.01%,
+        $redSimplon 10%,
+        transparent 10.01%
+      )
+      no-repeat left bottom / 0 100%;
+    transition: background-size 0.3s;
+  }
+
+  a:hover {
+    background-size: 100% 100%;
+  }
+
+  .Navbar__content__text__user {
+    font-family: "Roboto", sans-serif;
+    font-size: 17px;
+    color: $grey3;
+    text-transform: lowercase;
+  }
+
+  .Navbar__content__text__disconnect {
+    font-family: "Roboto", sans-serif;
+    border: none;
+    background-color: #fff;
+    color: $grey3;
+    margin-right: 141px;
+    text-decoration: none;
+    background: linear-gradient(
+        to top,
+        $redSimplon 10.01%,
+        $redSimplon 10%,
+        transparent 10.01%
+      )
+      no-repeat left bottom / 0 100%;
+    transition: background-size 0.3s;
+    padding: 0;
+  }
+
+  .Navbar__content__text__disconnect:hover {
+    background-size: 100% 100%;
+  }
+
+  .Navbar__content__text__notes {
+    text-align: center;
+    color: $text;
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+  }
 
   .Navbar__buttons {
     display: flex;

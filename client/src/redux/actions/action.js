@@ -4,6 +4,7 @@ export const GET_USER_NAME = "GET_USER_NAME";
 export const GET_USER_ID = "GET_USER_ID";
 export const EDIT_ARTICLE = "EDIT_ARTICLE";
 export const GET_ONE_ARTICLE = "GET_ONE_ARTICLE";
+export const REMOVE_IMAGE_RESOURCE = "REMOVE_IMAGE_RESOURCE";
 
 export function getUserToken(token) {
   return {
@@ -46,3 +47,10 @@ export function oneArticle(oneArticle) {
     payload: oneArticle
   };
 }
+
+export const deleteImgResource = name => {
+  return {
+    type: REMOVE_IMAGE_RESOURCE,
+    payload: name
+  };
+};

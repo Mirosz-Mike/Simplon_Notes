@@ -3,21 +3,19 @@ import { connect } from "react-redux";
 import axios from "axios";
 import Modal from "../../shared/Modal/Modal";
 
+import { deleteImgResource } from "../../redux/actions/action";
+
 class EditArticle extends Component {
   state = {
     title: this.props.editArticle.title,
     subTitle: this.props.editArticle.subtitle,
     image: [this.props.editArticle.image],
-    image_name: [],
+    image_name: [this.props.editArticle.image_name],
     body: this.props.editArticle.body,
     success: "",
     messageError: "",
     show: false
   };
-
-  componentDidMount() {
-    this.setState({ image_name: [this.props.editArticle.image_name] });
-  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -61,9 +59,10 @@ class EditArticle extends Component {
     }
   };
 
-  removeImage = image_name => {
-    console.log("dans la fonction");
-  };
+  deleteImage(e, image) {
+    e.preventDefault();
+    this.props.removeImage(image);
+  }
 
   handleChange = event => {
     this.setState({
@@ -72,7 +71,7 @@ class EditArticle extends Component {
   };
 
   render() {
-    console.log(this.state.image_name);
+    console.log("image_name : ", this.state.image_name);
     return (
       <div className="EditArticle__container">
         <Modal show={this.state.show}>{this.state.success}</Modal>
@@ -106,7 +105,7 @@ class EditArticle extends Component {
                 >
                   <p>{image}</p>
                   <button
-                    onClick={() => this.removeImage(image)}
+                    onClick={e => this.deleteImage(e, image)}
                     className="btn btn-danger"
                   >
                     Supprimer cette photo
@@ -143,6 +142,7 @@ class EditArticle extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log("state redux", state);
   return {
     userId: state.user.userId,
     token: state.user.token,
@@ -150,4 +150,15 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(EditArticle);
+function mapDispatchToProps(dispatch) {
+  return {
+    removeImage(image_name) {
+      dispatch(deleteImgResource(image_name));
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditArticle);

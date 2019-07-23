@@ -10,21 +10,25 @@ class Navbar extends Component {
 
   render() {
     return (
-      <nav className="navbar Navbar_background_color">
-        <a href="/" className="btn btn-outline-primary">
-          Accueil
+      <nav className="navbar Navbar_container">
+        <a href="/" className="Navbar__content__text__simplon">
+          SIMPLON<span className="Navbar__content__text__notes">notes</span>
         </a>
         <div className="Navbar__buttons">
-          <h3 className="">{`Bienvenue ${this.props.name}`}</h3>
-          <a href="/article" className="btn btn-success ml-3">
-            Mes Ressources
+          <h3 className="Navbar__content__text__user">{`bienvenue ${
+            this.props.name
+          }`}</h3>
+          <a href="/article" className="Navbar__content__text__resources ml-3">
+            ressources
           </a>
-          <button className="btn btn-primary ml-3" onClick={this.disconnect}>
-            Deconnexion
+          <button
+            className="Navbar__content__text__disconnect ml-3"
+            onClick={this.disconnect}
+          >
+            deconnexion
           </button>
         </div>
       </nav>
-
     );
   }
 }

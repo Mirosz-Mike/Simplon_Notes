@@ -27,15 +27,81 @@ a:hover {
   justify-content: space-between;
 }
 
-.rightButton {
+.HomeData__content__align {
   display: flex;
+  justify-content: flex-start;
+}
+
+.HomeData__content__custom__button {
+  border: none;
+  background-color: #fff;
+  color: $grey3;
+}
+
+.HomeData__content__align__buttons {
+  display: flex;
+  width: 66%;
   justify-content: flex-end;
-  padding-top: 80px;
 }
 
 .centerButton {
   display: flex;
   flex-direction: column;
+}
+
+.HomeData__content__input {
+  width: 56%;
+}
+
+.HomeData__content__custom__card {
+  margin-top: 20px;
+  width: 18rem;
+  border-radius: 30px;
+  box-shadow: 0px 4px 4px #888888;
+}
+
+.HomeData__content__title__h4 {
+  padding-top: 19px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+}
+
+.HomeData__content__text {
+  font-size: 12px;
+}
+
+.HomeData__content__text__resources {
+  color: $grey2;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  font-size: 80px;
+  padding-top: 240px;
+}
+
+.HomeData__content__button__see {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(15px at 50% 50%, #b3f8ba 0%, #5ffb6f 100%);
+  box-shadow: 0px 4px 4px rgba(95, 251, 111, 0.25);
+}
+
+.HomeData__content__button__delete {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(15px at 50% 50%, #fd9a9a 0%, #fb5f5f 100%);
+  box-shadow: 0px 4px 4px rgba(251, 95, 95, 0.25);
+}
+.HomeData__content__button__edit {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(15px at 50% 50%, #adcef3 0%, #5fa7fb 100%);
+  box-shadow: 0px 4px 4px rgba(95, 167, 251, 0.25);
 }
 
 .Modal__container {

@@ -51,27 +51,43 @@ route.post("/", (req, res) => {
       console.log(err);
     }
 
-    if (!checkBadFormat.includes(true)) {
-      for (let i = 0; i < req.files.length; i++) {
-        connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, image_name, body, type_resource) VALUES (
+    if (req.files.length === 0) {
+      connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
             "${uuidv1()}",
             "${user_id}",
             "${author}",
             "${title}",
             "${subtitle}",
-            "uploads/${req.files[i].filename}",
-            "${req.files[i].originalname}",
             "${body}",
             "article"
             )`);
-      }
       return res
         .status(200)
         .send({ message: "Article enregister avec succès" });
+    } else {
+      if (!checkBadFormat.includes(true)) {
+        for (let i = 0; i < req.files.length; i++) {
+          connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, image_name, body, type_resource) VALUES (
+              "${uuidv1()}",
+              "${user_id}",
+              "${author}",
+              "${title}",
+              "${subtitle}",
+              "uploads/${req.files[i].filename}",
+              "${req.files[i].originalname}",
+              "${body}",
+              "article"
+              )`);
+        }
+        return res
+          .status(200)
+          .send({ message: "Article enregister avec succès" });
+      } else {
+        return res
+          .status(404)
+          .send({ message: "Image non valide à cause du format" });
+      }
     }
-    return res
-      .status(404)
-      .send({ message: "Image non valide à cause du format" });
   });
 });
 

@@ -92,14 +92,11 @@ route.post("/login", (req, res) => {
               const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
                 expiresIn: "1h"
               });
-              return res
-                .status(200)
-                .send({
-                  token: token,
-                  name: results[0].name,
-                  userId: results[0].id
-                })
-                .json();
+              return res.status(200).send({
+                token: token,
+                name: results[0].name,
+                userId: results[0].id
+              });
             }
           });
         } else {

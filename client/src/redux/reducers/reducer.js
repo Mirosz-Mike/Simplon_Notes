@@ -4,7 +4,8 @@ import {
   GET_USER_NAME,
   GET_USER_ID,
   EDIT_ARTICLE,
-  GET_ONE_ARTICLE
+  GET_ONE_ARTICLE,
+  REMOVE_IMAGE_RESOURCE
 } from "../actions/action";
 
 const DEFAULT = {
@@ -45,6 +46,11 @@ export default function userReducer(state = DEFAULT, action) {
       return {
         ...state,
         oneArticle: action.payload
+      };
+    }
+    case REMOVE_IMAGE_RESOURCE: {
+      return {
+        remove: [state.editArticle].filter(data => console.log(data))
       };
     }
     default:
