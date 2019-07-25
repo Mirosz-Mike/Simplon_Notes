@@ -1,75 +1,117 @@
-.Register__content__text__welcome {
-  text-align: center;
-  color: $grey2;
-  font-family: "Roboto", sans-serif;
-  font-weight: 900;
-}
-
-.Register__content__custom__button__signup {
-  color: $white;
-  border: none;
-  padding: 6px 21px;
-  background: linear-gradient(89.56deg, #de342f 0.07%, #f8635f 102.76%);
-  box-shadow: 0px 15px 40px rgba(222, 52, 47, 0.25);
-  border-radius: 78px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 900;
-}
-
-.Register__content__custom__button__signin {
-  color: #de342f;
-  border: none;
-  padding: 6px 21px;
-  background: #ffffff;
-  border: 1px solid #de342f;
-  box-sizing: border-box;
-  box-shadow: 0px 15px 40px rgba(222, 52, 47, 0.25);
-  border-radius: 78px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 900;
-}
-
-.Register__content__text__notes {
-  text-align: center;
-  color: $text;
-  font-family: "Roboto", sans-serif;
-  font-weight: 100;
-}
-
-.Register__content__text__simplon {
-  text-align: center;
-  color: $redSimplon;
-  font-family: "Roboto", sans-serif;
-  font-weight: 900;
-  margin-top: 50px;
-}
-
-.Register__content__align__buttons {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 50px;
-}
-
-.Register__content__right__font {
-  background-color: #efefef;
+.Home__container {
   height: 100vh;
-  width: 50%;
-  border-radius: 207px 0px 207px;
-}
 
-.Register__content__move__element {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-}
+  .Home__container__right__logo__blue {
+    position: absolute;
+    z-index: 3;
+    height: 230px;
+    width: 230px;
+    top: 46%;
+    right: 15%;
+    background: linear-gradient(0deg, #4481eb 2%, #04befe 100%);
+    border-radius: 50%;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
 
-.Register__content__form {
-  position: absolute;
-  width: 500px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: #ffffff;
-  box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
-  border-radius: 11px;
+  .Home__container__right__logo__red {
+    position: absolute;
+    z-index: 2;
+    top: 30%;
+    right: 35%;
+    height: 350px;
+    width: 350px;
+    background: linear-gradient(0deg, #ffffff -200%, #ff5858 100%);
+    border-radius: 50%;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Home__container__right__logo__black {
+    position: absolute;
+    z-index: 1;
+    height: 290px;
+    width: 290px;
+    top: 18%;
+    right: 25%;
+    background: linear-gradient(0deg, #8fd3f4 -250%, #373737 100%);
+    border-radius: 50%;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Home__container__right__logo__beige {
+    position: absolute;
+    height: 150px;
+    width: 150px;
+    right: 60%;
+    top: 20%;
+    background: linear-gradient(
+      0deg,
+      rgb(255, 255, 255) -30%,
+      rgb(238, 173, 117) 100%
+    );
+    border-radius: 50%;
+  }
+
+  .Home__text__notes {
+    font-family: "Roboto";
+    color: #373737;
+    font-weight: 100;
+  }
+
+  .Home__text__slogan {
+    font-family: "Roboto";
+    color: #373737;
+    font-weight: 300;
+  }
+
+  .Home__text__simplon {
+    font-size: 90px;
+    color: #ff5858;
+    font-family: "Roboto";
+    font-weight: 900;
+  }
+
+  .Home__vertical__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .Home__button__register {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #ff5858;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Home__button__login {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #373737;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Home__center__content {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .Home__container__button {
+    display: flex;
+    justify-content: space-between;
+    width: 81%;
+    margin-top: 20px;
+  }
 }

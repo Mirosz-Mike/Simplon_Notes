@@ -125,11 +125,11 @@ class HomeData extends Component {
   render() {
     const { dataResources, search, data_id } = this.state;
 
-    console.log(dataResources);
-
     const filteredDataByTitle = dataResources.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
+
+    console.log(filteredDataByTitle);
 
     return (
       <div className="container">
@@ -152,9 +152,6 @@ class HomeData extends Component {
           </div>
         ) : null}
         <h1 className="HomeData__content__text__resources">RESSOURCES</h1>
-        {/* <div >
-          
-        </div> */}
         <div className="HomeData__content__align">
           <input
             type="text"
@@ -225,7 +222,9 @@ class HomeData extends Component {
                         </div>
                       )}
                     </div>
-                    <p className="card-title">De {data.author}</p>
+                    <p className="HomeData__content__text__author">
+                      De {data.author}
+                    </p>
                     <div className="HomeData__content__text text-justify">
                       {data.body.length < 100
                         ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..."

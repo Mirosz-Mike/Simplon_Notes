@@ -16,15 +16,16 @@
   }
 
   .Modal__main {
+    font-family: "Roboto", sans-serif;
     position: fixed;
     height: auto;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #57a746;
+    background-color: #373737;
     color: white;
-    padding: 67px;
-    border-radius: 10px;
+    padding: 50px 54px;
+    border-radius: 5px;
   }
 }
 
@@ -37,5 +38,6 @@
 }
 
 h3 {
+  font-family: "Roboto", sans-serif;
   text-align: center;
 }

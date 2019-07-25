@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
+import Register from "./components/register/Register";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import HomeData from "./components/articles/HomeData";
@@ -19,8 +20,9 @@ const App = props => {
       <Router>
         {!!props.token ? <Navbar /> : null}
         <div>
-          <Route exact path="/" component={!!props.token ? HomeData : Home} />
+          <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
           <Route path="/addResource" component={CreateResource} />
           <Route path="/addArticle" component={CreateArticle} />
           <Route path="/editArticle/" component={EditArticle} />

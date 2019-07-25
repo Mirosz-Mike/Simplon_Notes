@@ -1,5 +1,6 @@
 .card {
   display: flex;
+  background-color: #373737;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
 }
@@ -38,6 +39,10 @@ a:hover {
   color: $grey3;
 }
 
+.HomeData__content__text__author {
+  color: #dddddd;
+}
+
 .HomeData__content__align__buttons {
   display: flex;
   width: 66%;
@@ -56,7 +61,7 @@ a:hover {
 .HomeData__content__custom__card {
   margin-top: 20px;
   width: 18rem;
-  border-radius: 30px;
+  border-radius: 14px;
   box-shadow: 0px 4px 4px #888888;
 }
 
@@ -64,10 +69,12 @@ a:hover {
   padding-top: 19px;
   font-family: "Roboto", sans-serif;
   font-weight: 900;
+  color: #dddddd;
 }
 
 .HomeData__content__text {
   font-size: 12px;
+  color: #dddddd;
 }
 
 .HomeData__content__text__resources {

@@ -7,7 +7,7 @@
   .Navbar__content__text__simplon {
     margin-left: 141px;
     text-align: center;
-    color: $redSimplon;
+    color: #ff5858;
     font-family: "Roboto", sans-serif;
     font-weight: 900;
     font-size: 20px;
@@ -19,8 +19,8 @@
     text-decoration: none;
     background: linear-gradient(
         to top,
-        $redSimplon 10.01%,
-        $redSimplon 10%,
+        #ff5858 10.01%,
+        #ff5858 10%,
         transparent 10.01%
       )
       no-repeat left bottom / 0 100%;
@@ -47,8 +47,8 @@
     text-decoration: none;
     background: linear-gradient(
         to top,
-        $redSimplon 10.01%,
-        $redSimplon 10%,
+        #ff5858 10.01%,
+        #ff5858 10%,
         transparent 10.01%
       )
       no-repeat left bottom / 0 100%;
@@ -62,7 +62,7 @@
 
   .Navbar__content__text__notes {
     text-align: center;
-    color: $text;
+    color: #373737;
     font-family: "Roboto", sans-serif;
     font-weight: 100;
   }
