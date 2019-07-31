@@ -104,7 +104,13 @@
 
   .Home__center__content {
     display: flex;
+    height: 100vh;
+  }
+
+  .Home__container__center__logo {
+    display: flex;
     justify-content: center;
+    align-items: center;
     height: 100vh;
   }
 

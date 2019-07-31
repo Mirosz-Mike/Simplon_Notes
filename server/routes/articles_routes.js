@@ -23,6 +23,16 @@ const upload = multer({
 
 route.use(checkAuth);
 
+route.get("/images", (req, res) => {
+  connection.query("SELECT * FROM simplon_notes.images_articles", function(
+    err,
+    result
+  ) {
+    if (err) throw err;
+    return res.status(200).send(result);
+  });
+});
+
 route.get("/", (req, res) => {
   connection.query("SELECT * FROM simplon_notes.articles", function(
     err,
@@ -37,6 +47,8 @@ route.post("/", (req, res) => {
   upload(req, res, err => {
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
+
+    console.log(article);
 
     const extensionFormat = [".js", ".php", ".rb"];
     const fileNameExtension = req.files.map(image => image.originalname);
@@ -66,19 +78,26 @@ route.post("/", (req, res) => {
         .send({ message: "Article enregister avec succès" });
     } else {
       if (!checkBadFormat.includes(true)) {
+        const id = uuidv1();
+        connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
+          "${id}",
+          "${user_id}",
+          "${author}",
+          "${title}",
+          "${subtitle}",
+          "${body}",
+          "article"
+          )`);
+
         for (let i = 0; i < req.files.length; i++) {
-          connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, image, image_name, body, type_resource) VALUES (
-              "${uuidv1()}",
-              "${user_id}",
-              "${author}",
-              "${title}",
-              "${subtitle}",
-              "uploads/${req.files[i].filename}",
-              "${req.files[i].originalname}",
-              "${body}",
-              "article"
-              )`);
+          connection.query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
+            "${uuidv1()}",
+            "${id}",
+            "uploads/${req.files[i].filename}",
+            "${req.files[i].originalname}"
+          )`);
         }
+
         return res
           .status(200)
           .send({ message: "Article enregister avec succès" });

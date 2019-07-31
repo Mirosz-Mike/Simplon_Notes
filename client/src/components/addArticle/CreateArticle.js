@@ -133,9 +133,9 @@ class CreateArticle extends Component {
 
 function mapStateToProps(state) {
   return {
-    userId: state.user.userId,
-    token: state.user.token,
-    name: state.user.userName
+    userId: state.userId,
+    token: state.token,
+    name: state.userName
   };
 }
 

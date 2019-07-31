@@ -2,6 +2,10 @@
   height: 100vh;
   overflow-y: hidden;
 
+  .row {
+    margin: 0px;
+  }
+
   .Register__center__content {
     display: flex;
     justify-content: center;

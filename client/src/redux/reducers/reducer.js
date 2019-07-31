@@ -8,13 +8,7 @@ import {
   REMOVE_IMAGE_RESOURCE
 } from "../actions/action";
 
-const DEFAULT = {
-  userName: "",
-  token: "",
-  userId: ""
-};
-
-export default function userReducer(state = DEFAULT, action) {
+export default function userReducer(state = [], action) {
   switch (action.type) {
     case GET_USER_TOKEN:
       return {
@@ -49,8 +43,15 @@ export default function userReducer(state = DEFAULT, action) {
       };
     }
     case REMOVE_IMAGE_RESOURCE: {
+      const findImageDelete = [state.editArticle].filter(
+        image => image.image_name === action.payload
+      );
       return {
-        remove: [state.editArticle].filter(data => console.log(data))
+        ...state,
+        editArticle:
+          findImageDelete.length > 0
+            ? { ...state.editArticle, image_name: "" }
+            : null
       };
     }
     default:

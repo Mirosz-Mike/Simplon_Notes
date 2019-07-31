@@ -55,80 +55,83 @@ class Login extends Component {
 
     return (
       <div className="Login__container">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-5">
-              <div className="Login__center__content">
-                <div className="Login__vertical__content">
-                  <h1 className="Login__content__text__simplon">
-                    SIMPLON <br />
-                    <span className="Login__content__text__notes">notes</span>
-                  </h1>
-                  <p className="Login__text__slogan">
-                    Stokez vos notes sur votre plateforme interne
-                  </p>
-                  {!!this.props.token ? null : (
-                    <div className="Login__align__content">
-                      <button
-                        onClick={() => this.redirectToRegister()}
-                        className="Login__content__custom__button__signup"
-                      >
-                        S'inscrire
-                      </button>
-                      <button
-                        onClick={() => this.redirectToHome()}
-                        className="Login__content__custom__button__home"
-                      >
-                        Accueil
-                      </button>
-                    </div>
-                  )}
+        <div className="row">
+          <div className="col-md-6">
+            <div className="row">
+              <div className="col-md-11">
+                <div className="Login__center__content">
+                  <div className="Login__vertical__content">
+                    <h1 className="Login__content__text__simplon">
+                      SIMPLON <br />
+                      <span className="Login__content__text__notes">notes</span>
+                    </h1>
+                    <p className="Login__text__slogan">
+                      Stokez vos notes sur votre plateforme interne
+                    </p>
+                    {!!this.props.token ? null : (
+                      <div className="Login__align__content">
+                        <button
+                          onClick={() => this.redirectToRegister()}
+                          className="Login__content__custom__button__signup"
+                        >
+                          S'inscrire
+                        </button>
+                        <button
+                          onClick={() => this.redirectToHome()}
+                          className="Login__content__custom__button__home"
+                        >
+                          Accueil
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+              <div className="col-md-1">
+                <hr className="Login__hr" />
+              </div>
             </div>
-            <div className="col-md-2">
-              <hr className="Login__hr" />
-            </div>
-            <div className="col-md-5">
-              <div className="Login__center__content">
-                <div className="Login__vertical__content">
-                  <h1 className="Login__content__text__connexion">Connexion</h1>
-                  {userMsg}
-                  <form onSubmit={this.handleSubmit}>
-                    <div className="form-group mb-4">
-                      <input
-                        className="form-control"
-                        onChange={this.handleChange}
-                        value={email}
-                        type="text"
-                        name="email"
-                        placeholder="Email"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        className="form-control"
-                        onChange={this.handleChange}
-                        value={password}
-                        name="password"
-                        type="password"
-                        placeholder="Mot de passe"
-                        required
-                      />
-                    </div>
+          </div>
 
-                    {!!this.props.token ? null : (
-                      <button
-                        onSubmit={this.handleSubmit}
-                        type="submit"
-                        className="Login__content__custom__button__signin"
-                      >
-                        Se connecter
-                      </button>
-                    )}
-                  </form>
-                </div>
+          <div className="col-md-6">
+            <div className="Login__center__content">
+              <div className="Login__vertical__content">
+                <h1 className="Login__content__text__connexion">Connexion</h1>
+                {userMsg}
+                <form onSubmit={this.handleSubmit}>
+                  <div className="form-group mb-4">
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={email}
+                      type="text"
+                      name="email"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={password}
+                      name="password"
+                      type="password"
+                      placeholder="Mot de passe"
+                      required
+                    />
+                  </div>
+
+                  {!!this.props.token ? null : (
+                    <button
+                      onSubmit={this.handleSubmit}
+                      type="submit"
+                      className="Login__content__custom__button__signin"
+                    >
+                      Se connecter
+                    </button>
+                  )}
+                </form>
               </div>
             </div>
           </div>
@@ -140,7 +143,7 @@ class Login extends Component {
 
 function mapStateToProps(state) {
   return {
-    token: state.user.token
+    token: state.token
   };
 }
 

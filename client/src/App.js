@@ -36,7 +36,7 @@ const App = props => {
 
 function mapStateToProps(state) {
   return {
-    token: state.user.token
+    token: state.token
   };
 }
 

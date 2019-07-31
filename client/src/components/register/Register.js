@@ -70,120 +70,122 @@ class Register extends Component {
 
     return (
       <div className="Register__container">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-5">
-              <div className="Register__center__content">
-                <div className="Register__vertical__content">
-                  <h1 className="Register__content__text__simplon">
-                    SIMPLON <br />
-                    <span className="Register__content__text__notes">
-                      notes
-                    </span>
-                  </h1>
-                  <p className="Register__text__slogan">
-                    Stokez vos notes sur votre plateforme interne
-                  </p>
-                  {!!this.props.token ? null : (
-                    <div className="Register__align__content">
-                      <button
-                        onClick={() => this.redirectToLogin()}
-                        className="Register__content__custom__button__signin"
-                      >
-                        Se connecter
-                      </button>
-                      <button
-                        onClick={() => this.redirectToHome()}
-                        className="Register__content__custom__button__home"
-                      >
-                        Accueil
-                      </button>
-                    </div>
-                  )}
+        <div className="row">
+          <div className="col-md-6">
+            <div className="row">
+              <div className="col-md-11">
+                <div className="Register__center__content">
+                  <div className="Register__vertical__content">
+                    <h1 className="Register__content__text__simplon">
+                      SIMPLON <br />
+                      <span className="Register__content__text__notes">
+                        notes
+                      </span>
+                    </h1>
+                    <p className="Register__text__slogan">
+                      Stokez vos notes sur votre plateforme interne
+                    </p>
+                    {!!this.props.token ? null : (
+                      <div className="Register__align__content">
+                        <button
+                          onClick={() => this.redirectToLogin()}
+                          className="Register__content__custom__button__signin"
+                        >
+                          Se connecter
+                        </button>
+                        <button
+                          onClick={() => this.redirectToHome()}
+                          className="Register__content__custom__button__home"
+                        >
+                          Accueil
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+              <div className="col-md-1">
+                <hr className="Register__hr" />
+              </div>
             </div>
-            <div className="col-md-2">
-              <hr className="Register__hr" />
-            </div>
-            <div className="col-md-5">
-              <div className="Register__center__content">
-                <div className="Register__vertical__content">
-                  <h1 className="Register__content__text__inscription">
-                    Inscription
-                  </h1>
-                  {userMsg}
-                  <form onSubmit={this.handleSubmit}>
-                    <div className="form-group mb-4">
-                      <input
-                        className="form-control"
-                        onChange={this.handleChange}
-                        value={name}
-                        name="name"
-                        type="text"
-                        placeholder="Pseudo"
-                        required
-                      />
-                    </div>
-                    <div className="form-group mb-4">
-                      <input
-                        className="form-control"
-                        onChange={this.handleChange}
-                        value={email}
-                        type="text"
-                        name="email"
-                        placeholder="Email"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        className="form-control"
-                        onChange={this.handleChange}
-                        value={password}
-                        name="password"
-                        type="password"
-                        placeholder="Mot de passe"
-                        required
-                      />
-                      {this.state.show ? (
-                        <div className="Modal__container">
-                          <div className="Modal__main">
-                            <h4>Votre mot de passe doit contenir au moins</h4>
-                            <ul>
-                              <li> 1 caractère alphabétique minuscule.</li>
-                              <li> 1 caractère alphabétique majuscule. </li>
-                              <li> 1 caractère numérique.</li>
-                              <li> 1 caractère spécial.</li>
-                              <li>
-                                Votre mot de passe doit comporter au minimum 8
-                                caractères
-                              </li>
-                            </ul>
-                            <div className="Modal__confirmModal">
-                              <button
-                                className="Register__button__modal"
-                                onClick={this.hideModal}
-                              >
-                                ok
-                              </button>
-                            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="Register__center__content">
+              <div className="Register__vertical__content">
+                <h1 className="Register__content__text__inscription">
+                  Inscription
+                </h1>
+                {userMsg}
+                <form onSubmit={this.handleSubmit}>
+                  <div className="form-group mb-4">
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={name}
+                      name="name"
+                      type="text"
+                      placeholder="Pseudo"
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={email}
+                      type="text"
+                      name="email"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      className="form-control"
+                      onChange={this.handleChange}
+                      value={password}
+                      name="password"
+                      type="password"
+                      placeholder="Mot de passe"
+                      required
+                    />
+                    {this.state.show ? (
+                      <div className="Modal__container">
+                        <div className="Modal__main">
+                          <h4>Votre mot de passe doit contenir au moins</h4>
+                          <ul>
+                            <li> 1 caractère alphabétique minuscule.</li>
+                            <li> 1 caractère alphabétique majuscule. </li>
+                            <li> 1 caractère numérique.</li>
+                            <li> 1 caractère spécial.</li>
+                            <li>
+                              Votre mot de passe doit comporter au minimum 8
+                              caractères
+                            </li>
+                          </ul>
+                          <div className="Modal__confirmModal">
+                            <button
+                              className="Register__button__modal"
+                              onClick={this.hideModal}
+                            >
+                              ok
+                            </button>
                           </div>
                         </div>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
+                  </div>
 
-                    {!!this.props.token ? null : (
-                      <button
-                        onSubmit={this.handleSubmit}
-                        type="submit"
-                        className="Register__content__custom__button__signup"
-                      >
-                        S'inscrire
-                      </button>
-                    )}
-                  </form>
-                </div>
+                  {!!this.props.token ? null : (
+                    <button
+                      onSubmit={this.handleSubmit}
+                      type="submit"
+                      className="Register__content__custom__button__signup"
+                    >
+                      S'inscrire
+                    </button>
+                  )}
+                </form>
               </div>
             </div>
           </div>
@@ -195,7 +197,7 @@ class Register extends Component {
 
 function mapStateToProps(state) {
   return {
-    token: state.user.token
+    token: state.token
   };
 }
 

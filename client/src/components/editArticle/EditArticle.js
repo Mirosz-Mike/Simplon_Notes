@@ -7,15 +7,30 @@ import { deleteImgResource } from "../../redux/actions/action";
 
 class EditArticle extends Component {
   state = {
-    title: this.props.editArticle.title,
-    subTitle: this.props.editArticle.subtitle,
-    image: [this.props.editArticle.image],
-    image_name: [this.props.editArticle.image_name],
-    body: this.props.editArticle.body,
+    title: "",
+    subTitle: "",
+    image: [],
+    imageName: [],
+    body: "",
     success: "",
     messageError: "",
     show: false
   };
+
+  componentDidMount() {
+    const { title, subtitle, image, image_name, body } = this.props.editArticle;
+
+    const listImageName = image_name.split(",");
+    console.log(image);
+
+    this.setState({
+      title: title,
+      subTitle: subtitle,
+      image: [image],
+      imageName: listImageName,
+      body: body
+    });
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -26,6 +41,7 @@ class EditArticle extends Component {
       title: this.state.title,
       subtitle: this.state.subTitle,
       image: this.state.image,
+      //image_name: this.state.image_name,
       body: this.state.body
     };
 
@@ -62,6 +78,8 @@ class EditArticle extends Component {
   deleteImage(e, image) {
     e.preventDefault();
     this.props.removeImage(image);
+
+    console.log(image);
   }
 
   handleChange = event => {
@@ -71,7 +89,6 @@ class EditArticle extends Component {
   };
 
   render() {
-    console.log("image_name : ", this.state.image_name);
     return (
       <div className="EditArticle__container">
         <Modal show={this.state.show}>{this.state.success}</Modal>
@@ -97,22 +114,26 @@ class EditArticle extends Component {
             required
           />
           <div className="EditArticle__container__align__image">
-            {this.state.image_name.map(image => {
-              return (
-                <div
-                  className="EditArticle__container__align__image"
-                  key={image.id}
-                >
-                  <p>{image}</p>
-                  <button
-                    onClick={e => this.deleteImage(e, image)}
-                    className="btn btn-danger"
+            {this.state.imageName !== undefined ? (
+              this.state.imageName.map(image => {
+                return (
+                  <div
+                    className="EditArticle__container__align__image"
+                    key={image.id}
                   >
-                    Supprimer cette photo
-                  </button>
-                </div>
-              );
-            })}
+                    <p>{image}</p>
+                    <button
+                      onClick={e => this.deleteImage(e, image)}
+                      className="btn btn-danger"
+                    >
+                      Supprimer cette photo
+                    </button>
+                  </div>
+                );
+              })
+            ) : (
+              <p>Plus d'image</p>
+            )}
           </div>
           <label>Image</label>
           <input
@@ -142,11 +163,10 @@ class EditArticle extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("state redux", state);
   return {
-    userId: state.user.userId,
-    token: state.user.token,
-    editArticle: state.user.editArticle
+    userId: state.userId,
+    token: state.token,
+    editArticle: state.editArticle
   };
 }
 

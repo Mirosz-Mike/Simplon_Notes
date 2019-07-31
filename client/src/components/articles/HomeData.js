@@ -116,6 +116,10 @@ class HomeData extends Component {
     this.setState({ file: event.target.files });
   };
 
+  redirectToLinkResource = link => {
+    window.open(link, "_blank");
+  };
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -125,11 +129,11 @@ class HomeData extends Component {
   render() {
     const { dataResources, search, data_id } = this.state;
 
+    console.log(dataResources);
+
     const filteredDataByTitle = dataResources.filter(article => {
       return article.title.toLowerCase().includes(search.toLowerCase());
     });
-
-    console.log(filteredDataByTitle);
 
     return (
       <div className="container">
@@ -180,7 +184,10 @@ class HomeData extends Component {
           <div className="row">
             {filteredDataByTitle.map(data => {
               return data.type_resource.includes("article") ? (
-                <div className="HomeData__content__custom__card card mr-5 col-md-3">
+                <div
+                  className="HomeData__content__custom__card card mr-5 col-md-3"
+                  key={data.id}
+                >
                   <div className="card-body">
                     <div>
                       <h4 className="HomeData__content__title__h4">
@@ -235,50 +242,48 @@ class HomeData extends Component {
                     </div>
                   </div>
                 </div>
-              ) : // ) : data.type_resource.includes("ressource") ? (
-              //   <div className="card col-sm-6 col-md-4 mb-4" key={data.id}>
-              //     <img
-              //       className="card-img-top"
-              //       src="https://www.sterkmiddendrenthe.nl/wp-content/uploads/2017/06/pdf-icon-png-17.png"
-              //       alt="Avatar"
-              //       style={{ width: "100%" }}
-              //     />
-              //     <div className="card-body">
-              //       <p className="card-title">De {data.author}</p>
-              //       <p className="subtitle is-6">@{data.author}</p>
-              //       <h4 className="title-h4">{data.title}</h4>
-              //       <p>{this.formatDate(data.updated_at)}</p>
-              //       <div className="card-text">
-              //         <a
-              //           className="btn btn-success"
-              //           href={`${process.env.REACT_APP_API_URL}/${
-              //             data.nameResource
-              //           }`}
-              //           target="_blank"
-              //           rel="noopener noreferrer"
-              //         >
-              //           voir ressource
-              //         </a>
-              //         {this.props.userId === data.user_id ? (
-              //           <div>
-              //             <button
-              //               className="btn btn-danger"
-              //               onClick={() =>
-              //                 this.setState({
-              //                   show: true,
-              //                   data_id: data.id,
-              //                   type_resource: data.type_resource
-              //                 })
-              //               }
-              //             >
-              //               supprimer
-              //             </button>
-              //           </div>
-              //         ) : null}
-              //       </div>
-              //     </div>
-              //   </div>
-              null;
+              ) : data.type_resource.includes("ressource") ? (
+                <div
+                  className="HomeData__content__custom__card card col-md-3 mb-4"
+                  key={data.id}
+                >
+                  <div className="card-body">
+                    <h4 className="HomeData__content__title__h4">
+                      {data.title}
+                    </h4>
+                    {this.props.userId === data.user_id ? (
+                      <div>
+                        <button
+                          className="HomeData__content__button__see mr-2"
+                          onClick={() =>
+                            this.redirectToLinkResource(
+                              `${process.env.REACT_APP_API_URL}/${
+                                data.nameResource
+                              }`
+                            )
+                          }
+                        />
+                        <button
+                          className="HomeData__content__button__delete mr-2"
+                          onClick={() =>
+                            this.setState({
+                              show: true,
+                              data_id: data.id,
+                              type_resource: data.type_resource
+                            })
+                          }
+                        />
+                      </div>
+                    ) : null}
+                    <p className="HomeData__content__text__author">
+                      De {data.author}
+                    </p>
+                    <div className="HomeData__content__text text-justify">
+                      <p>{this.formatDate(data.updated_at)}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : null;
             })}
           </div>
         </div>
@@ -289,9 +294,9 @@ class HomeData extends Component {
 
 function mapStateToProps(state) {
   return {
-    userId: state.user.userId,
-    token: state.user.token,
-    name: state.user.userName
+    userId: state.userId,
+    token: state.token,
+    name: state.userName
   };
 }
 

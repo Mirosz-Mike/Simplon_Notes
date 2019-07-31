@@ -11,22 +11,27 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar Navbar_container">
-        <a href="/" className="Navbar__content__text__simplon">
-          SIMPLON<span className="Navbar__content__text__notes">notes</span>
-        </a>
-        <div className="Navbar__buttons">
-          <h3 className="Navbar__content__text__user">{`bienvenue ${
-            this.props.name
-          }`}</h3>
-          <a href="/article" className="Navbar__content__text__resources ml-3">
-            ressources
+        <div className="container">
+          <a href="/" className="Navbar__content__text__simplon">
+            SIMPLON<span className="Navbar__content__text__notes">notes</span>
           </a>
-          <button
-            className="Navbar__content__text__disconnect ml-3"
-            onClick={this.disconnect}
-          >
-            deconnexion
-          </button>
+          <div className="Navbar__buttons">
+            <h3 className="Navbar__content__text__user">{`bienvenue ${
+              this.props.name
+            }`}</h3>
+            <a
+              href="/article"
+              className="Navbar__content__text__resources ml-3"
+            >
+              ressources
+            </a>
+            <button
+              className="Navbar__content__text__disconnect ml-3"
+              onClick={this.disconnect}
+            >
+              deconnexion
+            </button>
+          </div>
         </div>
       </nav>
     );
@@ -35,8 +40,8 @@ class Navbar extends Component {
 
 function mapStateToProps(state) {
   return {
-    token: state.user.token,
-    name: state.user.userName
+    token: state.token,
+    name: state.userName
   };
 }
 

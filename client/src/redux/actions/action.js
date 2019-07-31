@@ -48,9 +48,15 @@ export function oneArticle(oneArticle) {
   };
 }
 
-export const deleteImgResource = name => {
+export function deleteImgResource(imageName) {
   return {
     type: REMOVE_IMAGE_RESOURCE,
-    payload: name
+    payload: imageName
   };
-};
+}
+
+// export const deleteImgResource = article => dispatch => {
+//   // delete request article.image=name
+//   // dans res je dispatch
+//   dispatch(deleteImg(article));
+// };

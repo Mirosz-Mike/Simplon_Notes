@@ -1,21 +1,42 @@
 import React, { Component } from "react";
+import axios from "axios";
 import { connect } from "react-redux";
 
 class OneArticle extends Component {
+  state = {
+    imageArticles: []
+  };
+
+  componentDidMount() {
+    this.fetchImagesArticles();
+  }
+
+  fetchImagesArticles() {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/articles/images`, {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        const imagesByArticles = response.data.filter(
+          articleById => articleById.article_id === this.props.oneArticle.id
+        );
+
+        const onlyImageUrl = imagesByArticles.map(imageUrl => imageUrl.image);
+        this.setState({ imageArticles: onlyImageUrl });
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }
+
   formatDate = date => {
     const formatDate = new Date(date);
     return formatDate.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
   };
 
   render() {
-    const {
-      title,
-      author,
-      subtitle,
-      image,
-      body,
-      updated_at
-    } = this.props.oneArticle;
+    const { title, author, subtitle, body, updated_at } = this.props.oneArticle;
+    console.log(this.state.imageArticles.map(image => image));
 
     return (
       <div className="container">
@@ -25,10 +46,10 @@ class OneArticle extends Component {
           <img
             className="mb-3"
             src={
-              !!image
-                ? typeof image.split(",")[0] === "undefined"
-                  ? process.env.PUBLIC_URL + "/simplon.png"
-                  : `${process.env.REACT_APP_API_URL}/${image.split(",")[0]}`
+              this.state.imageArticles.length > 0
+                ? `${process.env.REACT_APP_API_URL}/${
+                    this.state.imageArticles[0]
+                  }`
                 : process.env.PUBLIC_URL + "/simplon.png"
             }
             alt="Avatar"
@@ -38,11 +59,11 @@ class OneArticle extends Component {
           <div className="row">
             <img
               src={
-                !!image
-                  ? typeof image.split(",")[1] === "undefined"
-                    ? null
-                    : `${process.env.REACT_APP_API_URL}/${image.split(",")[1]}`
-                  : null
+                this.state.imageArticles.length > 0
+                  ? `${process.env.REACT_APP_API_URL}/${
+                      this.state.imageArticles[1]
+                    }`
+                  : process.env.PUBLIC_URL + "/simplon.png"
               }
               alt="No available"
               style={{ width: "100%", paddingRight: "15px" }}
@@ -58,7 +79,8 @@ class OneArticle extends Component {
 
 function mapStateToProps(state) {
   return {
-    oneArticle: state.user.oneArticle
+    token: state.token,
+    oneArticle: state.oneArticle
   };
 }
 export default connect(mapStateToProps)(OneArticle);
