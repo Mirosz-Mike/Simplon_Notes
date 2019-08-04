@@ -17,9 +17,24 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fieldSize: 8 * 1024 * 1024 // 8MB
+    fieldSize: 5 * 1024 * 1024 // 5MB
   }
-}).array("myImage", 4); // 4 est la limite que je fixe
+}).array("myImage", 3); // 3 images est la limite que je fixe
+
+// function pour mes query pour la refacto
+
+// function __query(queryName) {
+//   return new Promise((resolve, reject) => {
+//     connexion.query(queryName, function(err, result){
+//       if (err) {
+//         console.log('erreur query: ', err)
+//         reject(err)
+//       } else {
+//         resolve(result)
+//       }
+//     })
+//   });
+// }
 
 route.use(checkAuth);
 
@@ -48,9 +63,7 @@ route.post("/", (req, res) => {
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
 
-    console.log(article);
-
-    const extensionFormat = [".js", ".php", ".rb"];
+    const extensionFormat = [".js", ".php", ".rb", ".sql"];
     const fileNameExtension = req.files.map(image => image.originalname);
 
     const checkBadFormat = extensionFormat.map(extension => {
@@ -60,7 +73,13 @@ route.post("/", (req, res) => {
     });
 
     if (err) {
-      console.log(err);
+      // Si plus de 3 images par article j'affiche une erreur
+      if (err.code === "LIMIT_UNEXPECTED_FILE") {
+        return res.status(500).send({
+          message: "Vous avez depassé la limite d'images, 3 par article"
+        });
+      }
+      throw err;
     }
 
     if (req.files.length === 0) {
@@ -77,9 +96,16 @@ route.post("/", (req, res) => {
         .status(200)
         .send({ message: "Article enregister avec succès" });
     } else {
-      if (!checkBadFormat.includes(true)) {
-        const id = uuidv1();
-        connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
+      // Je gere le total des images reçus avant l'envoie
+      const sizeImages = req.files.map(imageSize => imageSize.size);
+      const reducer = (accumulator, currentValue) => accumulator + currentValue;
+      const TotalSizeImages = sizeImages.reduce(reducer);
+
+      // 5MB = 5242880
+      if (TotalSizeImages < 5242880) {
+        if (!checkBadFormat.includes(true)) {
+          const id = uuidv1();
+          connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
           "${id}",
           "${user_id}",
           "${author}",
@@ -89,22 +115,27 @@ route.post("/", (req, res) => {
           "article"
           )`);
 
-        for (let i = 0; i < req.files.length; i++) {
-          connection.query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
+          for (let i = 0; i < req.files.length; i++) {
+            connection.query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
             "${uuidv1()}",
             "${id}",
             "uploads/${req.files[i].filename}",
             "${req.files[i].originalname}"
           )`);
-        }
+          }
 
-        return res
-          .status(200)
-          .send({ message: "Article enregister avec succès" });
+          return res
+            .status(200)
+            .send({ message: "Article enregister avec succès" });
+        } else {
+          return res
+            .status(404)
+            .send({ message: "Image non valide à cause du format" });
+        }
       } else {
-        return res
-          .status(404)
-          .send({ message: "Image non valide à cause du format" });
+        return res.status(404).send({
+          message: "Vos images sont trop grands 5MB au total maximum"
+        });
       }
     }
   });

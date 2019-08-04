@@ -53,7 +53,7 @@ route.post("/", (req, res) => {
       .includes(true);
 
     if (!checkBadFormat) {
-      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, nameResource, type, size, type_resource) VALUES (
+      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, name_resource, type, size, type_resource) VALUES (
           "${uuidv1()}",
           "${user_id}",
           "${title}",

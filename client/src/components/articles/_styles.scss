@@ -77,12 +77,17 @@ a:hover {
   color: #dddddd;
 }
 
+.HomeData__dropdown {
+  width: 15%;
+  margin: 23px;
+}
+
 .HomeData__content__text__resources {
   color: $grey2;
   font-family: "Roboto", sans-serif;
   font-weight: 900;
   font-size: 80px;
-  padding-top: 240px;
+  padding-top: 200px;
 }
 
 .HomeData__content__button__see {

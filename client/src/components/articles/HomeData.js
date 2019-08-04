@@ -10,6 +10,14 @@ import axios from "axios";
 class HomeData extends Component {
   state = {
     dataResources: [],
+    filteredData: [],
+    tabFilter: [
+      "Filtrer par",
+      "Articles",
+      "Ressources",
+      "Les plus récents",
+      "Les plus anciennes"
+    ],
     success: "",
     search: "",
     show: false,
@@ -126,13 +134,76 @@ class HomeData extends Component {
     });
   };
 
+  reset = () => {
+    const { filteredData } = this.state;
+    if (filteredData.length > 0) {
+      this.setState({ filteredData: [] });
+    }
+  };
+
+  selectFilter = event => {
+    const currentValue = event.target.value;
+    const { tabFilter, filteredData, dataResources } = this.state;
+
+    if (currentValue === tabFilter[1]) {
+      const filterByArticles = dataResources.filter(
+        articles => articles.type_resource === "article"
+      );
+      this.setState({ filteredData: filterByArticles });
+    }
+
+    if (currentValue === tabFilter[2]) {
+      const filterByResources = dataResources.filter(
+        resources => resources.type_resource === "ressource"
+      );
+      this.setState({ filteredData: filterByResources });
+    }
+
+    if (currentValue === tabFilter[3]) {
+      if (filteredData.length > 0) {
+        this.setState({
+          filteredData: filteredData.sort((a, b) =>
+            b.updated_at > a.updated_at ? 1 : -1
+          )
+        });
+      }
+      this.setState({
+        dataResources: dataResources.sort((a, b) =>
+          b.updated_at > a.updated_at ? 1 : -1
+        )
+      });
+    }
+
+    if (currentValue === tabFilter[4]) {
+      if (filteredData.length > 0) {
+        this.setState({
+          filteredData: filteredData.sort((a, b) =>
+            b.updated_at < a.updated_at ? 1 : -1
+          )
+        });
+      }
+      this.setState({
+        dataResources: dataResources.sort((a, b) =>
+          b.updated_at < a.updated_at ? 1 : -1
+        )
+      });
+    }
+  };
+
   render() {
-    const { dataResources, search, data_id } = this.state;
+    const {
+      dataResources,
+      filteredData,
+      search,
+      data_id,
+      tabFilter
+    } = this.state;
 
-    console.log(dataResources);
+    const ifFilteredData =
+      filteredData.length > 0 ? filteredData : dataResources;
 
-    const filteredDataByTitle = dataResources.filter(article => {
-      return article.title.toLowerCase().includes(search.toLowerCase());
+    const filteredDataByTitle = ifFilteredData.filter(resource => {
+      return resource.title.toLowerCase().includes(search.toLowerCase());
     });
 
     return (
@@ -165,6 +236,13 @@ class HomeData extends Component {
             value={search}
             onChange={this.handleChange}
           />
+          <select className="HomeData__dropdown" onChange={this.selectFilter}>
+            {tabFilter.map(filter => {
+              return <option>{filter}</option>;
+            })}
+          </select>
+
+          <button onClick={this.reset}>Réinitialiser</button>
           <div className="HomeData__content__align__buttons">
             <button
               className="HomeData__content__custom__button mr-3"
@@ -244,7 +322,7 @@ class HomeData extends Component {
                 </div>
               ) : data.type_resource.includes("ressource") ? (
                 <div
-                  className="HomeData__content__custom__card card col-md-3 mb-4"
+                  className="HomeData__content__custom__card card mr-5 col-md-3 mb-4"
                   key={data.id}
                 >
                   <div className="card-body">
@@ -258,7 +336,7 @@ class HomeData extends Component {
                           onClick={() =>
                             this.redirectToLinkResource(
                               `${process.env.REACT_APP_API_URL}/${
-                                data.nameResource
+                                data.name_resource
                               }`
                             )
                           }

@@ -36,15 +36,12 @@ class OneArticle extends Component {
 
   render() {
     const { title, author, subtitle, body, updated_at } = this.props.oneArticle;
-    console.log(this.state.imageArticles.map(image => image));
 
     return (
       <div className="container">
         <div className="ml-5 mr-5 pt-5">
-          <h2 className=" title-h2-black">{title}</h2>
-          <h4 className="title-h3">{subtitle}</h4>
           <img
-            className="mb-3"
+            className="mb-3 OneArticle__Background__Image"
             src={
               this.state.imageArticles.length > 0
                 ? `${process.env.REACT_APP_API_URL}/${
@@ -55,7 +52,16 @@ class OneArticle extends Component {
             alt="Avatar"
             style={{ width: "100%" }}
           />
-          <p className="text-justify mb-3">{body}</p>
+          <h2 className="OneArticle__title">{title}</h2>
+          <h4 className="OneArticle__subtitle">{subtitle}</h4>
+          <div className="OneArticle__align__content">
+            <p className="OneArticle__text__author">{author}</p>|
+            <p className="OneArticle__text__date">
+              {" "}
+              {this.formatDate(updated_at)}
+            </p>
+          </div>
+          <p className="text-justify mb-3 OneArticle__body">{body}</p>
           <div className="row">
             <img
               src={
@@ -69,8 +75,6 @@ class OneArticle extends Component {
               style={{ width: "100%", paddingRight: "15px" }}
             />
           </div>
-          <p className="OneArticle__grey">De {author}</p>
-          <p className="OneArticle__grey">{this.formatDate(updated_at)}</p>
         </div>
       </div>
     );

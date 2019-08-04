@@ -36,7 +36,7 @@ class CreateArticle extends Component {
 
     if (title && body) {
       axios
-        .post(`${process.env.REACT_APP_API_URL}/articles/`, formData, {
+        .post(`${process.env.REACT_APP_API_URL}/articles`, formData, {
           headers: {
             "content-type": "multipart/form-data",
             "x-auth-token": this.props.token
@@ -52,6 +52,10 @@ class CreateArticle extends Component {
         .catch(error => {
           const userDeconnect = error.response.status === 401;
           const fileExtension = error.response.status === 404;
+          const numberImagesExceeded = error.response.status === 500;
+          if (numberImagesExceeded) {
+            this.setState({ messageError: error.response.data.message });
+          }
           if (fileExtension) {
             this.setState({ messageError: error.response.data.message });
           }
