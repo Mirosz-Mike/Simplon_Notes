@@ -112,7 +112,7 @@ class CreateArticle extends Component {
               type="file"
               multiple
               onChange={this.onChange}
-              className="CreateArticle__container__input "
+              className="CreateArticle__container__input"
             />
             <label>Corps</label>
             <textarea

@@ -3,14 +3,18 @@ import { connect } from "react-redux";
 import axios from "axios";
 import Modal from "../../shared/Modal/Modal";
 
-import { deleteImgResource } from "../../redux/actions/action";
+import {
+  deleteImageEditArticle,
+  showMessageDelete
+} from "../../redux/actions/action";
 
 class EditArticle extends Component {
   state = {
     title: "",
     subTitle: "",
-    image: [],
-    imageName: [],
+    file: [],
+    imagesArticle: [],
+    imageId: "",
     body: "",
     success: "",
     messageError: "",
@@ -18,32 +22,70 @@ class EditArticle extends Component {
   };
 
   componentDidMount() {
-    const { title, subtitle, image, image_name, body } = this.props.editArticle;
+    this.fetchImageArticle();
+  }
 
-    const listImageName = image_name.split(",");
-    console.log(image);
+  componentDidUpdate(prevProps) {
+    if (prevProps.showSuccessModal !== this.props.showSuccessModal) {
+      this.fetchImageArticle();
+      this.props.initializeShowMessage(false);
+    }
+  }
+
+  fetchImageArticle = () => {
+    const { title, subtitle, body } = this.props.editArticle;
+
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/articles/images`, {
+        headers: { "x-auth-token": this.props.token }
+      })
+      .then(response => {
+        const imagesByArticle = response.data.filter(
+          articleById => articleById.article_id === this.props.editArticle.id
+        );
+
+        const onlyImageUrl = imagesByArticle.map(imageUrl => {
+          return {
+            imageId: imageUrl.id,
+            image: imageUrl.image,
+            image_name: imageUrl.image_name
+          };
+        });
+
+        this.setState({ imagesArticle: onlyImageUrl });
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
 
     this.setState({
       title: title,
       subTitle: subtitle,
-      image: [image],
-      imageName: listImageName,
       body: body
     });
-  }
+  };
 
   handleSubmit = event => {
+    // Refacto limiter les requetes inutiles
+    // Voir si je peux checkez si y'a plus de trois images
+    // Voir si le format est bien une image
     event.preventDefault();
     const { title, body } = this.state;
+    const formData = new FormData();
+
+    const imageArr = Array.from(this.state.file);
+    imageArr.forEach(image => {
+      formData.append("myImage", image);
+    });
 
     const article = {
       user_id: this.props.userId,
       title: this.state.title,
       subtitle: this.state.subTitle,
-      image: this.state.image,
-      //image_name: this.state.image_name,
       body: this.state.body
     };
+
+    formData.append("myArticle", JSON.stringify(article));
 
     if (title && body) {
       axios
@@ -51,9 +93,12 @@ class EditArticle extends Component {
           `${process.env.REACT_APP_API_URL}/articles/${
             this.props.editArticle.id
           }`,
-          article,
+          formData,
           {
-            headers: { "x-auth-token": this.props.token }
+            headers: {
+              "content-type": "multipart/form-data",
+              "x-auth-token": this.props.token
+            }
           }
         )
         .then(response => {
@@ -66,6 +111,14 @@ class EditArticle extends Component {
         })
         .catch(error => {
           const userDeconnect = error.response.status === 401;
+          const fileExtension = error.response.status === 404;
+          const numberImagesExceeded = error.response.status === 500;
+          if (numberImagesExceeded) {
+            this.setState({ messageError: error.response.data.message });
+          }
+          if (fileExtension) {
+            this.setState({ messageError: error.response.data.message });
+          }
           if (userDeconnect) {
             alert(error.response.data.message);
             this.props.removeToken(this.props.token);
@@ -75,12 +128,14 @@ class EditArticle extends Component {
     }
   };
 
-  deleteImage(e, image) {
+  deleteImage(e, imageId, token) {
     e.preventDefault();
-    this.props.removeImage(image);
-
-    console.log(image);
+    this.props.removeImage(imageId, token);
   }
+
+  onChange = event => {
+    this.setState({ file: event.target.files });
+  };
 
   handleChange = event => {
     this.setState({
@@ -93,6 +148,7 @@ class EditArticle extends Component {
       <div className="EditArticle__container">
         <Modal show={this.state.show}>{this.state.success}</Modal>
         <form className="EditArticle__container__form mt-5">
+          <p>{this.state.messageError}</p>
           <label>Titre</label>
           <input
             onChange={this.handleChange}
@@ -114,32 +170,38 @@ class EditArticle extends Component {
             required
           />
           <div className="EditArticle__container__align__image">
-            {this.state.imageName !== undefined ? (
-              this.state.imageName.map(image => {
+            {this.state.imagesArticle.length > 0 ? (
+              this.state.imagesArticle.map(img => {
                 return (
                   <div
                     className="EditArticle__container__align__image"
-                    key={image.id}
+                    key={img.imageId}
                   >
-                    <p>{image}</p>
-                    <button
-                      onClick={e => this.deleteImage(e, image)}
-                      className="btn btn-danger"
-                    >
-                      Supprimer cette photo
-                    </button>
+                    <div>
+                      <p>{img.image_name}</p>
+                      <button
+                        onClick={e =>
+                          this.deleteImage(e, img.imageId, this.props.token)
+                        }
+                        className="btn btn-danger"
+                      >
+                        Supprimer cette photo
+                      </button>
+                    </div>
+                    <br />
                   </div>
                 );
               })
             ) : (
-              <p>Plus d'image</p>
+              <p>Pas d'image</p>
             )}
           </div>
           <label>Image</label>
           <input
+            name="myImage"
             type="file"
-            name="image"
-            placeholder="image"
+            multiple
+            onChange={this.onChange}
             className="form-control-file"
           />
           <label>Corps</label>
@@ -166,14 +228,18 @@ function mapStateToProps(state) {
   return {
     userId: state.userId,
     token: state.token,
+    showSuccessModal: state.showSuccessModal,
     editArticle: state.editArticle
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    removeImage(image_name) {
-      dispatch(deleteImgResource(image_name));
+    removeImage(imageId, token) {
+      dispatch(deleteImageEditArticle(imageId, token));
+    },
+    initializeShowMessage(bool) {
+      dispatch(showMessageDelete(bool));
     }
   };
 }

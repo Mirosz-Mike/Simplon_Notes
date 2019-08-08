@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 class Navbar extends Component {
   disconnect = () => {
     this.props.remove(this.props.token);
+    localStorage.clear();
     this.props.history.push("/");
   };
 

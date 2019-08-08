@@ -21,10 +21,9 @@
   }
 
   .EditArticle__container__align__image {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
     width: 100%;
+    height: 110px;
+    overflow: auto;
   }
 
   .EditArticle__container__buttons {

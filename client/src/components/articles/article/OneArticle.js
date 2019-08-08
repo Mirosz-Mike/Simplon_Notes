@@ -20,7 +20,6 @@ class OneArticle extends Component {
         const imagesByArticles = response.data.filter(
           articleById => articleById.article_id === this.props.oneArticle.id
         );
-
         const onlyImageUrl = imagesByArticles.map(imageUrl => imageUrl.image);
         this.setState({ imageArticles: onlyImageUrl });
       })
@@ -61,19 +60,30 @@ class OneArticle extends Component {
               {this.formatDate(updated_at)}
             </p>
           </div>
+          <div className="row mb-5">
+            {this.state.imageArticles.length > 0 &&
+            this.state.imageArticles[1] ? (
+              <img
+                src={`${process.env.REACT_APP_API_URL}/${
+                  this.state.imageArticles[1]
+                }`}
+                alt="No available"
+                style={{ width: "100%", paddingRight: "15px" }}
+              />
+            ) : null}
+          </div>
           <p className="text-justify mb-3 OneArticle__body">{body}</p>
-          <div className="row">
-            <img
-              src={
-                this.state.imageArticles.length > 0
-                  ? `${process.env.REACT_APP_API_URL}/${
-                      this.state.imageArticles[1]
-                    }`
-                  : process.env.PUBLIC_URL + "/simplon.png"
-              }
-              alt="No available"
-              style={{ width: "100%", paddingRight: "15px" }}
-            />
+          <div className="row mb-5">
+            {this.state.imageArticles.length > 0 &&
+            this.state.imageArticles[2] ? (
+              <img
+                src={`${process.env.REACT_APP_API_URL}/${
+                  this.state.imageArticles[2]
+                }`}
+                alt="No available"
+                style={{ width: "100%", paddingRight: "15px" }}
+              />
+            ) : null}
           </div>
         </div>
       </div>

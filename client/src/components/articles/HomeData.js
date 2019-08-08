@@ -134,7 +134,7 @@ class HomeData extends Component {
     });
   };
 
-  reset = () => {
+  resetFilter = () => {
     const { filteredData } = this.state;
     if (filteredData.length > 0) {
       this.setState({ filteredData: [] });
@@ -238,11 +238,16 @@ class HomeData extends Component {
           />
           <select className="HomeData__dropdown" onChange={this.selectFilter}>
             {tabFilter.map(filter => {
-              return <option>{filter}</option>;
+              return <option key={filter}>{filter}</option>;
             })}
           </select>
 
-          <button onClick={this.reset}>Réinitialiser</button>
+          <button
+            className="HomeData__custom__buttons__reinit"
+            onClick={this.resetFilter}
+          >
+            Réinitialiser
+          </button>
           <div className="HomeData__content__align__buttons">
             <button
               className="HomeData__content__custom__button mr-3"

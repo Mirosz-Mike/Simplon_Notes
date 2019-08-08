@@ -5,7 +5,8 @@ import {
   GET_USER_ID,
   EDIT_ARTICLE,
   GET_ONE_ARTICLE,
-  REMOVE_IMAGE_RESOURCE
+  DELETE_DATA_SUCCESS,
+  SHOW_MESSAGE_DELETE
 } from "../actions/action";
 
 export default function userReducer(state = [], action) {
@@ -42,16 +43,16 @@ export default function userReducer(state = [], action) {
         oneArticle: action.payload
       };
     }
-    case REMOVE_IMAGE_RESOURCE: {
-      const findImageDelete = [state.editArticle].filter(
-        image => image.image_name === action.payload
-      );
+    case SHOW_MESSAGE_DELETE: {
       return {
         ...state,
-        editArticle:
-          findImageDelete.length > 0
-            ? { ...state.editArticle, image_name: "" }
-            : null
+        showSuccessModal: action.payload
+      };
+    }
+    case DELETE_DATA_SUCCESS: {
+      return {
+        ...state,
+        showSuccessModal: true
       };
     }
     default:
