@@ -236,14 +236,17 @@ class HomeData extends Component {
             value={search}
             onChange={this.handleChange}
           />
-          <select className="HomeData__dropdown" onChange={this.selectFilter}>
+          <select
+            className="HomeData__dropdown btn btn-dark"
+            onChange={this.selectFilter}
+          >
             {tabFilter.map(filter => {
               return <option key={filter}>{filter}</option>;
             })}
           </select>
 
           <button
-            className="HomeData__custom__buttons__reinit"
+            className="HomeData__custom__buttons__reinit btn btn-dark"
             onClick={this.resetFilter}
           >
             Réinitialiser
@@ -357,7 +360,17 @@ class HomeData extends Component {
                           }
                         />
                       </div>
-                    ) : null}
+                    ) : <button
+                          className="HomeData__content__button__see mr-2"
+                          onClick={() =>
+                            this.redirectToLinkResource(
+                              `${process.env.REACT_APP_API_URL}/${
+                                data.name_resource
+                              }`
+                            )
+                          }
+                        />
+                      }
                     <p className="HomeData__content__text__author">
                       De {data.author}
                     </p>

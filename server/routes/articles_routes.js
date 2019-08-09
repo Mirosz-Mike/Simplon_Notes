@@ -23,47 +23,38 @@ const upload = multer({
 
 // function pour mes query pour la refacto
 
-// function __query(queryName) {
-//   return new Promise((resolve, reject) => {
-//     connexion.query(queryName, function(err, result){
-//       if (err) {
-//         console.log('erreur query: ', err)
-//         reject(err)
-//       } else {
-//         resolve(result)
-//       }
-//     })
-//   });
-// }
+__query = (queryName, escapeInjection) => {
+  return new Promise((resolve, reject) => {
+    connection.query(queryName, escapeInjection, function(err, result) {
+      if (err) {
+        console.log("erreur query: ", err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
 
 route.use(checkAuth);
 
-route.get("/images", (req, res) => {
-  connection.query("SELECT * FROM simplon_notes.images_articles", function(
-    err,
-    result
-  ) {
-    if (err) throw err;
-    return res.status(200).send(result);
-  });
+route.get("/images", async (req, res) => {
+  const result = await __query("SELECT * FROM simplon_notes.images_articles");
+  return res.status(200).send(result);
 });
 
-route.get("/", (req, res) => {
-  connection.query("SELECT * FROM simplon_notes.articles", function(
-    err,
-    result
-  ) {
-    if (err) throw err;
-    return res.status(200).send(result);
-  });
+route.get("/", async (req, res) => {
+  const result = await __query("SELECT * FROM simplon_notes.articles");
+  return res.status(200).send(result);
 });
 
 route.post("/", (req, res) => {
   upload(req, res, err => {
+    // Refacto on revoie 2 fois ces const
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
 
-    const extensionFormat = [".js", ".php", ".rb", ".sql"];
+    const extensionFormat = [".js", ".php", ".rb", ".sql", ".odt"];
     const fileNameExtension = req.files.map(image => image.originalname);
 
     const checkBadFormat = extensionFormat.map(extension => {
@@ -157,154 +148,118 @@ route.put("/:id", (req, res) => {
       throw err;
     }
 
-    // A refacto effet spaghetti et par forcement compréhensible
-
-    connection.query(
+    const getArticles = __query(
       "SELECT * FROM simplon_notes.articles WHERE id = ?",
-      articleId,
-      function(err, result) {
-        if (err) throw err;
-        if (result.length > 0) {
-          const params = [title, subtitle, body, articleId];
-          connection.query(
-            "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, body = ? WHERE id = ?",
-            params,
-            function(err, result) {
-              if (err) throw err;
-              else {
-                if (req.files.length === 0) {
+      articleId
+    );
+
+    getArticles.then(result => {
+      if (result.length > 0) {
+        const params = [title, subtitle, body, articleId];
+        __query(
+          "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, body = ? WHERE id = ?",
+          params
+        );
+
+        if (req.files.length === 0) {
+          return res
+            .status(200)
+            .send({ message: "Votre article a bien été modifié" });
+        } else {
+          const resultImagesArticle = __query(
+            "SELECT * FROM simplon_notes.images_articles WHERE article_id = ?",
+            articleId
+          );
+
+          resultImagesArticle.then(result => {
+            if (result.length + req.files.length > 3) {
+              return res.status(500).send({
+                message: "Vous avez depassé la limite d'images, 3 par article"
+              });
+            } else {
+              const extensionBadFormat = [".js", ".php", ".rb", ".sql", ".odt"];
+              const nameImage = req.files.map(image => image.originalname);
+
+              // les resultats de checkBadformat true = image non valide sinon false une image valide
+              const resultBadFormat = [];
+
+              const checkBadFormat = extensionBadFormat.map(extension => {
+                for (let i = 0; i < nameImage.length; i++) {
+                  resultBadFormat.push(nameImage[i].includes(extension));
+                }
+              });
+
+              // Je gere le total des images reçus avant l'envoie
+              const sizeImages = req.files.map(imageSize => imageSize.size);
+              const reducer = (accumulator, currentValue) =>
+                accumulator + currentValue;
+              const TotalSizeImages = sizeImages.reduce(reducer);
+
+              // 5MB = 5242880
+              if (TotalSizeImages < 5242880) {
+                if (!resultBadFormat.find(check => check === true)) {
+                  for (let i = 0; i < req.files.length; i++) {
+                    __query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
+                        "${uuidv1()}",
+                        "${articleId}",
+                        "uploads/${req.files[i].filename}",
+                        "${req.files[i].originalname}"
+                      )`);
+                  }
                   return res.status(200).send({
                     message: "Votre article a bien été modifié"
                   });
                 } else {
-                  connection.query(
-                    "SELECT * FROM simplon_notes.images_articles WHERE article_id = ?",
-                    articleId,
-                    function(err, result) {
-                      if (err) throw err;
-                      if (result.length + req.files.length > 3) {
-                        return res.status(500).send({
-                          message:
-                            "Vous avez depassé la limite d'images, 3 par article"
-                        });
-                      } else {
-                        console.log("envoi photo", req.files);
-                        const extensionFormat = [".js", ".php", ".rb", ".sql"];
-                        const fileNameExtension = req.files.map(
-                          image => image.originalname
-                        );
-
-                        const checkBadFormat = extensionFormat.map(
-                          extension => {
-                            return fileNameExtension
-                              .map(fileExtension =>
-                                fileExtension.includes(extension)
-                              )
-                              .includes(true);
-                          }
-                        );
-
-                        // Je gere le total des images reçus avant l'envoie
-                        const sizeImages = req.files.map(
-                          imageSize => imageSize.size
-                        );
-                        const reducer = (accumulator, currentValue) =>
-                          accumulator + currentValue;
-                        const TotalSizeImages = sizeImages.reduce(reducer);
-
-                        // 5MB = 5242880
-                        if (TotalSizeImages < 5242880) {
-                          if (!checkBadFormat.includes(true)) {
-                            for (let i = 0; i < req.files.length; i++) {
-                              connection.query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
-                              "${uuidv1()}",
-                              "${articleId}",
-                              "uploads/${req.files[i].filename}",
-                              "${req.files[i].originalname}"
-                            )`);
-                            }
-                            return res.status(200).send({
-                              message: "Votre article a bien été modifié"
-                            });
-                          } else {
-                            return res.status(404).send({
-                              message: "Image non valide à cause du format"
-                            });
-                          }
-                        } else {
-                          return res.status(404).send({
-                            message:
-                              "Vos images sont trop grands 5MB au total maximum"
-                          });
-                        }
-                      }
-                    }
-                  );
+                  return res.status(404).send({
+                    message: "Image non valide à cause du format"
+                  });
                 }
+              } else {
+                return res.status(404).send({
+                  message: "Vos images sont trop grands 5MB au total maximum"
+                });
               }
             }
-          );
-        } else {
-          return res.status(400).send({
-            message: "Votre article n'existe pas ou plus"
           });
         }
+      } else {
+        return res.status(400).send({
+          message: "Votre article n'existe pas ou plus"
+        });
       }
-    );
+    });
   });
 });
 
-route.delete("/editArticle/:id", (req, res) => {
+route.delete("/editArticle/:id", async (req, res) => {
   const imageId = req.params.id;
-  connection.query(
+  const result = await __query(
     "SELECT * FROM simplon_notes.images_articles WHERE id = ?",
-    imageId,
-    function(err, result) {
-      if (result.length > 0) {
-        connection.query(
-          "DELETE FROM simplon_notes.images_articles WHERE id = ?",
-          imageId,
-          function(err, result) {
-            if (err) throw err;
-            return res.status(200).send({
-              message: "Votre image a bien été supprimé"
-            });
-          }
-        );
-      } else {
-        return res.status(400).send({
-          message: "Votre image n'existe pas ou a été supprimé"
-        });
-      }
-    }
+    imageId
   );
+
+  if (result.length > 0) {
+    await __query(
+      "DELETE FROM simplon_notes.images_articles WHERE id = ?",
+      imageId
+    );
+    return res.status(200).send({ message: "Votre image a bien été supprimé" });
+  }
 });
 
-route.delete("/:id", (req, res) => {
+route.delete("/:id", async (req, res) => {
   const articleId = req.params.id;
-  connection.query(
+  const result = await __query(
     "SELECT * FROM simplon_notes.articles WHERE id = ?",
-    articleId,
-    function(err, result) {
-      if (result.length > 0) {
-        connection.query(
-          "DELETE FROM simplon_notes.articles WHERE id = ?",
-          articleId,
-          function(err, result) {
-            if (err) throw err;
-            return res.status(200).send({
-              message: "Votre article a bien été supprimé",
-              data: result
-            });
-          }
-        );
-      } else {
-        return res.status(400).send({
-          message: "Votre article n'existe pas ou a été supprimé"
-        });
-      }
-    }
+    articleId
   );
+
+  if (result.length > 0) {
+    await __query("DELETE FROM simplon_notes.articles WHERE id = ?", articleId);
+    return res
+      .status(200)
+      .send({ message: "Votre article a bien été supprimé" });
+  }
 });
 
 module.exports = route;

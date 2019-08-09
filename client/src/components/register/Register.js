@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 
+import Modal from "../../shared/Modal/Modal";
+
 class Register extends Component {
   state = {
     name: "",
     email: "",
     password: "",
     userMsg: "",
+    userMsgValid: "",
     validPass: null,
     show: false
   };
@@ -28,7 +31,11 @@ class Register extends Component {
       axios
         .post(`${process.env.REACT_APP_API_URL}/auth/register`, user)
         .then(response => {
-          this.setState({ userMsg: response.data.message, validPass: true });
+          this.setState({
+            show: true,
+            userMsgValid: response.data.message,
+            validPass: true
+          });
           setTimeout(() => {
             this.props.history.push("/login");
           }, 1000);
@@ -66,7 +73,14 @@ class Register extends Component {
   };
 
   render() {
-    const { name, email, password, userMsg } = this.state;
+    const {
+      name,
+      email,
+      password,
+      userMsg,
+      userMsgValid,
+      validPass
+    } = this.state;
 
     return (
       <div className="Register__container">
@@ -149,7 +163,11 @@ class Register extends Component {
                       placeholder="Mot de passe"
                       required
                     />
-                    {this.state.show ? (
+                    {/* {A refacto le systeme d'erreur en modal} */}
+                    {this.state.show && !!userMsgValid ? (
+                      <Modal show={this.state.show}>{userMsgValid}</Modal>
+                    ) : null}
+                    {this.state.show && !validPass ? (
                       <div className="Modal__container">
                         <div className="Modal__main">
                           <h4>Votre mot de passe doit contenir au moins</h4>

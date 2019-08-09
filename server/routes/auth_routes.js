@@ -5,6 +5,21 @@ const jwt = require("jsonwebtoken");
 const uuidv1 = require("uuid/v1");
 require("dotenv").config();
 
+// function pour mes query pour la refacto
+
+// __query = (queryName, escapeInjection) => {
+//   return new Promise((resolve, reject) => {
+//     connection.query(queryName, escapeInjection, function(err, result) {
+//       if (err) {
+//         console.log("erreur query: ", err);
+//         reject(err);
+//       } else {
+//         resolve(result);
+//       }
+//     });
+//   });
+// };
+
 route.post("/register", async (req, res) => {
   const validEmail = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
   const { email, password, name } = req.body;

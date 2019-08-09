@@ -66,16 +66,21 @@ class EditArticle extends Component {
   };
 
   handleSubmit = event => {
-    // Refacto limiter les requetes inutiles
-    // Voir si je peux checkez si y'a plus de trois images
-    // Voir si le format est bien une image
     event.preventDefault();
-    const { title, body } = this.state;
+    const { title, body, imagesArticle } = this.state;
     const formData = new FormData();
 
     const imageArr = Array.from(this.state.file);
     imageArr.forEach(image => {
       formData.append("myImage", image);
+    });
+
+    // check si le format est valide ou non
+    const extensionBadFormat = [".js", ".php", ".rb", ".sql", ".odt"];
+    const nameImage = imageArr.map(img => img.name);
+
+    const checkBadFormat = extensionBadFormat.map(extension => {
+      return nameImage.map(fileExtension => fileExtension.includes(extension));
     });
 
     const article = {
@@ -88,43 +93,57 @@ class EditArticle extends Component {
     formData.append("myArticle", JSON.stringify(article));
 
     if (title && body) {
-      axios
-        .put(
-          `${process.env.REACT_APP_API_URL}/articles/${
-            this.props.editArticle.id
-          }`,
-          formData,
-          {
-            headers: {
-              "content-type": "multipart/form-data",
-              "x-auth-token": this.props.token
-            }
-          }
-        )
-        .then(response => {
-          this.setState({ show: true, success: response.data.message });
+      if (imagesArticle.length + imageArr.length <= 3) {
+        if (!checkBadFormat.find(check => check === true)) {
+          axios
+            .put(
+              `${process.env.REACT_APP_API_URL}/articles/${
+                this.props.editArticle.id
+              }`,
+              formData,
+              {
+                headers: {
+                  "content-type": "multipart/form-data",
+                  "x-auth-token": this.props.token
+                }
+              }
+            )
+            .then(response => {
+              console.log(response);
+              this.setState({ show: true, success: response.data.message });
 
-          setTimeout(() => {
-            this.setState({ show: false });
-            this.props.history.push("/article");
-          }, 1300);
-        })
-        .catch(error => {
-          const userDeconnect = error.response.status === 401;
-          const fileExtension = error.response.status === 404;
-          const numberImagesExceeded = error.response.status === 500;
-          if (numberImagesExceeded) {
-            this.setState({ messageError: error.response.data.message });
-          }
-          if (fileExtension) {
-            this.setState({ messageError: error.response.data.message });
-          }
-          if (userDeconnect) {
-            alert(error.response.data.message);
-            this.props.removeToken(this.props.token);
-            this.props.history.push("/");
-          }
+              setTimeout(() => {
+                this.setState({ show: false });
+                this.props.history.push("/article");
+              }, 1300);
+            })
+            .catch(error => {
+              console.log(error);
+              const userDeconnect = error.response.status === 401;
+              const fileExtension = error.response.status === 404;
+              const numberImagesExceeded = error.response.status === 500;
+              if (numberImagesExceeded) {
+                this.setState({ messageError: error.response.data.message });
+              }
+              if (fileExtension) {
+                this.setState({ messageError: error.response.data.message });
+              }
+              if (userDeconnect) {
+                alert(error.response.data.message);
+                this.props.removeToken(this.props.token);
+                this.props.history.push("/");
+              }
+            });
+        } else {
+          this.setState({
+            messageError: "Image non valide à cause du format"
+          });
+        }
+      } else {
+        this.setState({
+          messageError: "Vous avez depassé la limite d'images, 3 par article"
         });
+      }
     }
   };
 

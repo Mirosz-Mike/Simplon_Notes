@@ -16,13 +16,16 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    const validEmail = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
 
+    // Todo faire verif du email valide plutôt qu'une requete inutile
     const user = {
       email: this.state.email,
       password: this.state.password
     };
 
-    axios
+    if (validEmail.test(user.email)) {
+      axios
       .post(`${process.env.REACT_APP_API_URL}/auth/login`, user)
       .then(response => {
         this.props.availableToken(response.data.token);
@@ -33,6 +36,9 @@ class Login extends Component {
       .catch(error => {
         this.setState({ userMsg: error.response.data.message });
       });
+    } else {
+      this.setState({ userMsg: 'Email non valide (exemple@gmail.com)' })
+    }
   };
 
   redirectToHome = () => {
