@@ -11,7 +11,8 @@ class CreateArticle extends Component {
     success: "",
     file: [],
     messageError: "",
-    show: false
+    show: false,
+    msgUserDisconnect: ''
   };
 
   handleSubmit = event => {
@@ -60,9 +61,7 @@ class CreateArticle extends Component {
             this.setState({ messageError: error.response.data.message });
           }
           if (userDeconnect) {
-            alert(error.response.data.message);
-            this.props.removeToken(this.props.token);
-            this.props.history.push("/");
+            this.setState({ msgUserDisconnect: error.response.data.message, show: true })
           }
         });
     }
@@ -72,6 +71,11 @@ class CreateArticle extends Component {
     this.setState({ file: event.target.files });
   };
 
+  msgUserDisconnect = () => {
+    this.props.removeToken(this.props.token);
+    this.props.history.push("/");
+  }
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -79,10 +83,26 @@ class CreateArticle extends Component {
   };
 
   render() {
+    const { show, msgUserDisconnect } = this.state
     return (
       <div>
         <div className="CreateArticle__container">
           <Modal show={this.state.show}>{this.state.success}</Modal>
+          {
+            show && !!msgUserDisconnect ? (
+            <div className="Modal__container">
+              <div className="Modal__main">
+                <h4>{msgUserDisconnect}</h4>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => this.msgUserDisconnect()}
+                  >
+                    OK
+                  </button>
+              </div>
+            </div>
+            ) : null
+          }
           <form
             className="CreateArticle__container__form mt-5"
             onSubmit={this.handleSubmit}

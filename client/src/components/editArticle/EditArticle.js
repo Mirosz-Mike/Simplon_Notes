@@ -18,7 +18,8 @@ class EditArticle extends Component {
     body: "",
     success: "",
     messageError: "",
-    show: false
+    show: false,
+    msgUserDisconnect: ''
   };
 
   componentDidMount() {
@@ -129,9 +130,7 @@ class EditArticle extends Component {
                 this.setState({ messageError: error.response.data.message });
               }
               if (userDeconnect) {
-                alert(error.response.data.message);
-                this.props.removeToken(this.props.token);
-                this.props.history.push("/");
+                this.setState({ msgUserDisconnect: error.response.data.message, show: true })
               }
             });
         } else {
@@ -162,10 +161,31 @@ class EditArticle extends Component {
     });
   };
 
+  msgUserDisconnect = () => {
+    this.props.removeToken(this.props.token);
+    this.props.history.push("/");
+  }
+
   render() {
+    const { show, msgUserDisconnect } = this.state
     return (
       <div className="EditArticle__container">
         <Modal show={this.state.show}>{this.state.success}</Modal>
+        {
+            show && !!msgUserDisconnect ? (
+            <div className="Modal__container">
+              <div className="Modal__main">
+                <h4>{msgUserDisconnect}</h4>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => this.msgUserDisconnect()}
+                  >
+                    OK
+                  </button>
+              </div>
+            </div>
+            ) : null
+          }
         <form className="EditArticle__container__form mt-5">
           <p>{this.state.messageError}</p>
           <label>Titre</label>

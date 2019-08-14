@@ -67,7 +67,7 @@ export const deleteDataSuccess = response => {
 export const deleteImageEditArticle = (id, token) => {
   return dispatch => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/articles/editArticle/${id}`, {
+      .delete(`${process.env.REACT_APP_API_URL}/articles/deleteImagesArticle/${id}`, {
         headers: { "x-auth-token": token }
       })
       .then(response => {

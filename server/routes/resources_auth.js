@@ -1,10 +1,12 @@
 const route = require("express").Router();
-const connection = require("../config");
+
 const multer = require("multer");
 const path = require("path");
 const uuidv1 = require("uuid/v1");
 
 const checkAuth = require("../middleware/check_auth");
+const querySQL  = require('./functions_route');
+
 require("dotenv").config();
 
 const storage = multer.diskStorage({
@@ -17,20 +19,15 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fieldSize: 8 * 1024 * 1024 // 8MB
+    fieldSize: 5 * 1024 * 1024 // 5MB
   }
 }).single("myResource");
 
 route.use(checkAuth);
 
-route.get("/", (req, res) => {
-  connection.query("SELECT * FROM simplon_notes.resources", function(
-    err,
-    result
-  ) {
-    if (err) throw err;
-    return res.status(200).send(result);
-  });
+route.get("/", async (req, res) => {
+  const result = await querySQL.__query("SELECT * FROM simplon_notes.resources")
+  return res.status(200).send(result);
 });
 
 route.post("/", (req, res) => {
@@ -43,17 +40,16 @@ route.post("/", (req, res) => {
     }
 
     // check la faille upload
-    const extensionFormat = [".js", ".php", ".rb"];
+    const extensionFormat = [".js", ".php", ".rb", ".sql", ".odt"];
     const fileNameExtension = req.file.originalname;
 
     const checkBadFormat = extensionFormat
       .map(extension => {
         return fileNameExtension.includes(extension);
       })
-      .includes(true);
 
-    if (!checkBadFormat) {
-      connection.query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, name_resource, type, size, type_resource) VALUES (
+    if (!checkBadFormat.find(check => check === true)) {
+      querySQL.__query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, name_resource, type, size, type_resource) VALUES (
           "${uuidv1()}",
           "${user_id}",
           "${title}",
@@ -73,31 +69,24 @@ route.post("/", (req, res) => {
   });
 });
 
-route.delete("/:id", (req, res) => {
+route.delete("/:id", async (req, res) => {
   const resourceId = req.params.id;
-  connection.query(
-    "SELECT * FROM simplon_notes.resources WHERE id = ?",
-    resourceId,
-    function(err, result) {
-      if (result.length > 0) {
-        connection.query(
-          "DELETE FROM simplon_notes.resources WHERE id = ?",
-          resourceId,
-          function(err, result) {
-            if (err) throw err;
-            return res.status(200).send({
-              message: "Votre resource a bien été supprimé",
-              data: result
-            });
-          }
-        );
-      } else {
-        return res.status(400).send({
-          message: "Votre resource n'existe pas ou a été supprimé"
-        });
-      }
-    }
-  );
+
+  const result = await querySQL.__query("SELECT * FROM simplon_notes.resources WHERE id = ?",
+  resourceId)
+
+  if (result.length > 0) {
+    await querySQL.__query("DELETE FROM simplon_notes.resources WHERE id = ?",
+    resourceId)
+
+    return res.status(200).send({
+      message: "Votre resource a bien été supprimé"
+    });
+  } else {
+    return res.status(400).send({
+      message: "Votre resource n'existe pas ou a été supprimé"
+    });
+  }
 });
 
 module.exports = route;

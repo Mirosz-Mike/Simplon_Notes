@@ -23,8 +23,9 @@ class HomeData extends Component {
     show: false,
     data_id: "",
     type_resource: "",
-    file: []
-  };
+    file: [],
+    msgUserDisconnect: ''
+    };
 
   componentDidMount() {
     this.fetchData();
@@ -47,6 +48,7 @@ class HomeData extends Component {
 
     Promise.all([urlArticle, urlResource])
       .then(response => {
+        console.log(response)
         const tab = [];
         response.forEach(data => tab.push(data.data));
         const allData = tab[0].concat(tab[1]);
@@ -54,11 +56,10 @@ class HomeData extends Component {
         this.setState({ dataResources: allData });
       })
       .catch(error => {
+        console.log('erreur', error)
         const userDeconnect = error.response.status === 401;
         if (userDeconnect) {
-          alert(error.response.data.message);
-          this.props.removeToken(this.props.token);
-          this.props.history.push("/");
+          this.setState({ msgUserDisconnect: error.response.data.message, show: true })
         }
       });
   }
@@ -90,9 +91,7 @@ class HomeData extends Component {
       .catch(error => {
         const userDeconnect = error.response.status === 401;
         if (userDeconnect) {
-          alert(error.response.data.message);
-          this.props.removeToken(this.props.token);
-          this.props.history.push("/");
+          this.setState({ msgUserDisconnect: error.response.data.message, show: true })
         }
       });
   };
@@ -140,6 +139,11 @@ class HomeData extends Component {
       this.setState({ filteredData: [] });
     }
   };
+
+  msgUserDisconnect = () => {
+    this.props.removeToken(this.props.token);
+    this.props.history.push("/");
+  }
 
   selectFilter = event => {
     const currentValue = event.target.value;
@@ -196,7 +200,9 @@ class HomeData extends Component {
       filteredData,
       search,
       data_id,
-      tabFilter
+      tabFilter,
+      show,
+      msgUserDisconnect
     } = this.state;
 
     const ifFilteredData =
@@ -226,7 +232,22 @@ class HomeData extends Component {
             </div>
           </div>
         ) : null}
-        <h1 className="HomeData__content__text__resources">RESSOURCES</h1>
+        {
+          show && !!msgUserDisconnect ? (
+          <div className="Modal__container">
+            <div className="Modal__main">
+              <h4>{msgUserDisconnect}</h4>
+              <button
+                  className="btn btn-primary"
+                  onClick={() => this.msgUserDisconnect()}
+                >
+                  OK
+                </button>
+            </div>
+          </div>
+          ) : null
+        }
+        <h1 className="HomeData__content__text__resources">DOCUMENTS</h1>
         <div className="HomeData__content__align">
           <input
             type="text"

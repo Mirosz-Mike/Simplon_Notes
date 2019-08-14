@@ -17,20 +17,20 @@ class Navbar extends Component {
             SIMPLON<span className="Navbar__content__text__notes">notes</span>
           </a>
           <div className="Navbar__buttons">
-            <h3 className="Navbar__content__text__user">{`bienvenue ${
+            <h3 className="Navbar__content__text__user">{`Bienvenue ${
               this.props.name
             }`}</h3>
             <a
               href="/article"
               className="Navbar__content__text__resources ml-3"
             >
-              ressources
+              Documents
             </a>
             <button
               className="Navbar__content__text__disconnect ml-3"
               onClick={this.disconnect}
             >
-              deconnexion
+              Déconnexion
             </button>
           </div>
         </div>

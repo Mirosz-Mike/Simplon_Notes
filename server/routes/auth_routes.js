@@ -1,24 +1,11 @@
 const route = require("express").Router();
-const connection = require("../config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const uuidv1 = require("uuid/v1");
+
+const querySQL  = require('./functions_route');
 require("dotenv").config();
 
-// function pour mes query pour la refacto
-
-// __query = (queryName, escapeInjection) => {
-//   return new Promise((resolve, reject) => {
-//     connection.query(queryName, escapeInjection, function(err, result) {
-//       if (err) {
-//         console.log("erreur query: ", err);
-//         reject(err);
-//       } else {
-//         resolve(result);
-//       }
-//     });
-//   });
-// };
 
 route.post("/register", async (req, res) => {
   const validEmail = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
@@ -34,92 +21,68 @@ route.post("/register", async (req, res) => {
       password: hash
     };
     if (validEmail.test(email)) {
-      connection.query(
-        "SELECT email FROM simplon_notes.users WHERE email = ?",
-        user.email,
-        function(error, results, fields) {
-          if (error) {
-            return res.status(500).send(error.message);
-          }
-          if (results.length > 0) {
-            return res.status(403).send({ message: "Votre email existe deja" });
+
+      const result = await querySQL.__query("SELECT email FROM simplon_notes.users WHERE email = ?",
+      user.email)
+
+        if (result.length > 0) {
+          return res.status(403).send({ message: "Votre email existe déjà" });
+        } else {
+          if (user.password) {
+            await querySQL.__query("INSERT INTO simplon_notes.users SET id = ?, name = ?, email = ?, password = ?",
+            [uuidv1(), user.name, user.email, user.password])
+    
+            return res.status(200).send({
+              message: "Vous êtes enregistré avec succès",
+              user: user
+            });
           } else {
-            if (user.password) {
-              connection.query(
-                "INSERT INTO simplon_notes.users SET id = ?, name = ?, email = ?, password = ?",
-                [uuidv1(), user.name, user.email, user.password],
-                function(error, results, fields) {
-                  if (error) {
-                    return res
-                      .status(500)
-                      .send("probleme avec la requete " + error);
-                  } else {
-                    return res.status(200).send({
-                      message: "Vous êtes enregistrer avec succès",
-                      user: user
-                    });
-                  }
-                }
-              );
-            } else {
-              return res.status(400).send({
-                password: `Votre mot de passe doit contenir au moins
-                  - 1 caractère alphabétique minuscule.
-                  - 1 caractère alphabétique majuscule.
-                  - 1 caractère numérique.
-                  - 1 caractère spécial.
-                  - Votre mot de passe doit comporter au minimum 8 caractères`
-              });
-            }
+            return res.status(400).send({
+              password: `Votre mot de passe doit contenir au moins
+                - 1 caractère alphabétique minuscule.
+                - 1 caractère alphabétique majuscule.
+                - 1 caractère numérique.
+                - 1 caractère spécial.
+                - Votre mot de passe doit comporter au minimum 8 caractères`
+            });
           }
         }
-      );
+      } else {
+        return res.status(400).send({ message: "Email non valide" });
+      }
     } else {
-      return res.status(400).send({ message: "Email non valide" });
-    }
-  } else {
-    return res
-      .status(400)
-      .send({ message: "Veuillez remplir tout les champs" });
+      return res
+        .status(400)
+        .send({ message: "Veuillez remplir tout les champs" });
   }
 });
 
-route.post("/login", (req, res) => {
+route.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  connection.query(
-    "SELECT * FROM simplon_notes.users WHERE email = ?",
-    email,
-    function(error, results) {
-      if (error) {
-        return res.status(500).send("probleme avec la requete");
-      } else {
-        if (results.length > 0) {
-          bcrypt.compare(password, results[0].password, function(
-            err,
-            response
-          ) {
-            if (!response) {
-              return res
-                .status(400)
-                .send({ message: "Mot de passe incorrect" });
-            } else {
-              const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
-                expiresIn: "1h"
-              });
-              return res.status(200).send({
-                token: token,
-                name: results[0].name,
-                userId: results[0].id
-              });
-            }
-          });
+  const result = await querySQL.__query("SELECT * FROM simplon_notes.users WHERE email = ?",
+  email)
+
+  if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (err, response) => {
+        if (!response) {
+          return res
+            .status(400)
+            .send({ message: "Mot de passe incorrect" });
         } else {
-          return res.status(400).send({ message: "Votre email n'existe pas" });
+          const token = jwt.sign({ email }, process.env.SECRET_TOKEN_JWT, {
+            expiresIn: "1h"
+          });
+          return res.status(200).send({
+            token: token,
+            name: result[0].name,
+            userId: result[0].id
+          });
         }
-      }
-    }
-  );
+      }) 
+    } else {
+      return res.status(400).send({ message: "Votre email n'existe pas" });
+  }
 });
 
 module.exports = route;

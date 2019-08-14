@@ -9,7 +9,8 @@ class CreateResource extends Component {
     title: "",
     file: [],
     messageError: "",
-    show: false
+    show: false,
+    msgUserDisconnect: ''
   };
 
   handleSubmit = event => {
@@ -51,15 +52,18 @@ class CreateResource extends Component {
             this.setState({ messageError: error.response.data.message });
           }
           if (userDeconnect) {
-            alert(error.response.data.message);
-            this.props.removeToken(this.props.token);
-            this.props.history.push("/");
+            this.setState({ msgUserDisconnect: error.response.data.message, show: true })
           }
         });
     } else {
       this.setState({ messageError: "Veuillez ajouter une ressource" });
     }
   };
+
+  msgUserDisconnect = () => {
+    this.props.removeToken(this.props.token);
+    this.props.history.push("/");
+  }
 
   handleChange = event => {
     this.setState({ title: event.target.value });
@@ -70,10 +74,26 @@ class CreateResource extends Component {
   };
 
   render() {
+    const { show, msgUserDisconnect } = this.state
     return (
       <div>
         <div className="CreateResource__container">
           <Modal show={this.state.show}>{this.state.success}</Modal>
+          {
+            show && !!msgUserDisconnect ? (
+            <div className="Modal__container">
+              <div className="Modal__main">
+                <h4>{msgUserDisconnect}</h4>
+                <button
+                    className="btn btn-primary"
+                    onClick={() => this.msgUserDisconnect()}
+                  >
+                    OK
+                  </button>
+              </div>
+            </div>
+            ) : null
+          }
           <form
             className="CreateResource__container__form mt-5"
             onSubmit={this.handleSubmit}

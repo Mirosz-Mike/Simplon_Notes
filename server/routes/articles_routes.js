@@ -1,10 +1,12 @@
 const route = require("express").Router();
-const connection = require("../config");
 const multer = require("multer");
 const path = require("path");
 const uuidv1 = require("uuid/v1");
 
 const checkAuth = require("../middleware/check_auth");
+const checkFormat  = require('./functions_route');
+const querySQL  = require('./functions_route');
+
 require("dotenv").config();
 
 const storage = multer.diskStorage({
@@ -21,48 +23,23 @@ const upload = multer({
   }
 }).array("myImage", 3); // 3 images est la limite que je fixe
 
-// function pour mes query pour la refacto
-
-__query = (queryName, escapeInjection) => {
-  return new Promise((resolve, reject) => {
-    connection.query(queryName, escapeInjection, function(err, result) {
-      if (err) {
-        console.log("erreur query: ", err);
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-};
-
 route.use(checkAuth);
 
 route.get("/images", async (req, res) => {
-  const result = await __query("SELECT * FROM simplon_notes.images_articles");
+  const result = await querySQL.__query("SELECT * FROM simplon_notes.images_articles");
   return res.status(200).send(result);
 });
 
 route.get("/", async (req, res) => {
-  const result = await __query("SELECT * FROM simplon_notes.articles");
+  const result = await querySQL.__query("SELECT * FROM simplon_notes.articles");
   return res.status(200).send(result);
 });
 
 route.post("/", (req, res) => {
   upload(req, res, err => {
-    // Refacto on revoie 2 fois ces const
     const article = JSON.parse(req.body.myArticle);
     const { user_id, author, title, subtitle, body } = article;
-
-    const extensionFormat = [".js", ".php", ".rb", ".sql", ".odt"];
-    const fileNameExtension = req.files.map(image => image.originalname);
-
-    const checkBadFormat = extensionFormat.map(extension => {
-      return fileNameExtension
-        .map(fileExtension => fileExtension.includes(extension))
-        .includes(true);
-    });
-
+    
     if (err) {
       // Si plus de 3 images par article j'affiche une erreur
       if (err.code === "LIMIT_UNEXPECTED_FILE") {
@@ -74,15 +51,16 @@ route.post("/", (req, res) => {
     }
 
     if (req.files.length === 0) {
-      connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
-            "${uuidv1()}",
-            "${user_id}",
-            "${author}",
-            "${title}",
-            "${subtitle}",
-            "${body}",
-            "article"
-            )`);
+      querySQL.__query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
+        "${uuidv1()}",
+        "${user_id}",
+        "${author}",
+        "${title}",
+        "${subtitle}",
+        "${body}",
+        "article"
+        )`)
+
       return res
         .status(200)
         .send({ message: "Article enregister avec succès" });
@@ -94,25 +72,27 @@ route.post("/", (req, res) => {
 
       // 5MB = 5242880
       if (TotalSizeImages < 5242880) {
-        if (!checkBadFormat.includes(true)) {
+        if (!checkFormat.checkGoodFormatImages(req).find(check => check === true)) {
           const id = uuidv1();
-          connection.query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
-          "${id}",
-          "${user_id}",
-          "${author}",
-          "${title}",
-          "${subtitle}",
-          "${body}",
-          "article"
-          )`);
+
+          querySQL.__query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
+            "${id}",
+            "${user_id}",
+            "${author}",
+            "${title}",
+            "${subtitle}",
+            "${body}",
+            "article"
+            )`);
+
 
           for (let i = 0; i < req.files.length; i++) {
-            connection.query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
-            "${uuidv1()}",
-            "${id}",
-            "uploads/${req.files[i].filename}",
-            "${req.files[i].originalname}"
-          )`);
+            querySQL.__query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
+              "${uuidv1()}",
+              "${id}",
+              "uploads/${req.files[i].filename}",
+              "${req.files[i].originalname}"
+            )`);
           }
 
           return res
@@ -148,98 +128,82 @@ route.put("/:id", (req, res) => {
       throw err;
     }
 
-    const getArticles = __query(
+    const getArticles = querySQL.__query(
       "SELECT * FROM simplon_notes.articles WHERE id = ?",
       articleId
     );
 
-    getArticles.then(result => {
-      if (result.length > 0) {
-        const params = [title, subtitle, body, articleId];
-        __query(
-          "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, body = ? WHERE id = ?",
-          params
-        );
+    const params = [title, subtitle, body, articleId];
 
-        if (req.files.length === 0) {
+    querySQL.__query(
+      "UPDATE simplon_notes.articles SET title = ?, subtitle = ?, body = ? WHERE id = ?",
+      params
+    );
+    
+    getArticles.then(result => {
+      if (result.length > 0 && req.files.length === 0) {
           return res
             .status(200)
             .send({ message: "Votre article a bien été modifié" });
-        } else {
-          const resultImagesArticle = __query(
-            "SELECT * FROM simplon_notes.images_articles WHERE article_id = ?",
-            articleId
-          );
+      
+      } else {
+        const resultImagesArticle = querySQL.__query(
+          "SELECT * FROM simplon_notes.images_articles WHERE article_id = ?",
+          articleId
+        );
 
-          resultImagesArticle.then(result => {
-            if (result.length + req.files.length > 3) {
-              return res.status(500).send({
-                message: "Vous avez depassé la limite d'images, 3 par article"
-              });
-            } else {
-              const extensionBadFormat = [".js", ".php", ".rb", ".sql", ".odt"];
-              const nameImage = req.files.map(image => image.originalname);
+        resultImagesArticle.then(result => {
+          if (result.length + req.files.length > 3) {
+            return res.status(500).send({
+              message: "Vous avez depassé la limite d'images, 3 par article"
+            });
+          } else {
+            // Je gere le total des images reçus avant l'envoie
+            const sizeImages = req.files.map(imageSize => imageSize.size);
+            const reducer = (accumulator, currentValue) =>
+              accumulator + currentValue;
+            const TotalSizeImages = sizeImages.reduce(reducer);
 
-              // les resultats de checkBadformat true = image non valide sinon false une image valide
-              const resultBadFormat = [];
-
-              const checkBadFormat = extensionBadFormat.map(extension => {
-                for (let i = 0; i < nameImage.length; i++) {
-                  resultBadFormat.push(nameImage[i].includes(extension));
+            // 5MB = 5242880
+            if (TotalSizeImages < 5242880) {
+              if (!checkFormat.checkGoodFormatImages(req).find(check => check === true)) {
+                for (let i = 0; i < req.files.length; i++) {
+                  querySQL.__query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
+                      "${uuidv1()}",
+                      "${articleId}",
+                      "uploads/${req.files[i].filename}",
+                      "${req.files[i].originalname}"
+                    )`);
                 }
-              });
-
-              // Je gere le total des images reçus avant l'envoie
-              const sizeImages = req.files.map(imageSize => imageSize.size);
-              const reducer = (accumulator, currentValue) =>
-                accumulator + currentValue;
-              const TotalSizeImages = sizeImages.reduce(reducer);
-
-              // 5MB = 5242880
-              if (TotalSizeImages < 5242880) {
-                if (!resultBadFormat.find(check => check === true)) {
-                  for (let i = 0; i < req.files.length; i++) {
-                    __query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
-                        "${uuidv1()}",
-                        "${articleId}",
-                        "uploads/${req.files[i].filename}",
-                        "${req.files[i].originalname}"
-                      )`);
-                  }
-                  return res.status(200).send({
-                    message: "Votre article a bien été modifié"
-                  });
-                } else {
-                  return res.status(404).send({
-                    message: "Image non valide à cause du format"
-                  });
-                }
+                return res.status(200).send({
+                  message: "Votre article a bien été modifié"
+                });
               } else {
                 return res.status(404).send({
-                  message: "Vos images sont trop grands 5MB au total maximum"
+                  message: "Image non valide à cause du format"
                 });
               }
+            } else {
+              return res.status(404).send({
+                message: "Vos images sont trop grands 5MB au total maximum"
+              });
             }
-          });
-        }
-      } else {
-        return res.status(400).send({
-          message: "Votre article n'existe pas ou plus"
+          }
         });
       }
     });
   });
 });
 
-route.delete("/editArticle/:id", async (req, res) => {
+route.delete("/deleteImagesArticle/:id", async (req, res) => {
   const imageId = req.params.id;
-  const result = await __query(
+  const result = await querySQL.__query(
     "SELECT * FROM simplon_notes.images_articles WHERE id = ?",
     imageId
   );
 
   if (result.length > 0) {
-    await __query(
+    await querySQL.__query(
       "DELETE FROM simplon_notes.images_articles WHERE id = ?",
       imageId
     );
@@ -249,13 +213,13 @@ route.delete("/editArticle/:id", async (req, res) => {
 
 route.delete("/:id", async (req, res) => {
   const articleId = req.params.id;
-  const result = await __query(
+  const result = await querySQL.__query(
     "SELECT * FROM simplon_notes.articles WHERE id = ?",
     articleId
   );
 
   if (result.length > 0) {
-    await __query("DELETE FROM simplon_notes.articles WHERE id = ?", articleId);
+    await querySQL.__query("DELETE FROM simplon_notes.articles WHERE id = ?", articleId);
     return res
       .status(200)
       .send({ message: "Votre article a bien été supprimé" });
