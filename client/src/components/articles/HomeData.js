@@ -10,7 +10,8 @@ import axios from "axios";
 class HomeData extends Component {
   state = {
     dataResources: [],
-    filteredData: [],
+    filter: '',
+    sort: '',
     tabFilter: [
       "Filtrer par",
       "Articles",
@@ -25,7 +26,7 @@ class HomeData extends Component {
     type_resource: "",
     file: [],
     msgUserDisconnect: ''
-    };
+  };
 
   componentDidMount() {
     this.fetchData();
@@ -36,6 +37,7 @@ class HomeData extends Component {
   };
 
   fetchData() {
+    // A refacto avec une boucle 
     const urlArticle = axios.get(`${process.env.REACT_APP_API_URL}/articles`, {
       headers: { "x-auth-token": this.props.token }
     });
@@ -48,7 +50,6 @@ class HomeData extends Component {
 
     Promise.all([urlArticle, urlResource])
       .then(response => {
-        console.log(response)
         const tab = [];
         response.forEach(data => tab.push(data.data));
         const allData = tab[0].concat(tab[1]);
@@ -61,7 +62,7 @@ class HomeData extends Component {
         if (userDeconnect) {
           this.setState({ msgUserDisconnect: error.response.data.message, show: true })
         }
-      });
+    });
   }
 
   formatDate = date => {
@@ -134,10 +135,7 @@ class HomeData extends Component {
   };
 
   resetFilter = () => {
-    const { filteredData } = this.state;
-    if (filteredData.length > 0) {
-      this.setState({ filteredData: [] });
-    }
+    this.setState({ filter: '', sort: '' })
   };
 
   msgUserDisconnect = () => {
@@ -147,57 +145,22 @@ class HomeData extends Component {
 
   selectFilter = event => {
     const currentValue = event.target.value;
-    const { tabFilter, filteredData, dataResources } = this.state;
 
-    if (currentValue === tabFilter[1]) {
-      const filterByArticles = dataResources.filter(
-        articles => articles.type_resource === "article"
-      );
-      this.setState({ filteredData: filterByArticles });
+    if (["Articles", "Ressources"].includes(currentValue)) {
+      this.setState({ filter: currentValue.toLowerCase().slice(0, -1) });
     }
 
-    if (currentValue === tabFilter[2]) {
-      const filterByResources = dataResources.filter(
-        resources => resources.type_resource === "ressource"
-      );
-      this.setState({ filteredData: filterByResources });
-    }
-
-    if (currentValue === tabFilter[3]) {
-      if (filteredData.length > 0) {
-        this.setState({
-          filteredData: filteredData.sort((a, b) =>
-            b.updated_at > a.updated_at ? 1 : -1
-          )
-        });
-      }
-      this.setState({
-        dataResources: dataResources.sort((a, b) =>
-          b.updated_at > a.updated_at ? 1 : -1
-        )
-      });
-    }
-
-    if (currentValue === tabFilter[4]) {
-      if (filteredData.length > 0) {
-        this.setState({
-          filteredData: filteredData.sort((a, b) =>
-            b.updated_at < a.updated_at ? 1 : -1
-          )
-        });
-      }
-      this.setState({
-        dataResources: dataResources.sort((a, b) =>
-          b.updated_at < a.updated_at ? 1 : -1
-        )
-      });
+    else if (["Les plus récents", "Les plus anciennes"].includes(currentValue)) {
+      const sort = currentValue === "Les plus récents" ? 'ASC' : 'DESC';
+      this.setState({sort});
     }
   };
 
   render() {
     const {
       dataResources,
-      filteredData,
+      filter,
+      sort,
       search,
       data_id,
       tabFilter,
@@ -205,12 +168,10 @@ class HomeData extends Component {
       msgUserDisconnect
     } = this.state;
 
-    const ifFilteredData =
-      filteredData.length > 0 ? filteredData : dataResources;
-
-    const filteredDataByTitle = ifFilteredData.filter(resource => {
-      return resource.title.toLowerCase().includes(search.toLowerCase());
-    });
+    const filteredDataByTitle = dataResources
+      .filter(dataResource => filter ? dataResource.type_resource === filter : true)
+      .sort((a,b) => sort === 'ASC' ? b.updated_at > a.updated_at ? 1 : -1 : b.updated_at < a.updated_at ? 1 : -1)
+      .filter(resource => resource.title.toLowerCase().includes(search.toLowerCase()));
 
     return (
       <div className="container">
@@ -268,7 +229,7 @@ class HomeData extends Component {
 
           <button
             className="HomeData__custom__buttons__reinit btn btn-dark"
-            onClick={this.resetFilter}
+            onClick={() => this.resetFilter()}
           >
             Réinitialiser
           </button>
