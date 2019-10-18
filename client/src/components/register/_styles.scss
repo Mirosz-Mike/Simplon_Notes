@@ -1,0 +1,139 @@
+.Register__container {
+  height: 100vh;
+  overflow-y: hidden;
+
+  .row {
+    margin: 0px;
+  }
+
+  .Register__center__content {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .Register__vertical__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .Register__align__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 77%;
+  }
+
+  .Register__hr {
+    border: none;
+    border-left: 1px solid #e4e4e4;
+    height: 96vh;
+    width: 0px;
+  }
+
+  .Register__content__text__inscription {
+    text-align: center;
+    font-size: 90px;
+    color: $grey2;
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+  }
+
+  .Register__content__custom__button__signup {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #ff5858;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Register__content__custom__button__home {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #ff5858;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Register__button__modal {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #ff5858;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Register__content__custom__button__signin {
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 300;
+    background-color: #373737;
+    display: flex;
+    padding: 8px 25px;
+    align-items: center;
+    border-radius: 32px;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .Register__content__text__notes {
+    color: #373737;
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+  }
+
+  .Register__text__slogan {
+    font-family: "Roboto";
+    color: #373737;
+    font-weight: 300;
+  }
+
+  .Register__content__text__simplon {
+    color: #ff5858;
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-size: 90px;
+  }
+
+  .Register__content__right__font {
+    background-color: #efefef;
+    height: 100vh;
+    width: 50%;
+    border-radius: 207px 0px 207px;
+  }
+
+  .Register__content__move__element {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .Register__content__form {
+    position: absolute;
+    width: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
+    border-radius: 11px;
+  }
+}

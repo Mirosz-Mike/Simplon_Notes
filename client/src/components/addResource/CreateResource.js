@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import axios from "axios";
 import Modal from "../../shared/Modal/Modal";
 
-class CreateArticle extends Component {
+class CreateResource extends Component {
   state = {
-    title: "",
-    subTitle: "",
-    body: "",
     success: "",
+    title: "",
     file: [],
     messageError: "",
     show: false,
@@ -17,27 +15,24 @@ class CreateArticle extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { title, body } = this.state;
     const formData = new FormData();
 
-    const imageArr = Array.from(this.state.file);
-    imageArr.forEach(image => {
-      formData.append("myImage", image);
+    const resourceArr = Array.from(this.state.file);
+    resourceArr.forEach(resource => {
+      formData.append("myResource", resource);
     });
 
-    const article = {
-      user_id: this.props.userId,
-      author: this.props.name,
+    const resource = {
       title: this.state.title,
-      subtitle: this.state.subTitle,
-      body: this.state.body
+      user_id: this.props.userId,
+      author: this.props.name
     };
 
-    formData.append("myArticle", JSON.stringify(article));
+    formData.append("myResource", JSON.stringify(resource));
 
-    if (title && body) {
+    if (this.state.file.length) {
       axios
-        .post(`${process.env.REACT_APP_API_URL}/articles`, formData, {
+        .post(`${process.env.REACT_APP_API_URL}/resources/`, formData, {
           headers: {
             "content-type": "multipart/form-data",
             "x-auth-token": this.props.token
@@ -51,12 +46,8 @@ class CreateArticle extends Component {
           }, 1300);
         })
         .catch(error => {
-          const userDeconnect = error.response.status === 401;
           const fileExtension = error.response.status === 404;
-          const numberImagesExceeded = error.response.status === 500;
-          if (numberImagesExceeded) {
-            this.setState({ messageError: error.response.data.message });
-          }
+          const userDeconnect = error.response.status === 401;
           if (fileExtension) {
             this.setState({ messageError: error.response.data.message });
           }
@@ -64,11 +55,9 @@ class CreateArticle extends Component {
             this.setState({ msgUserDisconnect: error.response.data.message, show: true })
           }
         });
+    } else {
+      this.setState({ messageError: "Veuillez ajouter une ressource" });
     }
-  };
-
-  onChange = event => {
-    this.setState({ file: event.target.files });
   };
 
   msgUserDisconnect = () => {
@@ -77,16 +66,18 @@ class CreateArticle extends Component {
   }
 
   handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+    this.setState({ title: event.target.value });
+  };
+
+  onChange = event => {
+    this.setState({ file: event.target.files, messageError: "" });
   };
 
   render() {
     const { show, msgUserDisconnect } = this.state
     return (
       <div>
-        <div className="CreateArticle__container">
+        <div className="CreateResource__container">
           <Modal show={this.state.show}>{this.state.success}</Modal>
           {
             show && !!msgUserDisconnect ? (
@@ -104,7 +95,7 @@ class CreateArticle extends Component {
             ) : null
           }
           <form
-            className="CreateArticle__container__form mt-5"
+            className="CreateResource__container__form mt-5"
             onSubmit={this.handleSubmit}
           >
             <p>{this.state.messageError}</p>
@@ -114,39 +105,19 @@ class CreateArticle extends Component {
               name="title"
               type="text"
               placeholder="Title"
-              className="CreateArticle__container__input"
+              className="CreateResource__container__input"
               required
             />
-            <label>Sous-titre</label>
+            <label>Ressource</label>
             <input
-              onChange={this.handleChange}
-              name="subTitle"
-              type="text"
-              placeholder="subTitle"
-              className="CreateArticle__container__input"
-              required
-            />
-            <label>Image</label>
-            <input
-              name="myImage"
+              name="myResource"
               type="file"
               multiple
               onChange={this.onChange}
-              className="CreateArticle__container__input"
-            />
-            <label>Corps</label>
-            <textarea
-              className="textarea"
-              placeholder="Votre article"
-              name="body"
-              rows="5"
-              cols="33"
-              type="text"
-              required
-              onChange={this.handleChange}
+              className="CreateResource__container__input"
             />
             <button className="btn btn-success mt-2" type="submit">
-              Valider mon article
+              Valider ma resource
             </button>
           </form>
         </div>
@@ -163,4 +134,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CreateArticle);
+export default connect(mapStateToProps)(CreateResource);

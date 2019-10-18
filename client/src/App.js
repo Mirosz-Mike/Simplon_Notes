@@ -1,31 +1,43 @@
 import React from "react";
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
+import Register from "./components/register/Register";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
-import Register from "./components/register/Register";
-import Article from "./components/article/Article";
+import HomeData from "./components/articles/HomeData";
 import CreateArticle from "./components/addArticle/CreateArticle";
+import CreateResource from "./components/addResource/CreateResource";
 import EditArticle from "./components/editArticle/EditArticle";
+import OneArticle from "./components/articles/article/OneArticle";
+import PrivateRoute from "./PrivateRoute";
 
-import "./App.css";
+import "./sass/index.scss";
 
-const App = () => {
+const App = props => {
   return (
-    <div>
+    <div className="App">
       <Router>
-        <Navbar />
-        <div className="App">
+        {!!props.token ? <Navbar /> : null}
+        <div>
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/article" component={Article} />
+          <Route path="/addResource" component={CreateResource} />
           <Route path="/addArticle" component={CreateArticle} />
-          <Route path="/editArticle" component={EditArticle} />
+          <Route path="/editArticle/" component={EditArticle} />
+          <Route path="/oneArticle" component={OneArticle} />
+          <PrivateRoute path="/article" component={HomeData} />
         </div>
       </Router>
     </div>
   );
 };
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    token: state.token
+  };
+}
+
+export default connect(mapStateToProps)(App);

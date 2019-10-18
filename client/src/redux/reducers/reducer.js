@@ -3,16 +3,13 @@ import {
   REMOVE_USER_TOKEN,
   GET_USER_NAME,
   GET_USER_ID,
-  EDIT_ARTICLE
-} from "../actions/user_action";
+  EDIT_ARTICLE,
+  GET_ONE_ARTICLE,
+  DELETE_DATA_SUCCESS,
+  SHOW_MESSAGE_DELETE
+} from "../actions/action";
 
-const DEFAULT = {
-  userName: "",
-  token: "",
-  userId: ""
-};
-
-export default function userReducer(state = DEFAULT, action) {
+export default function userReducer(state = [], action) {
   switch (action.type) {
     case GET_USER_TOKEN:
       return {
@@ -38,6 +35,24 @@ export default function userReducer(state = DEFAULT, action) {
       return {
         ...state,
         editArticle: action.payload
+      };
+    }
+    case GET_ONE_ARTICLE: {
+      return {
+        ...state,
+        oneArticle: action.payload
+      };
+    }
+    case SHOW_MESSAGE_DELETE: {
+      return {
+        ...state,
+        showSuccessModal: action.payload
+      };
+    }
+    case DELETE_DATA_SUCCESS: {
+      return {
+        ...state,
+        showSuccessModal: true
       };
     }
     default:

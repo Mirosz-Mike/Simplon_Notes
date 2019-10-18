@@ -1,0 +1,77 @@
+.Navbar_container {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  margin-top: 30px;
+
+  .Navbar__content__text__simplon {
+    text-align: center;
+    color: #ff5858;
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  .Navbar__content__text__resources {
+    font-family: "Roboto", sans-serif;
+    color: $grey3;
+    text-decoration: none;
+    background: linear-gradient(
+        to top,
+        #ff5858 10.01%,
+        #ff5858 10%,
+        transparent 10.01%
+      )
+      no-repeat left bottom / 0 100%;
+    transition: background-size 0.3s;
+  }
+
+  a:hover {
+    background-size: 100% 100%;
+  }
+
+  .Navbar__content__text__user {
+    font-family: "Roboto", sans-serif;
+    font-size: 17px;
+    color: $grey3;
+  }
+
+  .Navbar__content__text__disconnect {
+    font-family: "Roboto", sans-serif;
+    border: none;
+    background-color: #fff;
+    color: $grey3;
+    text-decoration: none;
+    background: linear-gradient(
+        to top,
+        #ff5858 10.01%,
+        #ff5858 10%,
+        transparent 10.01%
+      )
+      no-repeat left bottom / 0 100%;
+    transition: background-size 0.3s;
+    padding: 0;
+  }
+
+  .Navbar__content__text__disconnect:hover {
+    background-size: 100% 100%;
+  }
+
+  .Navbar__content__text__notes {
+    text-align: center;
+    color: #373737;
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+  }
+
+  .Navbar__buttons {
+    display: flex;
+    align-items: center;
+  }
+}
+
+h3 {
+  font-size: 23pt;
+  margin: 0;
+  color: $white;
+}

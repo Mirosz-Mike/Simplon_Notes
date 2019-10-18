@@ -1,52 +1,48 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import "./Navbar.css";
 
 class Navbar extends Component {
   disconnect = () => {
     this.props.remove(this.props.token);
+    localStorage.clear();
     this.props.history.push("/");
   };
 
   render() {
     return (
-      <div className="navbar">
-        <a href="/" className="link">
-          Accueil
-        </a>
-        {!!this.props.name ? (
-          <h4 className="white">{`Bienvenue ${this.props.name}`}</h4>
-        ) : (
-          <a href="/register" className="link">
-            Inscription
+      <nav className="navbar Navbar_container">
+        <div className="container">
+          <a href="/" className="Navbar__content__text__simplon">
+            SIMPLON<span className="Navbar__content__text__notes">notes</span>
           </a>
-        )}
-        {!!this.props.token ? (
-          <a href="/article" className="button">
-            Mes Articles
-          </a>
-        ) : (
-          ""
-        )}
-        {!!this.props.token ? (
-          <button className="button" onClick={this.disconnect}>
-            Deconnexion
-          </button>
-        ) : (
-          <a href="/login" className="link">
-            Connexion
-          </a>
-        )}
-      </div>
+          <div className="Navbar__buttons">
+            <h3 className="Navbar__content__text__user">{`Bienvenue ${
+              this.props.name
+            }`}</h3>
+            <a
+              href="/article"
+              className="Navbar__content__text__resources ml-3"
+            >
+              Documents
+            </a>
+            <button
+              className="Navbar__content__text__disconnect ml-3"
+              onClick={this.disconnect}
+            >
+              Déconnexion
+            </button>
+          </div>
+        </div>
+      </nav>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    token: state.user.token,
-    name: state.user.userName
+    token: state.token,
+    name: state.userName
   };
 }
 
