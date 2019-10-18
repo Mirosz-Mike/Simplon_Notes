@@ -42,11 +42,11 @@ class OneArticle extends Component {
           <img
             className="mb-3 OneArticle__Background__Image"
             src={
-              this.state.imageArticles.length > 0
+              this.state.imageArticles.length
                 ? `${process.env.REACT_APP_API_URL}/${
                     this.state.imageArticles[0]
                   }`
-                : process.env.PUBLIC_URL + "/simplon.png"
+                : null
             }
             alt="Avatar"
             style={{ width: "100%" }}
@@ -61,7 +61,7 @@ class OneArticle extends Component {
             </p>
           </div>
           <div className="row mb-5">
-            {this.state.imageArticles.length > 0 &&
+            {this.state.imageArticles.length  &&
             this.state.imageArticles[1] ? (
               <img
                 src={`${process.env.REACT_APP_API_URL}/${
@@ -74,7 +74,7 @@ class OneArticle extends Component {
           </div>
           <p className="text-justify mb-3 OneArticle__body">{body}</p>
           <div className="row mb-5">
-            {this.state.imageArticles.length > 0 &&
+            {this.state.imageArticles.length  &&
             this.state.imageArticles[2] ? (
               <img
                 src={`${process.env.REACT_APP_API_URL}/${

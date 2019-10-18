@@ -72,7 +72,7 @@ route.post("/", (req, res) => {
 
       // 5MB = 5242880
       if (TotalSizeImages < 5242880) {
-        if (!checkFormat.checkGoodFormatImages(req).find(check => check === true)) {
+        if (!checkFormat.checkGoodFormatImages(req)) {
           const id = uuidv1();
 
           querySQL.__query(`INSERT INTO simplon_notes.articles (id, user_id, author, title, subtitle, body, type_resource) VALUES (
@@ -141,7 +141,7 @@ route.put("/:id", (req, res) => {
     );
     
     getArticles.then(result => {
-      if (result.length > 0 && req.files.length === 0) {
+      if (result.length && req.files.length === 0) {
           return res
             .status(200)
             .send({ message: "Votre article a bien été modifié" });
@@ -166,7 +166,7 @@ route.put("/:id", (req, res) => {
 
             // 5MB = 5242880
             if (TotalSizeImages < 5242880) {
-              if (!checkFormat.checkGoodFormatImages(req).find(check => check === true)) {
+              if (!checkFormat.checkGoodFormatImages(req)) {
                 for (let i = 0; i < req.files.length; i++) {
                   querySQL.__query(`INSERT INTO simplon_notes.images_articles (id, article_id, image, image_name) VALUES (
                       "${uuidv1()}",
@@ -202,7 +202,7 @@ route.delete("/deleteImagesArticle/:id", async (req, res) => {
     imageId
   );
 
-  if (result.length > 0) {
+  if (result.length) {
     await querySQL.__query(
       "DELETE FROM simplon_notes.images_articles WHERE id = ?",
       imageId
@@ -218,7 +218,7 @@ route.delete("/:id", async (req, res) => {
     articleId
   );
 
-  if (result.length > 0) {
+  if (result.length) {
     await querySQL.__query("DELETE FROM simplon_notes.articles WHERE id = ?", articleId);
     return res
       .status(200)

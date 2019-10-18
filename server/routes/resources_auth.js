@@ -40,15 +40,12 @@ route.post("/", (req, res) => {
     }
 
     // check la faille upload
-    const extensionFormat = [".js", ".php", ".rb", ".sql", ".odt"];
-    const fileNameExtension = req.file.originalname;
+    const extensionBadFormat = /.js|.php|.rb|.sql|.jsx|.odt|.ts/;
+    const fileNameExtension = req.file;
+  
+    const checkBadFormat = extensionBadFormat.test(fileNameExtension.originalname);
 
-    const checkBadFormat = extensionFormat
-      .map(extension => {
-        return fileNameExtension.includes(extension);
-      })
-
-    if (!checkBadFormat.find(check => check === true)) {
+    if (!checkBadFormat) {
       querySQL.__query(`INSERT INTO simplon_notes.resources (id, user_id, title, author, name_resource, type, size, type_resource) VALUES (
           "${uuidv1()}",
           "${user_id}",
@@ -75,7 +72,7 @@ route.delete("/:id", async (req, res) => {
   const result = await querySQL.__query("SELECT * FROM simplon_notes.resources WHERE id = ?",
   resourceId)
 
-  if (result.length > 0) {
+  if (result.length) {
     await querySQL.__query("DELETE FROM simplon_notes.resources WHERE id = ?",
     resourceId)
 

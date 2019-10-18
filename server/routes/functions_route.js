@@ -14,19 +14,10 @@ const __query = (queryName, escapeInjection) => {
 };
 
 const checkGoodFormatImages = (request) => {
-  const extensionBadFormat = [".js", ".php", ".rb", ".sql", ".odt"];
-  const nameImage = request.files.map(image => image.originalname);
+	const extensionBadFormat = /.js|.php|.rb|.sql|.jsx|.odt|.ts/;
+  const nameImage = request.files
 
-  // les resultats de checkBadformat true = image non valide sinon false une image valide
-  const resultBadFormat = [];
-
-  const checkBadFormat = extensionBadFormat.map(extension => {
-    for (let i = 0; i < nameImage.length; i++) {
-      resultBadFormat.push(nameImage[i].includes(extension));
-    }
-  });
-
-  return resultBadFormat
+	return nameImage.some(fileExtension => extensionBadFormat.test(fileExtension.originalname))
 }
 
 module.exports = {

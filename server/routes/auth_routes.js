@@ -25,7 +25,7 @@ route.post("/register", async (req, res) => {
       const result = await querySQL.__query("SELECT email FROM simplon_notes.users WHERE email = ?",
       user.email)
 
-        if (result.length > 0) {
+        if (result.length) {
           return res.status(403).send({ message: "Votre email existe déjà" });
         } else {
           if (user.password) {
@@ -63,7 +63,7 @@ route.post("/login", async (req, res) => {
   const result = await querySQL.__query("SELECT * FROM simplon_notes.users WHERE email = ?",
   email)
 
-  if (result.length > 0) {
+  if (result.length) {
       bcrypt.compare(password, result[0].password, (err, response) => {
         if (!response) {
           return res

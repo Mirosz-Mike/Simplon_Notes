@@ -30,7 +30,7 @@ class CreateResource extends Component {
 
     formData.append("myResource", JSON.stringify(resource));
 
-    if (this.state.file.length > 0) {
+    if (this.state.file.length) {
       axios
         .post(`${process.env.REACT_APP_API_URL}/resources/`, formData, {
           headers: {

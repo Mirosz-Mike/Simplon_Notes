@@ -77,12 +77,10 @@ class EditArticle extends Component {
     });
 
     // check si le format est valide ou non
-    const extensionBadFormat = [".js", ".php", ".rb", ".sql", ".odt"];
-    const nameImage = imageArr.map(img => img.name);
-
-    const checkBadFormat = extensionBadFormat.map(extension => {
-      return nameImage.map(fileExtension => fileExtension.includes(extension));
-    });
+    const extensionBadFormat = /.js|.php|.rb|.sql|.jsx|.odt|.ts/;
+    const nameImage = imageArr
+    
+    const checkBadFormat = nameImage.some(fileExtension => extensionBadFormat.test(fileExtension.name))
 
     const article = {
       user_id: this.props.userId,
@@ -95,7 +93,7 @@ class EditArticle extends Component {
 
     if (title && body) {
       if (imagesArticle.length + imageArr.length <= 3) {
-        if (!checkBadFormat.find(check => check === true)) {
+        if (!checkBadFormat) {
           axios
             .put(
               `${process.env.REACT_APP_API_URL}/articles/${

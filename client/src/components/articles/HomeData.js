@@ -37,7 +37,6 @@ class HomeData extends Component {
   };
 
   fetchData() {
-    // A refacto avec une boucle 
     const urlArticle = axios.get(`${process.env.REACT_APP_API_URL}/articles`, {
       headers: { "x-auth-token": this.props.token }
     });
@@ -61,7 +60,7 @@ class HomeData extends Component {
         const userDeconnect = error.response.status === 401;
         if (userDeconnect) {
           this.setState({ msgUserDisconnect: error.response.data.message, show: true })
-        }
+      }
     });
   }
 
@@ -97,12 +96,8 @@ class HomeData extends Component {
       });
   };
 
-  redirectToAddArticle = () => {
-    this.props.history.push("/addArticle");
-  };
-
-  redirectToAddResource = () => {
-    this.props.history.push("/addResource");
+  redirectToAddArticleOrResource = (articleOrResource) => {
+    articleOrResource === 'article' ? this.props.history.push("/addArticle") : this.props.history.push("/addResource");
   };
 
   redirectArticle = (editOrseeArticle, id) => {
@@ -114,7 +109,7 @@ class HomeData extends Component {
       this.props.editArticle(articleById);
       this.props.history.push("/editArticle");
     }
-    if (editOrseeArticle === "seeArticle") {
+    else {
       this.props.oneArticle(articleById);
       this.props.history.push("/oneArticle");
     }
@@ -175,39 +170,35 @@ class HomeData extends Component {
 
     return (
       <div className="container">
-        {this.state.show ? (
+        {show ? (
           <div className="Modal__container">
             <div className="Modal__main">
-              <h4>Êtes-vous sûr de vouloir supprimer ?</h4>
-              <div className="Modal__confirmModal">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => this.deleteDataById(data_id)}
-                >
+              <h4>{!!msgUserDisconnect ? msgUserDisconnect : 'Êtes-vous sûr de vouloir supprimer ?' }</h4>
+              {!!msgUserDisconnect
+                ? 
+                <> 
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => this.msgUserDisconnect()}
+                  >
+                    OK
+                  </button> 
+                </> : 
+                <div className="Modal__confirmModal">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => this.deleteDataById(data_id)}
+                  >
                   Oui
-                </button>
-                <button className="btn btn-danger" onClick={this.hideModal}>
-                  Non
-                </button>
-              </div>
+                  </button>
+                  <button className="btn btn-danger" onClick={this.hideModal}>
+                    Non
+                  </button>
+                </div>
+              }
             </div>
           </div>
         ) : null}
-        {
-          show && !!msgUserDisconnect ? (
-          <div className="Modal__container">
-            <div className="Modal__main">
-              <h4>{msgUserDisconnect}</h4>
-              <button
-                  className="btn btn-primary"
-                  onClick={() => this.msgUserDisconnect()}
-                >
-                  OK
-                </button>
-            </div>
-          </div>
-          ) : null
-        }
         <h1 className="HomeData__content__text__resources">DOCUMENTS</h1>
         <div className="HomeData__content__align">
           <input
@@ -230,19 +221,19 @@ class HomeData extends Component {
           <button
             className="HomeData__custom__buttons__reinit btn btn-dark"
             onClick={() => this.resetFilter()}
-          >
-            Réinitialiser
+            >
+              Réinitialiser
           </button>
           <div className="HomeData__content__align__buttons">
             <button
               className="HomeData__content__custom__button mr-3"
-              onClick={() => this.redirectToAddResource()}
+              onClick={() => this.redirectToAddArticleOrResource('resource')}
             >
               Ajouter une ressource
             </button>
             <button
               className="HomeData__content__custom__button"
-              onClick={() => this.redirectToAddArticle()}
+              onClick={() => this.redirectToAddArticleOrResource('article')}
             >
               Ajouter un article
             </button>
@@ -265,12 +256,18 @@ class HomeData extends Component {
                         <div className="HomeData__content__align__text__and__buttons">
                           <button
                             className="HomeData__content__button__see mr-2"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Voir article"
                             onClick={() =>
                               this.redirectArticle("seeArticle", data.id)
                             }
                           />
                           <button
                             className="HomeData__content__button__delete mr-2"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Supprimer votre article"
                             onClick={() =>
                               this.setState({
                                 show: true,
@@ -281,6 +278,9 @@ class HomeData extends Component {
                           />
                           <button
                             className="HomeData__content__button__edit mr-2"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Éditer votre article"
                             onClick={() =>
                               this.redirectArticle("editArticle", data.id)
                             }
@@ -290,6 +290,9 @@ class HomeData extends Component {
                         <div className="HomeData__content__align__text__and__buttons">
                           <button
                             className="HomeData__content__button__see mr-2"
+                            data-toggle="tooltip" 
+                            data-placement="top" 
+                            title="Voir article"
                             onClick={() =>
                               this.redirectArticle("seeArticle", data.id)
                             }
@@ -301,8 +304,8 @@ class HomeData extends Component {
                       De {data.author}
                     </p>
                     <div className="HomeData__content__text text-justify">
-                      {data.body.length < 100
-                        ? "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500..."
+                      {data.body.length > 100
+                        ? data.body.substring(0, 80) + '...'
                         : data.body}
                       <br />
                       <br />
@@ -323,6 +326,9 @@ class HomeData extends Component {
                       <div>
                         <button
                           className="HomeData__content__button__see mr-2"
+                          data-toggle="tooltip" 
+                          data-placement="top" 
+                          title="Voir votre ressource"
                           onClick={() =>
                             this.redirectToLinkResource(
                               `${process.env.REACT_APP_API_URL}/${
@@ -333,6 +339,9 @@ class HomeData extends Component {
                         />
                         <button
                           className="HomeData__content__button__delete mr-2"
+                          data-toggle="tooltip" 
+                          data-placement="top" 
+                          title="Supprimer votre ressource"
                           onClick={() =>
                             this.setState({
                               show: true,
@@ -344,6 +353,9 @@ class HomeData extends Component {
                       </div>
                     ) : <button
                           className="HomeData__content__button__see mr-2"
+                          data-toggle="tooltip" 
+                          data-placement="top" 
+                          title="Voir la ressource"
                           onClick={() =>
                             this.redirectToLinkResource(
                               `${process.env.REACT_APP_API_URL}/${
