@@ -12,10 +12,14 @@ class HomeData extends Component {
     dataResources: [],
     filter: '',
     sort: '',
+    loading: true,
     tabFilter: [
       "Filtrer par",
       "Articles",
-      "Ressources",
+      "Ressources"
+    ],
+    tabSorts: [
+      "Trier par",
       "Les plus récents",
       "Les plus anciennes"
     ],
@@ -53,7 +57,7 @@ class HomeData extends Component {
         response.forEach(data => tab.push(data.data));
         const allData = tab[0].concat(tab[1]);
 
-        this.setState({ dataResources: allData });
+        this.setState({ dataResources: allData, loading: false });
       })
       .catch(error => {
         console.log('erreur', error)
@@ -130,7 +134,7 @@ class HomeData extends Component {
   };
 
   resetFilter = () => {
-    this.setState({ filter: '', sort: '' })
+    this.setState({ filter: '', sort: ''})
   };
 
   msgUserDisconnect = () => {
@@ -156,14 +160,16 @@ class HomeData extends Component {
       dataResources,
       filter,
       sort,
+      loading,
       search,
       data_id,
+      tabSorts,
       tabFilter,
       show,
       msgUserDisconnect
     } = this.state;
 
-    const filteredDataByTitle = dataResources
+    const filteredData = dataResources
       .filter(dataResource => filter ? dataResource.type_resource === filter : true)
       .sort((a,b) => sort === 'ASC' ? b.updated_at > a.updated_at ? 1 : -1 : b.updated_at < a.updated_at ? 1 : -1)
       .filter(resource => resource.title.toLowerCase().includes(search.toLowerCase()));
@@ -213,8 +219,17 @@ class HomeData extends Component {
             className="HomeData__dropdown btn btn-dark"
             onChange={this.selectFilter}
           >
-            {tabFilter.map(filter => {
-              return <option key={filter}>{filter}</option>;
+            {tabSorts.map(itemSort => {
+              return <option key={itemSort}>{itemSort}</option>;
+            })}
+          </select>
+
+          <select
+            className="HomeData__dropdown btn btn-dark"
+            onChange={this.selectFilter}
+          >
+            {tabFilter.map(itemFilter => {
+              return <option key={itemFilter}>{itemFilter}</option>;
             })}
           </select>
 
@@ -241,7 +256,7 @@ class HomeData extends Component {
         </div>
         <div className="HomeData__content__background">
           <div className="row">
-            {filteredDataByTitle.map(data => {
+            {loading === false ? filteredData.map(data => {
               return data.type_resource.includes("article") ? (
                 <div
                   className="HomeData__content__custom__card card mr-5 col-md-3"
@@ -374,7 +389,13 @@ class HomeData extends Component {
                   </div>
                 </div>
               ) : null;
-            })}
+            }) : <div class="col-md-12 d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div> }
+            
+            {loading === false && filteredData.length === 0 ? <h1 className="text-center col-md-12 mt-5">Votre recherche n'a trouvé aucun résultat</h1> : null}
           </div>
         </div>
       </div>

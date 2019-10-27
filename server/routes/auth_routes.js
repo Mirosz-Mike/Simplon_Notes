@@ -43,7 +43,7 @@ route.post("/register", async (req, res) => {
                 - 1 caractère alphabétique majuscule.
                 - 1 caractère numérique.
                 - 1 caractère spécial.
-                - Votre mot de passe doit comporter au minimum 8 caractères`
+                - 8 caractères minimum`
             });
           }
         }
