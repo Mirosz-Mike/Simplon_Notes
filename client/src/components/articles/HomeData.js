@@ -36,6 +36,12 @@ class HomeData extends Component {
     this.fetchData();
   }
 
+  componentDidUpdate(state, props) {
+    console.log('state', state)
+    
+    console.log('props', )
+  }
+
   hideModal = () => {
     this.setState({ show: false });
   };
@@ -134,7 +140,7 @@ class HomeData extends Component {
   };
 
   resetFilter = () => {
-    this.setState({ filter: '', sort: ''})
+    this.setState({ filter: '', sort: '' })
   };
 
   msgUserDisconnect = () => {
@@ -144,14 +150,14 @@ class HomeData extends Component {
 
   selectFilter = event => {
     const currentValue = event.target.value;
-
+    
     if (["Articles", "Ressources"].includes(currentValue)) {
       this.setState({ filter: currentValue.toLowerCase().slice(0, -1) });
     }
 
     else if (["Les plus récents", "Les plus anciennes"].includes(currentValue)) {
       const sort = currentValue === "Les plus récents" ? 'ASC' : 'DESC';
-      this.setState({sort});
+      this.setState({ sort });
     }
   };
 
@@ -215,6 +221,7 @@ class HomeData extends Component {
             value={search}
             onChange={this.handleChange}
           />
+
           <select
             className="HomeData__dropdown btn btn-dark"
             onChange={this.selectFilter}
@@ -222,7 +229,7 @@ class HomeData extends Component {
             {tabSorts.map(itemSort => {
               return <option key={itemSort}>{itemSort}</option>;
             })}
-          </select>
+          </select> 
 
           <select
             className="HomeData__dropdown btn btn-dark"
@@ -389,9 +396,9 @@ class HomeData extends Component {
                   </div>
                 </div>
               ) : null;
-            }) : <div class="col-md-12 d-flex justify-content-center">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
+            }) : <div className="col-md-12 d-flex justify-content-center">
+            <div className="spinner-border" role="status">
+              <span className="sr-only">Loading...</span>
             </div>
           </div> }
             
